@@ -68,7 +68,7 @@ export default function Nav({ openNav, onCloseNav }) {
               </Typography>
 
               <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                {account.role} no sale el rol
+                {account.role}
               </Typography>
             </Box>
           </StyledAccount>

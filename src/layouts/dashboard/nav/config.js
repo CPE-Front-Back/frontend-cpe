@@ -12,6 +12,31 @@ const navConfig = [
     icon: icon('ic_analytics'),
   },
   {
+    title: 'solicitante',
+    path: '/solicitante/solicitante',
+    icon: icon('ic_analytics'),
+  },
+  {
+    title: 'Gestión de Curso',
+    path: '/dashboard/app',
+    icon: icon('ic_analytics'),
+  },
+  {
+    title: 'Gestión de Codificadores',
+    path: '/dashboard/app',
+    icon: icon('ic_analytics'),
+  },
+  {
+    title: 'Procesamiento',
+    path: '/dashboard/app',
+    icon: icon('ic_analytics'),
+  },
+  {
+    title: 'Reportes',
+    path: '/dashboard/app',
+    icon: icon('ic_analytics'),
+  },
+  {
     title: 'user',
     path: '/dashboard/user',
     icon: icon('ic_user'),

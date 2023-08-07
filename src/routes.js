@@ -4,11 +4,12 @@ import DashboardLayout from './layouts/dashboard';
 import SimpleLayout from './layouts/simple';
 //
 import BlogPage from './pages/BlogPage';
+import SolicitantePage from "./pages/SolicitantePage";
 import UserPage from './pages/UserPage';
 import LoginPage from './pages/LoginPage';
 import Page404 from './pages/Page404';
 import ProductsPage from './pages/ProductsPage';
-import DashboardAppPage from './pages/DashboardAppPage';
+import DashboardLogedInPage from './pages/DashboardLogedInPage';
 
 // ----------------------------------------------------------------------
 
@@ -18,21 +19,29 @@ export default function Router() {
       path: '/dashboard',
       element: <DashboardLayout />,
       children: [
-        { element: <Navigate to="/dashboard/app" />, index: true },
-        { path: 'app', element: <DashboardAppPage /> },
+        { element: <Navigate to="/dashboard/app" />, index: true},
+        { path: 'app', element: <DashboardLogedInPage /> },
         { path: 'user', element: <UserPage /> },
         { path: 'products', element: <ProductsPage /> },
         { path: 'blog', element: <BlogPage /> },
       ],
     },
     {
+      path: '/solicitante',
+      element: <SimpleLayout />,
+      children: [
+        {element: <Navigate to="/solicitante/solicitante" />, index: true},
+        { path: 'solicitante', element: <SolicitantePage /> }
+      ]
+    },
+    {
       path: 'login',
       element: <LoginPage />,
     },
-    {
+    {// define la ruta de entrada de la aplicación
       element: <SimpleLayout />,
       children: [
-        { element: <Navigate to="/dashboard/app" />, index: true },
+        { element: <Navigate to="/solicitante/solicitante" />, index: true },
         { path: '404', element: <Page404 /> },
         { path: '*', element: <Navigate to="/404" /> },
       ],
