@@ -1755,6 +1755,18 @@
   resolved "https://registry.npmjs.org/@leichtgewicht/ip-codec/-/ip-codec-2.0.4.tgz"
   integrity sha512-Hcv+nVC0kZnQ3tD9GVu5xSMR4VVYOteQIr/hwFPVEvPdlXqgGEuRjiheChHgdM+JyqdgNcmzZOX/tnl0JOiI7A==
 
+"@mdi/js@^7.2.96":
+  version "7.2.96"
+  resolved "https://registry.npmjs.org/@mdi/js/-/js-7.2.96.tgz"
+  integrity sha512-paR9M9ZT7rKbh2boksNUynuSZMHhqRYnEZOm/KrZTjQ4/FzyhjLHuvw/8XYzP+E7fS4+/Ms/82EN1pl/OFsiIA==
+
+"@mdi/react@^1.6.1":
+  version "1.6.1"
+  resolved "https://registry.npmjs.org/@mdi/react/-/react-1.6.1.tgz"
+  integrity sha512-4qZeDcluDFGFTWkHs86VOlHkm6gnKaMql13/gpIcUQ8kzxHgpj31NuCkD8abECVfbULJ3shc7Yt4HJ6Wu6SN4w==
+  dependencies:
+    prop-types "^15.7.2"
+
 "@mui/base@^5.0.0-beta.9", "@mui/base@5.0.0-beta.9":
   version "5.0.0-beta.9"
   resolved "https://registry.npmjs.org/@mui/base/-/base-5.0.0-beta.9.tgz"
@@ -1773,6 +1785,13 @@
   version "5.14.3"
   resolved "https://registry.npmjs.org/@mui/core-downloads-tracker/-/core-downloads-tracker-5.14.3.tgz"
   integrity sha512-QxvrcDqphZoXRjsAmCaQylmWjC/8/qKWwIde1MJMna5YIst3R9O0qhKRPu36/OE2d8AeTbCVjRcRvNqhhW8jyg==
+
+"@mui/icons-material@^5.14.3":
+  version "5.14.3"
+  resolved "https://registry.npmjs.org/@mui/icons-material/-/icons-material-5.14.3.tgz"
+  integrity sha512-XkxWPhageu1OPUm2LWjo5XqeQ0t2xfGe8EiLkRW9oz2LHMMZmijvCxulhgquUVTF1DnoSh+3KoDLSsoAFtVNVw==
+  dependencies:
+    "@babel/runtime" "^7.22.6"
 
 "@mui/lab@^5.0.0-alpha.103":
   version "5.0.0-alpha.138"

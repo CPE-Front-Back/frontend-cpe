@@ -1,6 +1,7 @@
 import {LoadingButton} from "@mui/lab";
 import {Container, Grid, Typography} from "@mui/material";
 import {styled} from "@mui/material/styles";
+import {useEffect, useState} from "react";
 import {Helmet} from "react-helmet-async";
 import {useNavigate} from "react-router-dom";
 import {AppWidgetSummary} from "../sections/@dashboard/app";
@@ -14,14 +15,31 @@ const StyledRoot = styled('div')(({ theme }) => ({
 }));
 export default function SolicitantePage() {
    const navigate = useNavigate();
+   const [destino, setDestino] = useState(null);
+   
+   useEffect(() => {
+      handleClick();
+   }, [destino]);
+   
    const handleClick = () => {
-      navigate('/dashboard', { replace: true });
+      // navigate(destino, { replace: true });
+      switch (destino) {
+         case 'prematricula' :
+            navigate('/solicitante/formulario-solicitud', { replace: true });
+            break;
+         case 'login':
+            navigate('/login', { replace: true });
+            break;
+         default:
+            console.log("first click is on null")
+            break;
+      }
    };
    
    return (
       <>
          <Helmet>
-            <title> Solicitante | Minimal UI </title>
+            <title> Solicitante | CPE </title>
          </Helmet>
          
          <StyledRoot>
@@ -30,8 +48,12 @@ export default function SolicitantePage() {
                   Página de solicitante
                </Typography>
                
-               <LoadingButton fullWidth size="large" type="submit" variant="contained" onClick={handleClick}>
+               <LoadingButton fullWidth size="large" type="submit" variant="contained" onClick={() => {setDestino("prematricula")}}>
                   Prematrícula
+               </LoadingButton>
+               
+               <LoadingButton fullWidth size="large" type="submit" variant="contained" onClick={() => {setDestino("login")}}>
+                  Iniciar Sesión
                </LoadingButton>
                
                <Grid container spacing={3}>
@@ -56,9 +78,9 @@ export default function SolicitantePage() {
                   </Grid>
                </Grid>
                
-               <SolicitantePersonalDataForm />
                
-               <SolicitanteCarrerOptionsForm />
+               
+               
             </Container>
          </StyledRoot>
       </>

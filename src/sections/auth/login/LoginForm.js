@@ -10,11 +10,11 @@ import Iconify from '../../../components/iconify';
 
 export default function LoginForm() {
   const navigate = useNavigate();
-
+  const [destino, setDestino] = useState("/dashboard")
   const [showPassword, setShowPassword] = useState(false);
 
   const handleClick = () => {
-    navigate('/dashboard', { replace: true });
+    navigate(destino , { replace: true });
   };
 
   return (
@@ -46,7 +46,7 @@ export default function LoginForm() {
       </Stack>
 
       <LoadingButton fullWidth size="large" type="submit" variant="contained" onClick={handleClick}>
-        Continuar
+        Login
       </LoadingButton>
     </>
   );
