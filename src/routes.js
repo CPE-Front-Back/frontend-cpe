@@ -4,14 +4,15 @@ import DashboardLayout from './layouts/dashboard';
 import SimpleLayout from './layouts/simple';
 //
 import BlogPage from './pages/BlogPage';
-import OfertasPage from "./pages/OfertasPage";
-import SolicitantePage from "./pages/SolicitantePage";
+import OfertasPage from './pages/OfertasPage';
+import SolicitantePage from './pages/SolicitantePage';
+import SolicitudesPage from './pages/SolicitudesPage';
 import UserPage from './pages/UserPage';
 import LoginPage from './pages/LoginPage';
 import Page404 from './pages/Page404';
 import ProductsPage from './pages/ProductsPage';
 import DashboardLogedInPage from './pages/DashboardLogedInPage';
-import SolicitantePersonalDataForm from "./sections/Solicitante/SolicitantePersonalDataForm";
+import SolicitantePersonalDataForm from './sections/Solicitante/SolicitantePersonalDataForm';
 
 // ----------------------------------------------------------------------
 
@@ -21,8 +22,9 @@ export default function Router() {
       path: '/dashboard',
       element: <DashboardLayout />,
       children: [
-        { element: <Navigate to="/dashboard/app" />, index: true},
+        { element: <Navigate to="/dashboard/app" />, index: true },
         { path: 'offers', element: <OfertasPage /> },
+        { path: 'solicitudes', element: <SolicitudesPage /> },
         { path: 'app', element: <DashboardLogedInPage /> },
         { path: 'user', element: <UserPage /> },
         { path: 'products', element: <ProductsPage /> },
@@ -33,16 +35,17 @@ export default function Router() {
       path: '/solicitante',
       element: <SimpleLayout />,
       children: [
-        {element: <Navigate to="/solicitante/solicitante-page" />, index: true},
+        { element: <Navigate to="/solicitante/solicitante-page" />, index: true },
         { path: 'solicitante-page', element: <SolicitantePage /> },
-        { path: 'formulario-solicitud', element: <SolicitantePersonalDataForm /> }
-      ]
+        { path: 'formulario-solicitud', element: <SolicitantePersonalDataForm /> },
+      ],
     },
     {
       path: 'login',
       element: <LoginPage />,
     },
-    {// define la ruta de entrada de la aplicación
+    {
+      // define la ruta de entrada de la aplicación
       element: <SimpleLayout />,
       children: [
         { element: <Navigate to="/solicitante" />, index: true },

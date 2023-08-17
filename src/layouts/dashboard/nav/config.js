@@ -18,21 +18,25 @@ const navConfig = [
   },
   {
     title: 'Gestión de Curso',
-    // path: '/dashboard/app',
     icon: icon('ic_analytics'),
     showSubItems: false,
     subItems: [
       {
         title: 'Actualizar Capacidades',
         path: '/dashboard/app',
-        icon: icon('ic_analytics')
+        icon: icon('ic_analytics'),
       },
       {
         title: 'Actualizar Ofertas',
         path: '/dashboard/offers',
-        icon: icon('ic_analytics')
-      }
-    ]
+        icon: icon('ic_analytics'),
+      },
+      {
+        title: 'Actualizar Solicitudes',
+        path: '/dashboard/solicitudes',
+        icon: icon('ic_analytics'),
+      },
+    ],
   },
   {
     title: 'Gestión de Codificadores',
@@ -48,32 +52,31 @@ const navConfig = [
       {
         title: 'Asignar 1ra vuelta',
         path: '/dashboard/app',
-        icon: icon('ic_analytics')
+        icon: icon('ic_analytics'),
       },
       {
         title: 'Asignar 2da vuelta',
         path: '/dashboard/app',
-        icon: icon('ic_analytics')
-      }
-    ]
+        icon: icon('ic_analytics'),
+      },
+    ],
   },
   {
     title: 'Reportes',
-    // path: '/dashboard/app',
     icon: icon('ic_analytics'),
     showSubItems: false,
     subItems: [
       {
         title: 'Reporte 1',
         path: '',
-        icon: icon('ic_analytics')
+        icon: icon('ic_analytics'),
       },
       {
         title: 'Reporte 2',
         path: '',
-        icon: icon('ic_analytics')
-      }
-    ]
+        icon: icon('ic_analytics'),
+      },
+    ],
   },
   {
     title: 'user',
