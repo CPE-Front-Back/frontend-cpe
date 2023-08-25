@@ -1,4 +1,4 @@
-import { Button, TextField, Typography } from '@mui/material';
+import { Box, Button, Grid, TextField, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 
@@ -8,29 +8,51 @@ OfertasForm.propTypes = {
   onSubmit: PropTypes.func,
 };
 export default function OfertasForm({ editMode, formData, onSubmit }) {
-  const { cod_oferta, cod_carrera, cod_curso, cant_ofertas } = formData;
+  const { cod_oferta, cod_carrera, nomb_carrera, cod_curso, cant_ofertas, eliminada } = formData;
   const [numberInput, setNumberInput] = useState(cant_ofertas);
 
-  const hanldeSubmit = (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
-
-    onSubmit({ numberInput });
+    const updatedData = {
+      cod_oferta: formData.cod_oferta,
+      cod_carrera: formData.cod_carrera,
+      nomb_carrera: formData.nomb_carrera,
+      cod_curso: formData.cod_curso,
+      cant_ofertas: Number(numberInput),
+      eliminada: formData.eliminada,
+    };
+    onSubmit(updatedData);
   };
 
   return (
     <>
-      <Typography variant="body1">Carrera: {cod_carrera}</Typography>
-      <TextField
-        type="number"
-        label="Cantidad de Ofertas"
-        variant="outlined"
-        value={numberInput}
-        onChange={(event) => setNumberInput(event.target.value)}
-        required
-      />
-      <Button type="submit" variant="contained" color="primary">
-        Submit
-      </Button>
+      <Box flexGrow={{ flexGrow: 1 }}>
+        <Grid container spacing={5}>
+          <Grid item xs={6}>
+            <Typography variant="body1">Carrera: {nomb_carrera}</Typography>
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              type="number"
+              label="Cantidad de Ofertas"
+              variant="outlined"
+              value={numberInput}
+              onChange={(event) => setNumberInput(event.target.value)}
+              required
+            />
+          </Grid>
+        </Grid>
+
+        <Grid container spacing={1}>
+          <Grid item xs={5} />
+          <Grid item xs={2}>
+            <Button type="submit" variant="contained" color="primary" onClick={handleSubmit}>
+              {editMode ? 'Modificar' : 'Registrar'}
+            </Button>
+          </Grid>
+          <Grid item xs={5} />
+        </Grid>
+      </Box>
     </>
   );
 }

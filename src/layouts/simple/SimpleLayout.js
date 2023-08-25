@@ -15,16 +15,19 @@ const StyledHeader = styled('header')(({ theme }) => ({
   width: '100%',
   position: 'absolute',
   padding: theme.spacing(3, 3, 0),
+  // display: 'flex',
   [theme.breakpoints.up('sm')]: {
     padding: theme.spacing(5, 5, 0),
   },
 }));
 
 const HEADER_MOBILE = 64;
-const HEADER_DESKTOP = 92;
+const HEADER_DESKTOP = 94;
 
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
   minHeight: HEADER_MOBILE,
+  width: '100%',
+  // display: 'flex',
   [theme.breakpoints.up('lg')]: {
     minHeight: HEADER_DESKTOP,
     padding: theme.spacing(0, 5),
@@ -42,8 +45,7 @@ export default function SimpleLayout() {
         <StyledToolbar>
           <Stack
             direction="row"
-            alignItems="center"
-            justifyContent="space-between"
+            sx={{ flexGrow: 1 }}
             spacing={{
               xs: 0.5,
               sm: 1,
@@ -51,10 +53,12 @@ export default function SimpleLayout() {
           >
             <Logo />
 
-            <Stack direction="row" alignItems="center" spacing={10}>
+            <Stack direction="row" spacing={10} sx={{ flexGrow: 1 }}>
               <Typography variant="h4" sx={{ mb: 5 }}>
                 Página de solicitante
               </Typography>
+
+              <Box sx={{ flexGrow: 1 }} />
 
               <LoadingButton
                 size="large"

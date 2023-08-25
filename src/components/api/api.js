@@ -1,8 +1,7 @@
 import axios from 'axios';
 
 const instance = axios.create({
-  baseURL: 'http://localhost:8085', // api Url
-  // headers: { Authorization: `Bearer ${authToken?.access}` },
+  baseURL: 'http://localhost:8085/api/v1/', // api Url
   timeout: 10000, // Set a timeout for requests
 });
 

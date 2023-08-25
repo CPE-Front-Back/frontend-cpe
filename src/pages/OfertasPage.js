@@ -20,16 +20,18 @@ import axios from 'axios';
 import { filter } from 'lodash';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-// import OFFERSLIST from '../_mock/oferta';
-import api from '../components/api/api';
+
+import { getAllOfertasByCurso, updateOferta } from '../sections/GestionCurso/Ofertas/store/store';
+
 import Iconify from '../components/iconify';
 import Scrollbar from '../components/scrollbar';
 import OfertasForm from '../sections/GestionCurso/Ofertas/OfertasForm';
 import OfertasListHead from '../sections/GestionCurso/Ofertas/OfertasListHead';
 import OfertasListToolbar from '../sections/GestionCurso/Ofertas/OfertasListToolbar';
+import { getCarreras } from '../utils/codificadores/codificadoresStore';
 
 const TABLE_HEAD = [
-  { id: 'codCarrera', label: 'Carrera', alignRight: false },
+  { id: 'nombCarrera', label: 'Carrera', alignRight: false },
   { id: 'cantOfertas', label: 'Cantidad de Ofertas', alignRight: false },
   { id: '' },
 ];
@@ -60,7 +62,7 @@ function applySortFilter(array, comparator, query) {
   if (query) {
     return filter(
       array,
-      (_offer) => String(_offer.cod_carrera).toLowerCase().indexOf(String(query).toLowerCase()) !== -1
+      (_offer) => String(_offer.nomb_carrera).toLowerCase().indexOf(String(query).toLowerCase()) !== -1
     );
   }
   return stabilizedThis.map((el) => el[0]);
@@ -73,21 +75,57 @@ export default function OfertasPage() {
   const [selected, setSelected] = useState([]);
   const [orderBy, setOrderBy] = useState('name');
   const [filterValue, setFilterValue] = useState('');
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({});
+  const [refresh, setRefresh] = useState(0);
 
   const [OFERTASLIST, setOFERTASLIST] = useState([]);
+  const [CARRERASLIST, setCARRERASLIST] = useState([]);
 
-  useEffect(() => {
-    api
-      .get('http://localhost:8085/api/v1/oferta/curso/5')
+  /* useEffect(() => {
+    getAllOfertasByCurso(5)
       .then((response) => {
-        setOFERTASLIST(response.data);
+        if (response.status === 200) {
+          setOFERTASLIST(response.data);
+          console.log('cargar las ofertas', refresh);
+        }
       })
       .catch((error) => {
-        console.log('Error fetching datos: ', error);
+        console.log('Error al Cargar ofertas: ', error);
+      });
+  }, [refresh]); */
+
+  useEffect(() => {
+    getAllOfertasByCurso(5)
+      .then((response) => {
+        if (response.status === 200) {
+          const updatedOfertasList = response.data.map((oferta) => {
+            const relatedCarrera = CARRERASLIST.find((carrera) => carrera.cod_carrera === oferta.cod_carrera);
+            return {
+              ...oferta,
+              nomb_carrera: relatedCarrera ? relatedCarrera.nomb_carrera : 'Unknown', // Replace 'Unknown' with a default name
+            };
+          });
+          setOFERTASLIST(updatedOfertasList);
+          console.log('Cargar las ofertas', refresh);
+        }
+      })
+      .catch((error) => {
+        console.log('Error al cargar ofertas: ', error);
+      });
+  }, [refresh, CARRERASLIST]);
+
+  useEffect(() => {
+    getCarreras()
+      .then((response) => {
+        if (response.status === 200) {
+          setCARRERASLIST(response.data);
+        }
+      })
+      .catch((error) => {
+        console.log('Error al cargar las carreras', error);
       });
   }, []);
 
@@ -180,10 +218,20 @@ export default function OfertasPage() {
         <OfertasForm
           formData={formData}
           editMode={editMode}
-          onSubmit={(data) => {
+          onSubmit={(updatedData) => {
+            updateOferta(updatedData)
+              .then((response) => {
+                if (response.status === 200) {
+                  console.log(response.data);
+                }
+              })
+              .catch((error) => {
+                console.log('Error al updatear: ', error);
+              });
             setIsFormVisible(false);
             setEditMode(false);
             setFormData({});
+            setRefresh(refresh + 1);
           }}
         />
       ) : (
@@ -226,8 +274,7 @@ export default function OfertasPage() {
                   />
                   <TableBody>
                     {filteredOffers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                      console.log(row);
-                      const { cod_oferta, cod_carrera, cod_curso, cant_ofertas } = row;
+                      const { cod_oferta, cod_carrera, nomb_carrera, cod_curso, cant_ofertas, eliminada } = row;
                       const selectedOffer = selected.indexOf(cod_carrera) !== -1;
 
                       return (
@@ -246,7 +293,7 @@ export default function OfertasPage() {
                             />
                           </TableCell>
 
-                          <TableCell align="left">{cod_carrera}</TableCell>
+                          <TableCell align="left">{nomb_carrera}</TableCell>
 
                           <TableCell align="left">{cant_ofertas}</TableCell>
 

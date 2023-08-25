@@ -17,7 +17,7 @@ const StyledRoot = styled('div')(({ theme }) => ({
   },
 }));
 
-const APP_BAR_MOBILE = 64;
+const APP_BAR_MOBILE = 82;
 const APP_BAR_DESKTOP = 92;
 
 const Main = styled('div')(({ theme }) => ({
@@ -25,8 +25,8 @@ const Main = styled('div')(({ theme }) => ({
   overflow: 'auto',
   minHeight: '100%',
   paddingTop: APP_BAR_MOBILE + 24,
-  paddingBottom: theme.spacing(10),
-  [theme.breakpoints.up('lg')]: {
+  paddingBottom: theme.spacing(0),
+  [theme.breakpoints.up('md')]: {
     paddingTop: APP_BAR_DESKTOP + 24,
     paddingLeft: theme.spacing(2),
     paddingRight: theme.spacing(2),
@@ -35,9 +35,10 @@ const Main = styled('div')(({ theme }) => ({
 
 export default function SolicitantePage() {
   const navigate = useNavigate();
+  const [isFormVisible, setIsFormVisible] = useState(false);
 
-  const handleClick = () => {
-    navigate('/solicitante/formulario-solicitud', { replace: true });
+  const toggleFormView = () => {
+    setIsFormVisible(!isFormVisible);
   };
 
   return (
@@ -49,31 +50,43 @@ export default function SolicitantePage() {
       <StyledRoot>
         <Main>
           <Container>
-            <LoadingButton size="large" type="submit" variant="contained" onClick={handleClick}>
-              Prematrícula
-            </LoadingButton>
+            {!isFormVisible ? (
+              <Grid container spacing={3} justifyContent={'center'}>
+                <Grid item xs={12} sm={12} md={12} style={{ textAlign: 'center' }}>
+                  <LoadingButton
+                    size="large"
+                    type="submit"
+                    variant="contained"
+                    sx={{ margin: '0 auto' }}
+                    onClick={toggleFormView}
+                  >
+                    Prematrícula
+                  </LoadingButton>
+                </Grid>
 
-            <Grid container spacing={3}>
-              <Grid item xs={12} sm={6} md={3}>
-                <AppWidgetSummary title="Reporte 1" total={100} icon={'ant-design:android-filled'} />
-              </Grid>
+                <Grid item xs={12} sm={6} md={3}>
+                  <AppWidgetSummary title="Reporte 1" total={100} icon={'ant-design:android-filled'} />
+                </Grid>
 
-              <Grid item xs={12} sm={6} md={3}>
-                <AppWidgetSummary title="Reporte 2" total={100} icon={'ant-design:android-filled'} />
-              </Grid>
+                <Grid item xs={12} sm={6} md={3}>
+                  <AppWidgetSummary title="Reporte 2" total={100} icon={'ant-design:android-filled'} />
+                </Grid>
 
-              <Grid item xs={12} sm={6} md={3}>
-                <AppWidgetSummary title="Reporte 3" total={100} icon={'ant-design:android-filled'} />
-              </Grid>
+                <Grid item xs={12} sm={6} md={3}>
+                  <AppWidgetSummary title="Reporte 3" total={100} icon={'ant-design:android-filled'} />
+                </Grid>
 
-              <Grid item xs={12} sm={6} md={3}>
-                <AppWidgetSummary title="Reporte 4" total={100} icon={'ant-design:android-filled'} />
-              </Grid>
+                <Grid item xs={12} sm={6} md={3}>
+                  <AppWidgetSummary title="Reporte 4" total={100} icon={'ant-design:android-filled'} />
+                </Grid>
 
-              <Grid item xs={12} sm={6} md={3}>
-                <AppWidgetSummary title="Reporte 5" total={100} icon={'ant-design:android-filled'} />
+                <Grid item xs={12} sm={6} md={3}>
+                  <AppWidgetSummary title="Reporte 5" total={100} icon={'ant-design:android-filled'} />
+                </Grid>
               </Grid>
-            </Grid>
+            ) : (
+              <SolicitantePersonalDataForm togleFormVisibility={() => toggleFormView()} />
+            )}
           </Container>
         </Main>
       </StyledRoot>
