@@ -84,19 +84,6 @@ export default function OfertasPage() {
   const [OFERTASLIST, setOFERTASLIST] = useState([]);
   const [CARRERASLIST, setCARRERASLIST] = useState([]);
 
-  /* useEffect(() => {
-    getAllOfertasByCurso(5)
-      .then((response) => {
-        if (response.status === 200) {
-          setOFERTASLIST(response.data);
-          console.log('cargar las ofertas', refresh);
-        }
-      })
-      .catch((error) => {
-        console.log('Error al Cargar ofertas: ', error);
-      });
-  }, [refresh]); */
-
   useEffect(() => {
     getAllOfertasByCurso(5)
       .then((response) => {

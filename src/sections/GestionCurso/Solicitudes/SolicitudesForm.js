@@ -8,12 +8,26 @@ SolicitudesForm.propTypes = {
 };
 
 export default function SolicitudesForm({ editMode, formData, onSubmit }) {
-  const { codSol, idSol, nombSol, primerApellSol, segundoApellSol, opcion1, opcion2, opcion3, opcion4, opcion5 } =
-    formData;
+  const {
+    cod_solicitante,
+    num_id,
+    nomb_solicitante,
+    apell_solicitante,
+    cod_municipio,
+    fuente_ingreso,
+    num_telefono,
+    confirmado,
+    eliminado,
+    opcion1,
+    opcion2,
+    opcion3,
+    opcion4,
+    opcion5,
+  } = formData;
   return (
     <>
       LA VENTANA DE SOLICITUDES PARA {editMode ? 'EDITAR' : 'AÑADIR'} UNA SOLICITUD
-      <Typography variant="h2">{nombSol}</Typography>
+      <Typography variant="h2">{nomb_solicitante}</Typography>
       {/* <form style={{ margin: 'auto', width: '90%', padding: '30px' }}>
         <Grid container spacing={5}>
           <Grid item lg={4} md={6} sm={12} xs={12}>

@@ -1,4 +1,3 @@
-import { faker } from '@faker-js/faker';
 import {
   Button,
   Card,
@@ -18,15 +17,16 @@ import {
   Typography,
 } from '@mui/material';
 import { filter } from 'lodash';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import OFFERSLIST from '../_mock/oferta';
-import SOLICITUDESlIST from '../_mock/solicitud';
 import Iconify from '../components/iconify';
 import Scrollbar from '../components/scrollbar';
+import { getAllOfertasByCurso } from '../sections/GestionCurso/Ofertas/store/store';
 import SolicitudesForm from '../sections/GestionCurso/Solicitudes/SolicitudesForm';
 import SolicitudesListHead from '../sections/GestionCurso/Solicitudes/SolicitudesListHead';
 import SolicitudesListToolbar from '../sections/GestionCurso/Solicitudes/SolicitudesListToolbar';
+import { getSolicitantesByCurso, getSolicitudesByCurso } from '../sections/GestionCurso/Solicitudes/store/store';
+import { getCarreras } from '../utils/codificadores/codificadoresStore';
 
 const TABLE_HEAD = [
   { id: 'idSol', label: 'No. Identidad', alignRight: false },
@@ -65,7 +65,7 @@ function applySortFilter(array, comparator, query) {
     return a[1] - b[1];
   });
   if (query) {
-    return filter(array, (_offer) => _offer.nombSol.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+    return filter(array, (_offer) => _offer.nomb_solicitante.toLowerCase().indexOf(query.toLowerCase()) !== -1);
   }
   return stabilizedThis.map((el) => el[0]);
 }
@@ -81,8 +81,93 @@ export default function SolicitudesPage() {
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({});
+  const [refresh, setRefresh] = useState(0);
 
+  const [SOLICITANTESSLIST, setSOLICITANTESSLIST] = useState([]);
+  const [SOLICITUDESLIST, setSOLICITUDESLIST] = useState([]);
+  const [OFERTASLIST, setOFERTASLIST] = useState([]);
+  const [CARRERASLIST, setCARRERASLIST] = useState([]);
   const [datos, setDatos] = useState([]);
+
+  useEffect(() => {
+    getSolicitantesByCurso(5, true)
+      .then((response) => {
+        if (response.status === 200 && SOLICITUDESLIST.length > 0 && OFERTASLIST.length > 0) {
+          const updatedSOLICITANTESLIST = response.data.map((solicitante) => {
+            const relatedSolicitudes = SOLICITUDESLIST.filter(
+              (solicitud) => solicitud.cod_solicitante === solicitante.cod_solicitante
+            );
+
+            const updatedOptions = Array.from({ length: 5 }, (_, index) => {
+              const optionIndex = index + 1;
+              const relatedSolicitud = relatedSolicitudes.find((solicitud) => solicitud.opcion === optionIndex);
+              if (relatedSolicitud) {
+                const relatedOferta = OFERTASLIST.find((oferta) => oferta.cod_oferta === relatedSolicitud.cod_oferta);
+                return relatedOferta ? relatedOferta.nomb_carrera : 'no solicitada';
+              }
+              return 'no solicitada';
+            });
+
+            return {
+              ...solicitante,
+              opcion1: updatedOptions[0],
+              opcion2: updatedOptions[1],
+              opcion3: updatedOptions[2],
+              opcion4: updatedOptions[3],
+              opcion5: updatedOptions[4],
+            };
+          });
+
+          setSOLICITANTESSLIST(updatedSOLICITANTESLIST);
+        }
+      })
+      .catch((error) => {
+        console.log('Error al cargar solicitantes en curso', error);
+      });
+  }, [SOLICITUDESLIST, OFERTASLIST]);
+
+  useEffect(() => {
+    getSolicitudesByCurso(5)
+      .then((response) => {
+        if (response.status === 200) {
+          setSOLICITUDESLIST(response.data);
+        }
+      })
+      .catch((error) => {
+        console.log('Error al cargar las solicitudes', error);
+      });
+  }, []);
+
+  useEffect(() => {
+    getAllOfertasByCurso(5)
+      .then((response) => {
+        if (response.status === 200) {
+          const updatedOfertasList = response.data.map((oferta) => {
+            const relatedCarrera = CARRERASLIST.find((carrera) => carrera.cod_carrera === oferta.cod_carrera);
+            return {
+              ...oferta,
+              nomb_carrera: relatedCarrera ? relatedCarrera.nomb_carrera : 'Unknown', // Replace 'Unknown' with a default name
+            };
+          });
+          setOFERTASLIST(updatedOfertasList);
+        }
+      })
+      .catch((error) => {
+        console.log('Error al cargar ofertas: ', error);
+      });
+  }, [CARRERASLIST]);
+
+  useEffect(() => {
+    getCarreras()
+      .then((response) => {
+        if (response.status === 200) {
+          setCARRERASLIST(response.data);
+        }
+      })
+      .catch((error) => {
+        console.log('Error al cargar las carreras', error);
+      });
+  }, []);
 
   const handleOpenInRowMenu = (event) => {
     setOpenInRowMenu(event.currentTarget);
@@ -100,19 +185,19 @@ export default function SolicitudesPage() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = SOLICITUDESlIST.map((n) => n.codSol);
+      const newSelecteds = SOLICITANTESSLIST.map((s) => s.cod_solicitante);
       setSelected(newSelecteds);
       return;
     }
     setSelected([]);
   };
 
-  const handleSelectClick = (event, codSol) => {
-    const selectedIndex = selected.indexOf(codSol);
+  const handleSelectClick = (event, cod_solicitante) => {
+    const selectedIndex = selected.indexOf(cod_solicitante);
     let newSelected = [];
     if (selectedIndex === -1) {
       // not found, add element to selected list
-      newSelected = newSelected.concat(selected, codSol);
+      newSelected = newSelected.concat(selected, cod_solicitante);
     } else if (selectedIndex === 0) {
       // found at start, remove first element
       newSelected = newSelected.concat(selected.slice(1));
@@ -142,7 +227,7 @@ export default function SolicitudesPage() {
 
   const handleEditClick = () => {
     if (selected.length === 1) {
-      const selectedItem = filteredSolicitudes.find((solicitud) => solicitud.codSol === selected[0]);
+      const selectedItem = filteredSolicitudes.find((solicitud) => solicitud.cod_solicitante === selected[0]);
       if (selectedItem) {
         setIsFormVisible(true);
         setEditMode(true);
@@ -157,9 +242,9 @@ export default function SolicitudesPage() {
     setSelected(newSelected);
   };
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - SOLICITUDESlIST.length) : 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - SOLICITANTESSLIST.length) : 0;
 
-  const filteredSolicitudes = applySortFilter(SOLICITUDESlIST, getComparator(order, orderBy), filterValue);
+  const filteredSolicitudes = applySortFilter(SOLICITANTESSLIST, getComparator(order, orderBy), filterValue);
 
   const isNotFound = !filteredSolicitudes.length && !!filterValue;
 
@@ -212,7 +297,7 @@ export default function SolicitudesPage() {
                     order={order}
                     orderBy={orderBy}
                     headLabel={TABLE_HEAD}
-                    rowCount={SOLICITUDESlIST.length}
+                    rowCount={SOLICITANTESSLIST.length}
                     numSelected={selected.length}
                     onRequestSort={handleRequestSort}
                     onSelectAllClick={handleSelectAllClick}
@@ -220,24 +305,29 @@ export default function SolicitudesPage() {
                   <TableBody>
                     {filteredSolicitudes.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                       const {
-                        codSol,
-                        idSol,
-                        nombSol,
-                        primerApellSol,
-                        segundoApellSol,
+                        cod_solicitante,
+                        num_id,
+                        nomb_solicitante,
+                        apell_solicitante,
+                        cod_municipio,
+                        fuente_ingreso,
+                        num_telefono,
+                        confirmado,
+                        eliminado,
                         opcion1,
                         opcion2,
                         opcion3,
                         opcion4,
                         opcion5,
                       } = row;
-                      const selectedSolicitud = selected.indexOf(codSol) !== -1;
+                      const [firstLastName, SecondLastName] = apell_solicitante.split(' ');
+                      const selectedSolicitud = selected.indexOf(cod_solicitante) !== -1;
 
                       return (
                         <TableRow
-                          onClick={() => handleRowClick(codSol)}
+                          onClick={() => handleRowClick(cod_solicitante)}
                           hover
-                          key={codSol}
+                          key={cod_solicitante}
                           tabIndex={-1}
                           role="checkbox"
                           selected={selectedSolicitud}
@@ -245,14 +335,14 @@ export default function SolicitudesPage() {
                           <TableCell padding="checkbox">
                             <Checkbox
                               checked={selectedSolicitud}
-                              onChange={(event) => handleSelectClick(event, codSol)}
+                              onChange={(event) => handleSelectClick(event, cod_solicitante)}
                             />
                           </TableCell>
 
-                          <TableCell align="left">{idSol}</TableCell>
-                          <TableCell align="left">{nombSol}</TableCell>
-                          <TableCell align="left">{primerApellSol}</TableCell>
-                          <TableCell align="left">{segundoApellSol}</TableCell>
+                          <TableCell align="left">{num_id}</TableCell>
+                          <TableCell align="left">{nomb_solicitante}</TableCell>
+                          <TableCell align="left">{firstLastName}</TableCell>
+                          <TableCell align="left">{SecondLastName}</TableCell>
                           <TableCell align="left">{opcion1}</TableCell>
                           <TableCell align="left">{opcion2}</TableCell>
                           <TableCell align="left">{opcion3}</TableCell>
@@ -303,7 +393,7 @@ export default function SolicitudesPage() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={SOLICITUDESlIST.length}
+            count={SOLICITANTESSLIST.length}
             rowsPerPage={rowsPerPage}
             page={page}
             labelRowsPerPage={'Filas por página'}
