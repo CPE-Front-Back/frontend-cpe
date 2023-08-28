@@ -23,7 +23,7 @@ const navConfig = [
     subItems: [
       {
         title: 'Actualizar Capacidades',
-        path: '/dashboard/app',
+        path: '/dashboard/appa',
         icon: icon('ic_analytics'),
       },
       {
@@ -32,20 +32,24 @@ const navConfig = [
         icon: icon('ic_analytics'),
       },
       {
-        title: 'Actualizar Solicitudes',
-        path: '/dashboard/solicitudes',
+        title: 'Actualizar Solicitudes Sin Confirmar',
+        path: '/dashboard/solicitudesSinConfirmar',
+        icon: icon('ic_analytics'),
+      },
+      {
+        title: 'Actualizar Solicitudes Confirmadas',
+        path: '/dashboard/solicitudesConfirmadas',
         icon: icon('ic_analytics'),
       },
     ],
   },
   {
     title: 'Gestión de Codificadores',
-    path: '/dashboard/app',
+    path: '/dashboard/apps',
     icon: icon('ic_analytics'),
   },
   {
     title: 'Procesamiento',
-    path: '/dashboard/app',
     icon: icon('ic_analytics'),
     showSubItems: false,
     subItems: [
@@ -53,10 +57,11 @@ const navConfig = [
         title: 'Asignar 1ra vuelta',
         path: '/dashboard/app',
         icon: icon('ic_analytics'),
+        isDisabled: true,
       },
       {
         title: 'Asignar 2da vuelta',
-        path: '/dashboard/app',
+        path: '/dashboard/apps',
         icon: icon('ic_analytics'),
       },
     ],
@@ -78,7 +83,7 @@ const navConfig = [
       },
     ],
   },
-  {
+  /* {
     title: 'user',
     path: '/dashboard/user',
     icon: icon('ic_user'),
@@ -102,7 +107,7 @@ const navConfig = [
     title: 'Not found',
     path: '/404',
     icon: icon('ic_disabled'),
-  },
+  }, */
 ];
 
 export default navConfig;

@@ -19,10 +19,11 @@ import {
 import { filter } from 'lodash';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
+import PropTypes from 'prop-types';
 import Iconify from '../components/iconify';
 import Scrollbar from '../components/scrollbar';
 import { getAllOfertasByCurso } from '../sections/GestionCurso/Ofertas/store/store';
-import SolicitudesForm from '../sections/GestionCurso/Solicitudes/SolicitudesForm';
+import SolicitudesFormDialog from '../sections/GestionCurso/Solicitudes/SolicitudesFormDialog';
 import SolicitudesListHead from '../sections/GestionCurso/Solicitudes/SolicitudesListHead';
 import SolicitudesListToolbar from '../sections/GestionCurso/Solicitudes/SolicitudesListToolbar';
 import { getSolicitantesByCurso, getSolicitudesByCurso } from '../sections/GestionCurso/Solicitudes/store/store';
@@ -70,7 +71,10 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function SolicitudesPage() {
+SolicitudesPage.propTypes = {
+  solicitantesConfirmados: PropTypes.bool,
+};
+export default function SolicitudesPage(solicitantesConfirmados) {
   const [openInRowMenu, setOpenInRowMenu] = useState(null);
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
@@ -78,21 +82,21 @@ export default function SolicitudesPage() {
   const [orderBy, setOrderBy] = useState('name');
   const [filterValue, setFilterValue] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [isFormVisible, setIsFormVisible] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({});
+  const [isFormDialogVisible, setIsFormDialogVisible] = useState(false);
   const [refresh, setRefresh] = useState(0);
 
   const [SOLICITANTESSLIST, setSOLICITANTESSLIST] = useState([]);
   const [SOLICITUDESLIST, setSOLICITUDESLIST] = useState([]);
   const [OFERTASLIST, setOFERTASLIST] = useState([]);
   const [CARRERASLIST, setCARRERASLIST] = useState([]);
-  const [datos, setDatos] = useState([]);
 
   useEffect(() => {
-    getSolicitantesByCurso(5, true)
+    getSolicitantesByCurso(5, solicitantesConfirmados.solicitantesConfirmados)
       .then((response) => {
         if (response.status === 200 && SOLICITUDESLIST.length > 0 && OFERTASLIST.length > 0) {
+          console.log(response.data);
           const updatedSOLICITANTESLIST = response.data.map((solicitante) => {
             const relatedSolicitudes = SOLICITUDESLIST.filter(
               (solicitud) => solicitud.cod_solicitante === solicitante.cod_solicitante
@@ -124,7 +128,7 @@ export default function SolicitudesPage() {
       .catch((error) => {
         console.log('Error al cargar solicitantes en curso', error);
       });
-  }, [SOLICITUDESLIST, OFERTASLIST]);
+  }, [SOLICITUDESLIST, OFERTASLIST, solicitantesConfirmados]);
 
   useEffect(() => {
     getSolicitudesByCurso(5)
@@ -229,7 +233,7 @@ export default function SolicitudesPage() {
     if (selected.length === 1) {
       const selectedItem = filteredSolicitudes.find((solicitud) => solicitud.cod_solicitante === selected[0]);
       if (selectedItem) {
-        setIsFormVisible(true);
+        setIsFormDialogVisible(true);
         setEditMode(true);
         setFormData(selectedItem);
         handleCloseInRowMenu();
@@ -254,12 +258,14 @@ export default function SolicitudesPage() {
         <title> Solicitudes | CPE </title>
       </Helmet>
 
-      {isFormVisible ? (
-        <SolicitudesForm
-          formData={formData}
+      {isFormDialogVisible ? (
+        <SolicitudesFormDialog
+          open={isFormDialogVisible}
+          handleCloseClick={() => setIsFormDialogVisible(false)}
+          Data={formData}
           editMode={editMode}
           onSubmit={(data) => {
-            setIsFormVisible(false);
+            setIsFormDialogVisible(false);
             setEditMode(false);
             setFormData({});
           }}
@@ -274,7 +280,7 @@ export default function SolicitudesPage() {
               variant="contained"
               startIcon={<Iconify icon="eva:plus-fill" />}
               onClick={() => {
-                setIsFormVisible(true);
+                setIsFormDialogVisible(true);
                 setEditMode(false);
                 setFormData({});
               }}

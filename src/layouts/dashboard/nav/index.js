@@ -81,16 +81,14 @@ export default function Nav({ openNav, onCloseNav }) {
 
       <Box sx={{ px: 2.5, pb: 3, mt: 10 }}>
         <Stack alignItems="center" spacing={3} sx={{ pt: 5, borderRadius: 2, position: 'relative' }}>
-          <Box
-            component="img"
-            src="/assets/illustrations/illustration_avatar.png"
-            sx={{ width: 100, position: 'absolute', top: -50 }}
-          />
-          
           <Typography variant="h3" sx={{ color: 'text.secondary' }}>
             Sección de ayuda
           </Typography>
-          
+          <Box
+            component="img"
+            src="/assets/illustrations/illustration_avatar.png"
+            sx={{ width: 100, position: 'relative', top: 0 }}
+          />
         </Stack>
       </Box>
     </Scrollbar>

@@ -10,6 +10,16 @@ export const getMunicipiosPorProvincia = async (codProvincia) => {
   }
 };
 
+export const getMunicipiosPorID = async (idMunicipio) => {
+  try {
+    const response = await instance.get(`municipio/${idMunicipio}`);
+    return response;
+  } catch (error) {
+    console.log('Error en getMunicipiosPorID', error);
+    throw error;
+  }
+};
+
 export const getProvincias = async () => {
   try {
     const response = await instance.get(`provincia/`);

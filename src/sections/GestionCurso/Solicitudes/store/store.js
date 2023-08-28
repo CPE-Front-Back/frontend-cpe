@@ -19,3 +19,13 @@ export const getSolicitudesByCurso = async (codCurso) => {
     throw error;
   }
 };
+
+export const eliminarSolicitudesBySolicitante = async (codSolicitante) => {
+  try {
+    const response = await instance.delete(`solicitud/solicitante/${codSolicitante}`);
+    return response;
+  } catch (error) {
+    console.log('Error en eliminarSolicitudesBySolicitante', error);
+    throw error;
+  }
+};

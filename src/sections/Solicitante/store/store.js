@@ -11,6 +11,17 @@ export const sendSolicitantePersonalData = async (solicitante) => {
   }
 };
 
+export const updateSolicitantePersonalData = async (solicitante) => {
+  console.log(solicitante);
+  try {
+    const response = await instance.put(`solicitante/`, solicitante);
+    return response;
+  } catch (error) {
+    console.log('Error en sendSolicitantePersonalData', error);
+    throw error;
+  }
+};
+
 export const getSolicitanteById = async (numId) => {
   try {
     const response = await instance.get(`solicitante/${numId}`);
@@ -27,8 +38,15 @@ export const insertarSolicitudes = async (solicitudes, codSol) => {
 
   Object.keys(solicitudes).forEach((opcionKey) => {
     if (Object.prototype.hasOwnProperty.call(solicitudes, opcionKey)) {
+      const solicitud = solicitudes[opcionKey];
+
+      // Check if the solicitud is undefined
+      if (solicitud === undefined) {
+        return; // Skip this iteration and continue to the next one
+      }
+
       const opcion = parseInt(opcionKey.replace('opcion', ''), 10); // Specify radix parameter
-      const cod_oferta = solicitudes[opcionKey].cod_oferta;
+      const cod_oferta = solicitud.cod_oferta;
 
       updatedSolicitudes.push({
         cod_oferta,

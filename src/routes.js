@@ -25,7 +25,8 @@ export default function Router() {
       children: [
         { element: <Navigate to="/dashboard/app" />, index: true },
         { path: 'offers', element: <OfertasPage /> },
-        { path: 'solicitudes', element: <SolicitudesPage /> },
+        { path: 'solicitudesConfirmadas', element: <SolicitudesPage solicitantesConfirmados /> },
+        { path: 'solicitudesSinConfirmar', element: <SolicitudesPage solicitantesConfirmados={false} /> },
         { path: 'app', element: <DashboardLogedInPage /> },
         { path: 'user', element: <UserPage /> },
         { path: 'products', element: <ProductsPage /> },

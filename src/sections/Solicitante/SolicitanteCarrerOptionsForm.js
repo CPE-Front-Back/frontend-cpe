@@ -14,7 +14,7 @@ SolicitanteCarrerOptionsForm.propTypes = {
   onVolver: PropTypes.func,
   onEnviar: PropTypes.func,
 };
-export default function SolicitanteCarrerOptionsForm({ personalData, onVolver, onEnviar }) {
+export default function SolicitanteCarrerOptionsForm({ personalData, options, onVolver, onEnviar }) {
   const [ofertas, setOfertas] = useState([]);
   const [ofertasFiltradas, setOfertasFiltradas] = useState([]);
   const [selectedOptions, setSelectedOptions] = useState(null);
@@ -23,6 +23,7 @@ export default function SolicitanteCarrerOptionsForm({ personalData, onVolver, o
   useEffect(() => {
     getAllOfertasByCurso(5)
       .then((response) => {
+        console.log(response.data);
         if (response.status === 200) {
           const updatedOfertasList = response.data.map((oferta) => {
             const relatedCarrera = carreras.find((carrera) => carrera.cod_carrera === oferta.cod_carrera);
