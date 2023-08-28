@@ -12,14 +12,15 @@ import { StyledNavItem, StyledNavItemIcon } from './styles';
 
 NavSection.propTypes = {
   data: PropTypes.array,
+  onSubmenuItemClicked: PropTypes.func,
 };
 
-export default function NavSection({ data = [], ...other }) {
+export default function NavSection({ data = [], onSubmenuItemClicked, ...other }) {
   return (
     <Box {...other}>
       <List disablePadding sx={{ p: 1 }}>
         {data.map((item) => (
-          <NavItem key={item.title} item={item} />
+          <NavItem key={item.title} item={item} onSubmenuItemClicked={onSubmenuItemClicked} />
         ))}
       </List>
     </Box>
@@ -30,9 +31,10 @@ export default function NavSection({ data = [], ...other }) {
 
 NavItem.propTypes = {
   item: PropTypes.object,
+  onSubmenuItemClicked: PropTypes.func,
 };
 
-function NavItem({ item }) {
+function NavItem({ item, onSubmenuItemClicked }) {
   const { title, path, icon, info, showSubItems, subItems, isDisabled } = item;
   const [isExpanded, setIsExpanded] = useState(showSubItems);
 
@@ -62,7 +64,7 @@ function NavItem({ item }) {
           <Box sx={{ pl: '30px' }}>
             <List>
               {subItems.map((subItem) => (
-                <NavItem key={subItem.title} item={subItem} />
+                <NavItem key={subItem.title} item={subItem} onSubmenuItemClicked={onSubmenuItemClicked} />
               ))}
             </List>
           </Box>
@@ -82,6 +84,7 @@ function NavItem({ item }) {
           fontWeight: 'fontWeightBold',
         },
       }}
+      onClick={() => onSubmenuItemClicked(title)}
       disabled={isDisabled}
     >
       <StyledNavItemIcon>{icon && icon}</StyledNavItemIcon>

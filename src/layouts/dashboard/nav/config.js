@@ -55,14 +55,14 @@ const navConfig = [
     subItems: [
       {
         title: 'Asignar 1ra vuelta',
-        path: '/dashboard/app',
         icon: icon('ic_analytics'),
-        isDisabled: true,
+        isDisabled: false,
       },
       {
         title: 'Asignar 2da vuelta',
         path: '/dashboard/apps',
         icon: icon('ic_analytics'),
+        isDisabled: true,
       },
     ],
   },
@@ -73,12 +73,42 @@ const navConfig = [
     subItems: [
       {
         title: 'Reporte 1',
-        path: '',
+        path: 'd',
         icon: icon('ic_analytics'),
       },
       {
         title: 'Reporte 2',
-        path: '',
+        path: 'd',
+        icon: icon('ic_analytics'),
+      },
+      {
+        title: 'Reporte 3',
+        path: 'd',
+        icon: icon('ic_analytics'),
+      },
+      {
+        title: 'Reporte 4',
+        path: 'd',
+        icon: icon('ic_analytics'),
+      },
+      {
+        title: 'Reporte 5',
+        path: 'd',
+        icon: icon('ic_analytics'),
+      },
+      {
+        title: 'Reporte 6',
+        path: 'd',
+        icon: icon('ic_analytics'),
+      },
+      {
+        title: 'Reporte 7',
+        path: 'd',
+        icon: icon('ic_analytics'),
+      },
+      {
+        title: 'Reporte 8',
+        path: 'd',
         icon: icon('ic_analytics'),
       },
     ],

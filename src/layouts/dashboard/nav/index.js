@@ -14,6 +14,7 @@ import Scrollbar from '../../../components/scrollbar';
 import NavSection from '../../../components/nav-section';
 //
 import navConfig from './config';
+import { asignar1raVuelta } from '../../../sections/Procesamiento/store/store';
 
 // ----------------------------------------------------------------------
 
@@ -46,6 +47,19 @@ export default function Nav({ openNav, onCloseNav }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
+  const handleSubmenuItemClicked = (title) => {
+    if (title === 'Asignar 1ra vuelta') {
+      console.log(`Submenu item clicked: ${title}`);
+      asignar1raVuelta(5)
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => {
+          console.log('Error al asignar Primera Vuelta', error);
+        });
+    }
+  };
+
   const renderContent = (
     <Scrollbar
       sx={{
@@ -75,7 +89,7 @@ export default function Nav({ openNav, onCloseNav }) {
         </Link>
       </Box>
 
-      <NavSection data={navConfig} />
+      <NavSection data={navConfig} onSubmenuItemClicked={handleSubmenuItemClicked} />
 
       <Box sx={{ flexGrow: 1 }} />
 
