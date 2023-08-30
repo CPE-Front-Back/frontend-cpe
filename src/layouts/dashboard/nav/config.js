@@ -22,6 +22,11 @@ const navConfig = [
     showSubItems: false,
     subItems: [
       {
+        title: 'Activar Curso',
+        path: '/dashboard/curso',
+        icon: icon('ic_analytics'),
+      },
+      {
         title: 'Actualizar Capacidades',
         path: '/dashboard/appa',
         icon: icon('ic_analytics'),

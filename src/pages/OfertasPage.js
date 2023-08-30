@@ -20,6 +20,7 @@ import axios from 'axios';
 import { filter } from 'lodash';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
+import { UseActiveCourse } from '../sections/GestionCurso/Curso/context/ActiveCourseContext';
 
 import { getAllOfertasByCurso, updateOferta } from '../sections/GestionCurso/Ofertas/store/store';
 
@@ -84,8 +85,10 @@ export default function OfertasPage() {
   const [OFERTASLIST, setOFERTASLIST] = useState([]);
   const [CARRERASLIST, setCARRERASLIST] = useState([]);
 
+  const { activeCourse } = UseActiveCourse();
+
   useEffect(() => {
-    getAllOfertasByCurso(5)
+    getAllOfertasByCurso(activeCourse.cod_curso)
       .then((response) => {
         if (response.status === 200) {
           const updatedOfertasList = response.data.map((oferta) => {

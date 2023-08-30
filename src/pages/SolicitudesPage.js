@@ -428,7 +428,7 @@ export default function SolicitudesPage(solicitantesConfirmados) {
       >
         <MenuItem onClick={handleEditClick}>
           <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
-          Editar
+          Confirmar
         </MenuItem>
 
         <MenuItem sx={{ color: 'error.main' }}>

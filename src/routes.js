@@ -4,6 +4,7 @@ import DashboardLayout from './layouts/dashboard';
 import SimpleLayout from './layouts/simple';
 //
 import BlogPage from './pages/BlogPage';
+import CursoPage from './pages/CursoPage';
 import OfertasPage from './pages/OfertasPage';
 import SolicitantePage from './pages/SolicitantePage';
 import SolicitudesPage from './pages/SolicitudesPage';
@@ -24,6 +25,7 @@ export default function Router() {
       element: <DashboardLayout />,
       children: [
         { element: <Navigate to="/dashboard/app" />, index: true },
+        { path: 'curso', element: <CursoPage /> },
         { path: 'offers', element: <OfertasPage /> },
         { path: 'solicitudesConfirmadas', element: <SolicitudesPage solicitantesConfirmados /> },
         { path: 'solicitudesSinConfirmar', element: <SolicitudesPage solicitantesConfirmados={false} /> },
