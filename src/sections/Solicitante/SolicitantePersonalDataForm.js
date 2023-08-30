@@ -149,7 +149,7 @@ export default function SolicitantePersonalDataForm({ togleFormVisibility }) {
     <>
       <StyledRoot>
         <Main>
-          <Container>
+          <Container sx={{ backgroundColor: 'white' }}>
             {!isCarrersFormVisible ? (
               <>
                 <Grid container spacing={3} sx={{ pb: '50px' }}>
@@ -251,7 +251,13 @@ export default function SolicitantePersonalDataForm({ togleFormVisibility }) {
                   </Grid>
                 </Grid>
 
-                <LoadingButton fullWidth size="large" variant="contained" onClick={handleAvanzarClick}>
+                <LoadingButton
+                  fullWidth
+                  size="large"
+                  variant="contained"
+                  onClick={handleAvanzarClick}
+                  sx={{ mt: '30px', mb: '30px' }}
+                >
                   Avanzar
                 </LoadingButton>
               </>

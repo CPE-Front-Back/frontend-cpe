@@ -129,8 +129,14 @@ export default function SolicitanteCarrerOptionsForm({ personalData, options, on
   };
 
   return (
-    <Grid container sx={{ mt: -20 }}>
-      <Typography>Listado de solicitudes</Typography>
+    <Grid container sx={{ mt: -20, pt: '30px' }}>
+      <Grid item xs />
+      <Grid item xs={3}>
+        <Typography variant="h4" sx={{ textAlign: 'center' }}>
+          Listado de solicitudes
+        </Typography>
+      </Grid>
+      <Grid item xs />
 
       <Stack container sx={{ mt: 5, width: '100%' }} spacing={2}>
         <Grid item textAlign={'center'}>

@@ -55,7 +55,7 @@ export default function SimpleLayout() {
 
             <Stack direction="row" spacing={10} sx={{ flexGrow: 1 }}>
               <Typography variant="h4" sx={{ mb: 5 }}>
-                Página de solicitante
+                Bienvenido
               </Typography>
 
               <Box sx={{ flexGrow: 1 }} />

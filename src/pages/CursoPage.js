@@ -10,42 +10,8 @@ export default function CursoPage() {
   const [isActivating, setIsActivating] = useState(false);
 
   const [cursos, setCursos] = useState([]);
+  const [cursosFiltrados, setCursosFiltrados] = useState([]);
   const [selectedCurso, setSelectedCurso] = useState(null);
-
-  const handleGenerarCursoClick = () => {
-    insertarCurso()
-      .then((response) => {
-        if (response.status === 200) {
-          console.log('Curso generado correctamente');
-        }
-      })
-      .catch((error) => {
-        console.log('Error al generar el curso', error);
-      });
-  };
-
-  const handleActivarCursoClick = () => {
-    setIsActivating(true);
-    console.log('El curso activo en el context:', activeCourse);
-    desactivarCursos().then((response) => {
-      if (response.status === 200) {
-        console.log(response.data);
-        activarCurso(selectedCurso)
-          .then((response) => {
-            if (response.status === 200) {
-              console.log(response.data);
-              setActiveCourse(selectedCurso);
-            }
-          })
-          .catch((error) => {
-            console.log('Error al activar el curso', error);
-          })
-          .finally(() => {
-            setIsActivating(false);
-          });
-      }
-    });
-  };
 
   useEffect(() => {
     getCursos()
@@ -53,6 +19,7 @@ export default function CursoPage() {
         if (response.status === 200) {
           console.log('cursos: ', response.data);
           setCursos(response.data);
+          setCursosFiltrados(response.data);
         }
       })
       .catch((error) => {
@@ -60,9 +27,76 @@ export default function CursoPage() {
       });
   }, []);
 
+  useEffect(() => {
+    const listaFiltrada = cursos.filter((curso) => curso.nomb_curso !== activeCourse.nomb_curso);
+    setCursosFiltrados(listaFiltrada);
+  }, [activeCourse, cursos]);
+
+  const handleGenerarCursoClick = () => {
+    setIsActivating(true);
+    const currentYear = new Date().getFullYear();
+    const generatedCourse = {
+      cod_curso: 0,
+      nomb_curso: `${currentYear}-${currentYear + 1}`,
+      activo: true,
+    };
+
+    console.log('Nuevo Curso: ', generatedCourse);
+
+    desactivarCursos()
+      .then((response) => {
+        if (response.status === 200) {
+          console.log(response.data);
+          insertarCurso(generatedCourse)
+            .then((response) => {
+              if (response.status === 200) {
+                console.log('Curso generado correctamente');
+                setActiveCourse(generatedCourse);
+              }
+            })
+            .catch((error) => {
+              console.log('Error al generar el curso', error);
+            })
+            .finally(() => {
+              setIsActivating(false);
+            });
+        }
+      })
+      .catch((error) => {
+        console.log('Error al desactivar los cursos', error);
+      });
+  };
+
+  const handleActivarCursoClick = () => {
+    setIsActivating(true);
+    console.log('El curso activo en el context:', activeCourse);
+    desactivarCursos()
+      .then((response) => {
+        if (response.status === 200) {
+          console.log(response.data);
+          activarCurso(selectedCurso)
+            .then((response) => {
+              if (response.status === 200) {
+                console.log(response.data);
+                setActiveCourse(selectedCurso);
+              }
+            })
+            .catch((error) => {
+              console.log('Error al activar el curso', error);
+            })
+            .finally(() => {
+              setIsActivating(false);
+            });
+        }
+      })
+      .catch((error) => {
+        console.log('Error al desactivar los cursos', error);
+      });
+  };
+
   return (
     <>
-      <Container>
+      <Container sx={{ backgroundColor: 'white', pt: '50px' }}>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
             Cursos
@@ -72,12 +106,20 @@ export default function CursoPage() {
           </Button>
         </Stack>
 
-        <Grid container>
+        <Grid container sx={{ pt: '10px' }}>
+          <Grid item xs />
+          <Grid item xs={3}>
+            <Typography variant="h5">{`Curso activo: ${activeCourse.nomb_curso}`}</Typography>
+          </Grid>
+          <Grid item xs />
+        </Grid>
+
+        <Grid container sx={{ pt: '30px' }}>
           <Grid item xs />
           <Grid item xs={3}>
             <Autocomplete
               id="ComboCursos"
-              options={cursos}
+              options={cursosFiltrados}
               getOptionLabel={(option) => option.nomb_curso}
               value={selectedCurso}
               onChange={(event, newValue) => {
@@ -88,7 +130,8 @@ export default function CursoPage() {
           </Grid>
           <Grid item xs />
         </Grid>
-        <Grid container sx={{ pt: '10px' }}>
+
+        <Grid container sx={{ pt: '20px', pb: '20px' }}>
           <Grid item xs />
           <Grid item xs={3}>
             <Button variant="contained" sx={{ width: '100%' }} onClick={handleActivarCursoClick}>

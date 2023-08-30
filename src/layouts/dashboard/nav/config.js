@@ -22,7 +22,7 @@ const navConfig = [
     showSubItems: false,
     subItems: [
       {
-        title: 'Activar Curso',
+        title: 'Cambiar Curso Activo',
         path: '/dashboard/curso',
         icon: icon('ic_analytics'),
       },

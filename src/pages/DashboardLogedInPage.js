@@ -24,7 +24,7 @@ export default function DashboardLogedInPage() {
 
       <Container maxWidth="100%">
         <Typography variant="h4" sx={{ mb: 5 }}>
-          Pantalla estadísticas Curso
+          Estadísticas del Curso
         </Typography>
 
         <Grid container>

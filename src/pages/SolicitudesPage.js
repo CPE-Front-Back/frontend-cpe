@@ -22,6 +22,7 @@ import { Helmet } from 'react-helmet-async';
 import PropTypes from 'prop-types';
 import Iconify from '../components/iconify';
 import Scrollbar from '../components/scrollbar';
+import { UseActiveCourse } from '../sections/GestionCurso/Curso/context/ActiveCourseContext';
 import { getAllOfertasByCurso } from '../sections/GestionCurso/Ofertas/store/store';
 import SolicitudesFormDialog from '../sections/GestionCurso/Solicitudes/SolicitudesFormDialog';
 import SolicitudesListHead from '../sections/GestionCurso/Solicitudes/SolicitudesListHead';
@@ -87,13 +88,14 @@ export default function SolicitudesPage(solicitantesConfirmados) {
   const [isFormDialogVisible, setIsFormDialogVisible] = useState(false);
   const [refresh, setRefresh] = useState(0);
 
+  const { activeCourse } = UseActiveCourse();
   const [SOLICITANTESSLIST, setSOLICITANTESSLIST] = useState([]);
   const [SOLICITUDESLIST, setSOLICITUDESLIST] = useState([]);
   const [OFERTASLIST, setOFERTASLIST] = useState([]);
   const [CARRERASLIST, setCARRERASLIST] = useState([]);
 
   useEffect(() => {
-    getSolicitantesByCurso(5, solicitantesConfirmados.solicitantesConfirmados)
+    getSolicitantesByCurso(activeCourse.cod_curso, solicitantesConfirmados.solicitantesConfirmados)
       .then((response) => {
         if (response.status === 200 && SOLICITUDESLIST.length > 0 && OFERTASLIST.length > 0) {
           console.log(response.data);
@@ -131,7 +133,7 @@ export default function SolicitudesPage(solicitantesConfirmados) {
   }, [SOLICITUDESLIST, OFERTASLIST, solicitantesConfirmados]);
 
   useEffect(() => {
-    getSolicitudesByCurso(5)
+    getSolicitudesByCurso(activeCourse.cod_curso)
       .then((response) => {
         if (response.status === 200) {
           setSOLICITUDESLIST(response.data);
@@ -143,7 +145,7 @@ export default function SolicitudesPage(solicitantesConfirmados) {
   }, []);
 
   useEffect(() => {
-    getAllOfertasByCurso(5)
+    getAllOfertasByCurso(activeCourse.cod_curso)
       .then((response) => {
         if (response.status === 200) {
           const updatedOfertasList = response.data.map((oferta) => {
