@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 // components
 // sections
-import { AppNewsUpdate } from '../sections/@dashboard/app';
+import CourseStatisticsViewer from '../sections/@dashboard/app/CourseStatisticsViewer';
 import { UseActiveCourse } from '../sections/GestionCurso/Curso/context/ActiveCourseContext';
 import { getActiveCourse } from '../sections/GestionCurso/Curso/store/store';
 
@@ -28,18 +28,11 @@ export default function DashboardLogedInPage() {
         </Typography>
 
         <Grid container>
-          <Grid item xs={12}>
-            <AppNewsUpdate
-              title={`Curso: ${activeCourse.nomb_curso}`}
-              list={[...Array(5)].map((_, index) => ({
-                id: faker.datatype.uuid(),
-                title: faker.name.jobDescriptor(),
-                description: faker.name.jobTitle(),
-                image: `/assets/images/covers/cover_${index + 1}.jpg`,
-                postedAt: faker.date.recent(),
-              }))}
-            />
+          <Grid item xs />
+          <Grid item xs={9}>
+            <CourseStatisticsViewer title={`Curso: ${activeCourse.nomb_curso}`} />
           </Grid>
+          <Grid item xs />
         </Grid>
       </Container>
     </>
