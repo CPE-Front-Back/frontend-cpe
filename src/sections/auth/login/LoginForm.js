@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 // @mui
-import {Link, Stack, IconButton, InputAdornment, TextField, Checkbox, FormControlLabel} from '@mui/material';
+import { Link, Stack, IconButton, InputAdornment, TextField, Checkbox, FormControlLabel } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // components
 import Iconify from '../../../components/iconify';
@@ -10,11 +10,11 @@ import Iconify from '../../../components/iconify';
 
 export default function LoginForm() {
   const navigate = useNavigate();
-  const [destino, setDestino] = useState("/dashboard")
+  const [destino, setDestino] = useState('/dashboard');
   const [showPassword, setShowPassword] = useState(false);
 
   const handleClick = () => {
-    navigate(destino , { replace: true });
+    navigate(destino, { replace: true });
   };
 
   return (
@@ -39,14 +39,14 @@ export default function LoginForm() {
       </Stack>
 
       <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>
-        <FormControlLabel control={<Checkbox name="remember" />} label="Remember Me" />
+        {/* <FormControlLabel control={<Checkbox name="remember" />} label="Mantenerse Registrado" /> */}
         <Link variant="subtitle2" underline="hover">
           Olvidaste tú contraseña?
         </Link>
       </Stack>
 
       <LoadingButton fullWidth size="large" type="submit" variant="contained" onClick={handleClick}>
-        Login
+        Iniciar Sesión
       </LoadingButton>
     </>
   );
