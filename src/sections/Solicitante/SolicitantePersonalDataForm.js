@@ -126,6 +126,7 @@ export default function SolicitantePersonalDataForm({ togleFormVisibility }) {
 
   const handleAvanzarClick = async () => {
     const isValid = validateForm();
+
     if (isValid) {
       if (formData.num_id.length !== 11) {
         setErrors((prevErrors) => ({

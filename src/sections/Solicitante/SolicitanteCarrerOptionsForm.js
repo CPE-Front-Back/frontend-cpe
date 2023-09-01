@@ -20,6 +20,22 @@ export default function SolicitanteCarrerOptionsForm({ personalData, options, on
   const [selectedOptions, setSelectedOptions] = useState(null);
   const [carreras, setCarreras] = useState([]);
 
+  const [errors, setErrors] = useState({
+    selectedOption: '',
+  });
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!selectedOptions) {
+      newErrors.selectedOption = 'Debe seleccionar al menos una carrera';
+    }
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
+  };
+
   useEffect(() => {
     getAllOfertasByCurso(5)
       .then((response) => {
@@ -58,36 +74,40 @@ export default function SolicitanteCarrerOptionsForm({ personalData, options, on
   };
 
   const handleSubmitClick = () => {
-    console.log('Datos del solicitante', personalData);
-    console.log('Solicitudes', selectedOptions);
+    const isValid = validateForm();
 
-    sendSolicitantePersonalData(personalData)
-      .then((response) => {
-        if (response.status === 200) {
-          console.log(response.data);
-          getSolicitanteById(personalData.num_id)
-            .then((response) => {
-              if (response.status === 200) {
-                insertarSolicitudes(selectedOptions, response.data.cod_solicitante)
-                  .then((response) => {
-                    if (response) {
-                      console.log('Insertadas: ', response);
-                      onEnviar();
-                    }
-                  })
-                  .catch((error) => {
-                    console.log('Error al insertar las solicitudes', error);
-                  });
-              }
-            })
-            .catch((error) => {
-              console.log('Error al obtener el solicitante insertado', error);
-            });
-        }
-      })
-      .catch((error) => {
-        console.log('Error al insertar solicitante.', error);
-      });
+    if (isValid) {
+      console.log('Datos del solicitante', personalData);
+      console.log('Solicitudes', selectedOptions);
+
+      sendSolicitantePersonalData(personalData)
+        .then((response) => {
+          if (response.status === 200) {
+            console.log(response.data);
+            getSolicitanteById(personalData.num_id)
+              .then((response) => {
+                if (response.status === 200) {
+                  insertarSolicitudes(selectedOptions, response.data.cod_solicitante)
+                    .then((response) => {
+                      if (response) {
+                        console.log('Insertadas: ', response);
+                        onEnviar();
+                      }
+                    })
+                    .catch((error) => {
+                      console.log('Error al insertar las solicitudes', error);
+                    });
+                }
+              })
+              .catch((error) => {
+                console.log('Error al obtener el solicitante insertado', error);
+              });
+          }
+        })
+        .catch((error) => {
+          console.log('Error al insertar solicitante.', error);
+        });
+    }
   };
 
   const handleOptionChange = (event, newValue, id) => {
@@ -146,7 +166,14 @@ export default function SolicitanteCarrerOptionsForm({ personalData, options, on
             onChange={(event, newValue) => {
               handleOptionChange(event, newValue, 'opcion1');
             }}
-            renderInput={(params) => <TextField {...params} label="Carrera en 1ra opción" />}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Carrera en 1ra opción"
+                error={!!errors.selectedOption}
+                helperText={errors.selectedOption}
+              />
+            )}
           />
         </Grid>
         <Grid item xs>
