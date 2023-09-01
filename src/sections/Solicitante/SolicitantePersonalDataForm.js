@@ -65,6 +65,57 @@ export default function SolicitantePersonalDataForm({ togleFormVisibility }) {
   const [firstLastName, setFirstLastName] = useState('');
   const [secondLastName, setSecondLastName] = useState('');
 
+  const [errors, setErrors] = useState({
+    num_id: '',
+    nomb_solicitante: '',
+    apell_solicitante: '',
+    secondLastName: '',
+    num_telefono: '',
+    provinciaSeleccionada: '',
+    municipioSeleccionado: '',
+    fuenteIngresoSeleccionada: '',
+  });
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!formData.num_id) {
+      newErrors.num_id = 'Carnet de identidad es requerido';
+    }
+
+    if (!formData.nomb_solicitante) {
+      newErrors.nomb_solicitante = 'Nombre(s) son requeridos';
+    }
+
+    if (!firstLastName) {
+      newErrors.apell_solicitante = 'Primer apellido requerido';
+    }
+
+    if (!secondLastName) {
+      newErrors.secondLastName = 'Segundo apellido requerido';
+    }
+
+    if (!formData.num_telefono) {
+      newErrors.num_telefono = 'Teléfono es requerido';
+    }
+
+    if (!provinciaSeleccionada) {
+      newErrors.provinciaSeleccionada = 'Provincia es requerida';
+    }
+
+    if (!municipioSeleccionado) {
+      newErrors.municipioSeleccionado = 'Municipio es requerido';
+    }
+
+    if (!fuenteIngresoSeleccionada) {
+      newErrors.fuenteIngresoSeleccionada = 'Fuente de Ingreso es requerida';
+    }
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleInputsChange = (event) => {
     const { name, value } = event.target;
     setFormData((prevData) => ({
@@ -74,7 +125,30 @@ export default function SolicitantePersonalDataForm({ togleFormVisibility }) {
   };
 
   const handleAvanzarClick = async () => {
-    await concatLastNames();
+    const isValid = validateForm();
+    if (isValid) {
+      if (formData.num_id.length !== 11) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          num_id: 'El carnet de identidad debe tener 11 dígitos.',
+        }));
+      } else if (!/^[0-9]*$/.test(formData.num_id)) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          num_id: 'El carnet de identidad debe contener solo números.',
+        }));
+      } else if (
+        !/^(\+53\s?)?[5-9]\d{7}$/.test(formData.num_telefono) &&
+        !/^(\+53\s?)?[5-9]\d{8}$/.test(formData.num_telefono)
+      ) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          num_telefono: 'El teléfono debe ser un número válido de 8 o 10 dígitos.',
+        }));
+      } else {
+        await concatLastNames();
+      }
+    }
   };
   const concatLastNames = () => {
     setFormData({
@@ -160,6 +234,8 @@ export default function SolicitantePersonalDataForm({ togleFormVisibility }) {
                       value={formData.num_id}
                       label="Carnet de identidad"
                       onChange={handleInputsChange}
+                      error={!!errors.num_id}
+                      helperText={errors.num_id}
                     />
                   </Grid>
                   <Grid item xs={12} sm={6} md={3}>
@@ -169,6 +245,8 @@ export default function SolicitantePersonalDataForm({ togleFormVisibility }) {
                       value={formData.nomb_solicitante}
                       label="Nombres"
                       onChange={handleInputsChange}
+                      error={!!errors.nomb_solicitante}
+                      helperText={errors.nomb_solicitante}
                     />
                   </Grid>
                   <Grid item xs={12} sm={6} md={3}>
@@ -180,6 +258,8 @@ export default function SolicitantePersonalDataForm({ togleFormVisibility }) {
                       onChange={(event) => {
                         setFirstLastName(event.target.value);
                       }}
+                      error={!!errors.apell_solicitante}
+                      helperText={errors.apell_solicitante}
                     />
                   </Grid>
                   <Grid item xs={12} sm={6} md={3}>
@@ -190,6 +270,8 @@ export default function SolicitantePersonalDataForm({ togleFormVisibility }) {
                       onChange={(event) => {
                         setSecondLastName(event.target.value);
                       }}
+                      error={!!errors.secondLastName}
+                      helperText={errors.secondLastName}
                     />
                   </Grid>
                 </Grid>
@@ -202,6 +284,8 @@ export default function SolicitantePersonalDataForm({ togleFormVisibility }) {
                       value={formData.num_telefono}
                       label="Teléfono"
                       onChange={handleInputsChange}
+                      error={!!errors.num_telefono}
+                      helperText={errors.num_telefono}
                     />
                   </Grid>
                   <Grid item xs={12} sm={6} md={1}>
@@ -214,7 +298,14 @@ export default function SolicitantePersonalDataForm({ togleFormVisibility }) {
                         setMunicipioSeleccionado(null);
                       }}
                       // sx={{ width: '100%' }}
-                      renderInput={(params) => <TextField {...params} label="Provincia" />}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Provincia"
+                          error={!!errors.provinciaSeleccionada}
+                          helperText={errors.provinciaSeleccionada}
+                        />
+                      )}
                     />
                   </Grid>
                   <Grid item xs={12} sm={6} md={1}>
@@ -230,7 +321,14 @@ export default function SolicitantePersonalDataForm({ togleFormVisibility }) {
                         }));
                       }}
                       // sx={{ width: '100%' }}
-                      renderInput={(params) => <TextField {...params} label="Municipio" />}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Municipio"
+                          error={!!errors.municipioSeleccionado}
+                          helperText={errors.municipioSeleccionado}
+                        />
+                      )}
                     />
                   </Grid>
                   <Grid item xs={12} sm={6} md={1}>
@@ -246,7 +344,14 @@ export default function SolicitantePersonalDataForm({ togleFormVisibility }) {
                         }));
                       }}
                       // sx={{ width: '100%' }}
-                      renderInput={(params) => <TextField {...params} label="Fuente de Ingreso" />}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Fuente de Ingreso"
+                          error={!!errors.fuenteIngresoSeleccionada}
+                          helperText={errors.fuenteIngresoSeleccionada}
+                        />
+                      )}
                     />
                   </Grid>
                 </Grid>
