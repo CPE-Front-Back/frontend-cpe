@@ -54,7 +54,7 @@ export default function SimpleLayout() {
             <Logo />
 
             <Stack direction="row" spacing={10} sx={{ flexGrow: 1 }}>
-              <Typography variant="h4" sx={{ mb: 5 }}>
+              <Typography variant="h4" sx={{ mb: 5, paddingTop: '12px' }}>
                 Bienvenido
               </Typography>
 
