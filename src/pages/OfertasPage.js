@@ -208,20 +208,11 @@ export default function OfertasPage() {
         <OfertasForm
           formData={formData}
           editMode={editMode}
-          onSubmit={(updatedData) => {
-            updateOferta(updatedData)
-              .then((response) => {
-                if (response.status === 200) {
-                  console.log(response.data);
-                }
-              })
-              .catch((error) => {
-                console.log('Error al updatear: ', error);
-              });
-            setIsFormVisible(false);
+          onSubmit={() => {
+            setRefresh(refresh + 1);
             setEditMode(false);
             setFormData({});
-            setRefresh(refresh + 1);
+            setIsFormVisible(false);
           }}
         />
       ) : (

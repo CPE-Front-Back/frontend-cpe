@@ -27,6 +27,7 @@ import {
   sendSolicitantePersonalData,
   updateSolicitantePersonalData,
 } from '../../Solicitante/store/store';
+import { UseActiveCourse } from '../Curso/context/ActiveCourseContext';
 import { getAllOfertasByCurso } from '../Ofertas/store/store';
 import { eliminarSolicitudesBySolicitante } from './store/store';
 
@@ -276,6 +277,8 @@ export default function SolicitudesFormDialog({ open, handleCloseClick, editMode
   // FINAL DE LA LOGICA PARA LOS DATOS DE LOS SOLICITANTES
 
   // INICIO DE LA LOGICA PARA LAS ******CARRERAS******
+  const { activeCourse } = UseActiveCourse();
+
   const [ofertas, setOfertas] = useState([]);
   const [ofertasFiltradas, setOfertasFiltradas] = useState([]);
   const [selectedOptions, setSelectedOptions] = useState(null);
@@ -288,7 +291,7 @@ export default function SolicitudesFormDialog({ open, handleCloseClick, editMode
   const [opcion5, setOpcion5] = useState(null);
 
   useEffect(() => {
-    getAllOfertasByCurso(5)
+    getAllOfertasByCurso(activeCourse.cod_curso)
       .then((response) => {
         console.log(response.data);
         if (response.status === 200) {

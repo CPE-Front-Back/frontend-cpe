@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import solicitudes from '../../_mock/solicitud';
 import SelectAutoWidth from '../../components/ComboBox/ComboBoxAutoWidth';
 import { getCarreras } from '../../utils/codificadores/codificadoresStore';
+import { UseActiveCourse } from '../GestionCurso/Curso/context/ActiveCourseContext';
 import { getAllOfertasByCurso } from '../GestionCurso/Ofertas/store/store';
 import { getSolicitanteById, insertarSolicitudes, sendSolicitantePersonalData } from './store/store';
 
@@ -19,6 +20,8 @@ export default function SolicitanteCarrerOptionsForm({ personalData, options, on
   const [ofertasFiltradas, setOfertasFiltradas] = useState([]);
   const [selectedOptions, setSelectedOptions] = useState(null);
   const [carreras, setCarreras] = useState([]);
+
+  const { activeCourse } = UseActiveCourse();
 
   const [errors, setErrors] = useState({
     selectedOption: '',
@@ -37,7 +40,7 @@ export default function SolicitanteCarrerOptionsForm({ personalData, options, on
   };
 
   useEffect(() => {
-    getAllOfertasByCurso(5)
+    getAllOfertasByCurso(activeCourse.cod_curso)
       .then((response) => {
         console.log(response.data);
         if (response.status === 200) {

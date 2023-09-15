@@ -17,7 +17,7 @@ import {
   Typography,
 } from '@mui/material';
 import { filter } from 'lodash';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import PropTypes from 'prop-types';
 import Iconify from '../components/iconify';
@@ -231,7 +231,7 @@ export default function SolicitudesPage(solicitantesConfirmados) {
     setFilterValue(event.target.value);
   };
 
-  const handleEditClick = () => {
+  const handleConfirmClick = () => {
     if (selected.length === 1) {
       const selectedItem = filteredSolicitudes.find((solicitud) => solicitud.cod_solicitante === selected[0]);
       if (selectedItem) {
@@ -428,7 +428,7 @@ export default function SolicitudesPage(solicitantesConfirmados) {
           },
         }}
       >
-        <MenuItem onClick={handleEditClick}>
+        <MenuItem onClick={handleConfirmClick}>
           <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
           Confirmar
         </MenuItem>

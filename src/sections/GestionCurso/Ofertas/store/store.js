@@ -19,3 +19,13 @@ export const updateOferta = async (oferta) => {
     throw error;
   }
 };
+
+export const insertarOferta = async (oferta) => {
+  try {
+    const response = await instance.post(`oferta/`, oferta);
+    return response;
+  } catch (error) {
+    console.log('Error en updateOferta', error);
+    throw error;
+  }
+};
