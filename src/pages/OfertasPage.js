@@ -20,20 +20,20 @@ import axios from 'axios';
 import { filter } from 'lodash';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { UseActiveCourse } from '../sections/GestionCurso/Curso/context/ActiveCourseContext';
+import { UseActiveCourse } from '../sections/gestionCurso/curso/context/ActiveCourseContext';
 
-import { getAllOfertasByCurso, updateOferta } from '../sections/GestionCurso/Ofertas/store/store';
+import { getAllOfertasByCurso, updateOferta } from '../sections/gestionCurso/ofertas/store/store';
 
 import Iconify from '../components/iconify';
 import Scrollbar from '../components/scrollbar';
-import OfertasForm from '../sections/GestionCurso/Ofertas/OfertasForm';
-import OfertasListHead from '../sections/GestionCurso/Ofertas/OfertasListHead';
-import OfertasListToolbar from '../sections/GestionCurso/Ofertas/OfertasListToolbar';
+import OfertasForm from '../sections/gestionCurso/ofertas/OfertasForm';
+import OfertasListHead from '../sections/gestionCurso/ofertas/OfertasListHead';
+import OfertasListToolbar from '../sections/gestionCurso/ofertas/OfertasListToolbar';
 import { getCarreras } from '../utils/codificadores/codificadoresStore';
 
 const TABLE_HEAD = [
   { id: 'nombCarrera', label: 'Carrera', alignRight: false },
-  { id: 'cantOfertas', label: 'Cantidad de Ofertas', alignRight: false },
+  { id: 'cantOfertas', label: 'Cantidad de ofertas', alignRight: false },
   { id: '' },
 ];
 

@@ -2,7 +2,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 // routes
 import Router from './routes';
-import { ActiveCourseProvider } from './sections/GestionCurso/Curso/context/ActiveCourseContext';
+import { ActiveCourseProvider } from './sections/gestionCurso/curso/context/ActiveCourseContext';
 // theme
 import ThemeProvider from './theme';
 // components

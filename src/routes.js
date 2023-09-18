@@ -13,8 +13,8 @@ import LoginPage from './pages/LoginPage';
 import Page404 from './pages/Page404';
 import ProductsPage from './pages/ProductsPage';
 import DashboardLogedInPage from './pages/DashboardLogedInPage';
-import SolicitanteCarrerOptionsForm from './sections/Solicitante/SolicitanteCarrerOptionsForm';
-import SolicitantePersonalDataForm from './sections/Solicitante/SolicitantePersonalDataForm';
+import SolicitanteCarrerOptionsForm from './sections/solicitante/SolicitanteCarrerOptionsForm';
+import SolicitantePersonalDataForm from './sections/solicitante/SolicitantePersonalDataForm';
 
 // ----------------------------------------------------------------------
 

@@ -2,8 +2,8 @@ import { LoadingButton } from '@mui/lab';
 import { Autocomplete, Button, Container, Grid, Stack, TextField, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import Iconify from '../components/iconify';
-import { UseActiveCourse } from '../sections/GestionCurso/Curso/context/ActiveCourseContext';
-import { activarCurso, desactivarCursos, getCursos, insertarCurso } from '../sections/GestionCurso/Curso/store/store';
+import { UseActiveCourse } from '../sections/gestionCurso/curso/context/ActiveCourseContext';
+import { activarCurso, desactivarCursos, getCursos, insertarCurso } from '../sections/gestionCurso/curso/store/store';
 
 export default function CursoPage() {
   const { activeCourse, setActiveCourse } = UseActiveCourse();

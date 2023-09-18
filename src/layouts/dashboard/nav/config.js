@@ -17,39 +17,39 @@ const navConfig = [
     icon: icon('ic_analytics'),
   },
   {
-    title: 'Gestión de Curso',
+    title: 'Gestión de curso',
     icon: icon('ic_analytics'),
     showSubItems: false,
     subItems: [
       {
-        title: 'Cambiar Curso Activo',
+        title: 'Cambiar curso activo',
         path: '/dashboard/curso',
         icon: icon('ic_analytics'),
       },
       {
-        title: 'Actualizar Capacidades',
+        title: 'Actualizar capacidades',
         path: '/dashboard/appa',
         icon: icon('ic_analytics'),
       },
       {
-        title: 'Actualizar Ofertas',
+        title: 'Actualizar ofertas',
         path: '/dashboard/offers',
         icon: icon('ic_analytics'),
       },
       {
-        title: 'Actualizar Solicitudes Sin Confirmar',
+        title: 'Actualizar solicitudes sin confirmar',
         path: '/dashboard/solicitudesSinConfirmar',
         icon: icon('ic_analytics'),
       },
       {
-        title: 'Actualizar Solicitudes Confirmadas',
+        title: 'Actualizar solicitudes confirmadas',
         path: '/dashboard/solicitudesConfirmadas',
         icon: icon('ic_analytics'),
       },
     ],
   },
   {
-    title: 'Gestión de Codificadores',
+    title: 'Gestión de codificadores',
     path: '/dashboard/apps',
     icon: icon('ic_analytics'),
   },

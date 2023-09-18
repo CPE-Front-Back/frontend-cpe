@@ -7,7 +7,7 @@ import { fToNow } from '../../../utils/formatTime';
 // components
 import Iconify from '../../../components/iconify';
 import Scrollbar from '../../../components/scrollbar';
-import { UseActiveCourse } from '../../GestionCurso/Curso/context/ActiveCourseContext';
+import { UseActiveCourse } from '../../gestionCurso/curso/context/ActiveCourseContext';
 import {
   getCantCarrerasAsigPrimeraVueltaCurso,
   getCantCarrerasAsigSegundaVueltaCurso,

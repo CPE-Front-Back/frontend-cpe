@@ -6,8 +6,8 @@ import { useNavigate } from 'react-router-dom';
 import solicitudes from '../../_mock/solicitud';
 import SelectAutoWidth from '../../components/ComboBox/ComboBoxAutoWidth';
 import { getCarreras } from '../../utils/codificadores/codificadoresStore';
-import { UseActiveCourse } from '../GestionCurso/Curso/context/ActiveCourseContext';
-import { getAllOfertasByCurso } from '../GestionCurso/Ofertas/store/store';
+import { UseActiveCourse } from '../gestionCurso/curso/context/ActiveCourseContext';
+import { getAllOfertasByCurso } from '../gestionCurso/ofertas/store/store';
 import { getSolicitanteById, insertarSolicitudes, sendSolicitantePersonalData } from './store/store';
 
 SolicitanteCarrerOptionsForm.propTypes = {

@@ -22,12 +22,12 @@ import { Helmet } from 'react-helmet-async';
 import PropTypes from 'prop-types';
 import Iconify from '../components/iconify';
 import Scrollbar from '../components/scrollbar';
-import { UseActiveCourse } from '../sections/GestionCurso/Curso/context/ActiveCourseContext';
-import { getAllOfertasByCurso } from '../sections/GestionCurso/Ofertas/store/store';
-import SolicitudesFormDialog from '../sections/GestionCurso/Solicitudes/SolicitudesFormDialog';
-import SolicitudesListHead from '../sections/GestionCurso/Solicitudes/SolicitudesListHead';
-import SolicitudesListToolbar from '../sections/GestionCurso/Solicitudes/SolicitudesListToolbar';
-import { getSolicitantesByCurso, getSolicitudesByCurso } from '../sections/GestionCurso/Solicitudes/store/store';
+import { UseActiveCourse } from '../sections/gestionCurso/curso/context/ActiveCourseContext';
+import { getAllOfertasByCurso } from '../sections/gestionCurso/ofertas/store/store';
+import SolicitudesFormDialog from '../sections/gestionCurso/solicitudes/SolicitudesFormDialog';
+import SolicitudesListHead from '../sections/gestionCurso/solicitudes/SolicitudesListHead';
+import SolicitudesListToolbar from '../sections/gestionCurso/solicitudes/SolicitudesListToolbar';
+import { getSolicitantesByCurso, getSolicitudesByCurso } from '../sections/gestionCurso/solicitudes/store/store';
 import { getCarreras } from '../utils/codificadores/codificadoresStore';
 
 const TABLE_HEAD = [

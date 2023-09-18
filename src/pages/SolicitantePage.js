@@ -5,9 +5,9 @@ import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { AppWidgetSummary } from '../sections/@dashboard/app';
-import Header from '../sections/Solicitante/Header';
-import SolicitanteCarrerOptionsForm from '../sections/Solicitante/SolicitanteCarrerOptionsForm';
-import SolicitantePersonalDataForm from '../sections/Solicitante/SolicitantePersonalDataForm';
+import Header from '../sections/solicitante/Header';
+import SolicitanteCarrerOptionsForm from '../sections/solicitante/SolicitanteCarrerOptionsForm';
+import SolicitantePersonalDataForm from '../sections/solicitante/SolicitantePersonalDataForm';
 
 const StyledRoot = styled('div')(({ theme }) => ({
   [theme.breakpoints.up('md')]: {

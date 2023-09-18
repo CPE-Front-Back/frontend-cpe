@@ -2,7 +2,7 @@ import { Autocomplete, Box, Button, Grid, TextField, Typography } from '@mui/mat
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import { getCarreras } from '../../../utils/codificadores/codificadoresStore';
-import { UseActiveCourse } from '../Curso/context/ActiveCourseContext';
+import { UseActiveCourse } from '../curso/context/ActiveCourseContext';
 import { getAllOfertasByCurso, insertarOferta, updateOferta } from './store/store';
 
 OfertasForm.propTypes = {

@@ -7,8 +7,8 @@ import { Helmet } from 'react-helmet-async';
 // components
 // sections
 import CourseStatisticsViewer from '../sections/@dashboard/app/CourseStatisticsViewer';
-import { UseActiveCourse } from '../sections/GestionCurso/Curso/context/ActiveCourseContext';
-import { getActiveCourse } from '../sections/GestionCurso/Curso/store/store';
+import { UseActiveCourse } from '../sections/gestionCurso/curso/context/ActiveCourseContext';
+import { getActiveCourse } from '../sections/gestionCurso/curso/store/store';
 
 // ----------------------------------------------------------------------
 

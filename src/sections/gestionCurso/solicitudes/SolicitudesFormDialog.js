@@ -26,9 +26,9 @@ import {
   insertarSolicitudes,
   sendSolicitantePersonalData,
   updateSolicitantePersonalData,
-} from '../../Solicitante/store/store';
-import { UseActiveCourse } from '../Curso/context/ActiveCourseContext';
-import { getAllOfertasByCurso } from '../Ofertas/store/store';
+} from '../../solicitante/store/store';
+import { UseActiveCourse } from '../curso/context/ActiveCourseContext';
+import { getAllOfertasByCurso } from '../ofertas/store/store';
 import { eliminarSolicitudesBySolicitante } from './store/store';
 
 const Transition = forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);

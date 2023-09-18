@@ -14,7 +14,7 @@ import Scrollbar from '../../../components/scrollbar';
 import NavSection from '../../../components/nav-section';
 //
 import navConfig from './config';
-import { asignar1raVuelta } from '../../../sections/Procesamiento/store/store';
+import { asignar1raVuelta } from '../../../sections/procesamiento/store/store';
 
 // ----------------------------------------------------------------------
 
