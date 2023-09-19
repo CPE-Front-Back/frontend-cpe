@@ -40,12 +40,3 @@ export const getFuentesIngreso = async () => {
   }
 };
 
-export const getCarreras = async () => {
-  try {
-    const response = await instance.get(`carrera/`);
-    return response;
-  } catch (error) {
-    console.log('Error en getCarreras', error);
-    throw error;
-  }
-};

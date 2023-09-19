@@ -17,29 +17,21 @@ import {
   Typography,
 } from '@mui/material';
 import { filter } from 'lodash';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import PropTypes from 'prop-types';
 import Iconify from '../components/iconify';
 import Scrollbar from '../components/scrollbar';
-import { getCarreras } from '../sections/gestionCodificadores/carreras/store/store';
-import { UseActiveCourse } from '../sections/gestionCurso/curso/context/ActiveCourseContext';
-import { getAllOfertasByCurso } from '../sections/gestionCurso/ofertas/store/store';
-import SolicitudesFormDialog from '../sections/gestionCurso/solicitudes/SolicitudesFormDialog';
-import SolicitudesListHead from '../sections/gestionCurso/solicitudes/SolicitudesListHead';
-import SolicitudesListToolbar from '../sections/gestionCurso/solicitudes/SolicitudesListToolbar';
-import { getSolicitantesByCurso, getSolicitudesByCurso } from '../sections/gestionCurso/solicitudes/store/store';
+import ClassroomsForm from '../sections/gestionCodificadores/aulas/ClassroomsForm';
+import ClassroomsListHead from '../sections/gestionCodificadores/aulas/ClassroomsListHead';
+import ClassroomsListToolbar from '../sections/gestionCodificadores/aulas/ClassroomsListToolbar';
+import { getClassrooms } from '../sections/gestionCodificadores/aulas/store/store';
+import { getBuildings } from '../sections/gestionCodificadores/edificios/store/store';
+import { getFaculties } from '../sections/gestionCodificadores/facultades/store/store';
 
 const TABLE_HEAD = [
-  { id: 'num_id', label: 'No. Identidad', alignRight: false },
-  { id: 'nomb_solicitante', label: 'Nombre', alignRight: false },
-  { id: 'firstLastName', label: '1er Apellido', alignRight: false },
-  { id: 'SecondLastName', label: '2do Apellido', alignRight: false },
-  { id: 'opcion1', label: 'Opción 1', alignRight: false },
-  { id: 'opcion2', label: 'Opción 2', alignRight: false },
-  { id: 'opcion3', label: 'Opción 3', alignRight: false },
-  { id: 'opcion4', label: 'Opción 4', alignRight: false },
-  { id: 'opcion5', label: 'Opción 5', alignRight: false },
+  { id: 'nomb_aula', label: 'Aula', alignRight: false },
+  { id: 'nomb_edif', label: 'Edificio', alignRight: false },
+  { id: 'nomb_facultad', label: 'Facultad', alignRight: false },
   { id: '' },
 ];
 
@@ -67,113 +59,78 @@ function applySortFilter(array, comparator, query) {
     return a[1] - b[1];
   });
   if (query) {
-    return filter(array, (_offer) => _offer.nomb_solicitante.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+    return filter(
+      array,
+      (_calssroom) => String(_calssroom.nomb_aula).toLowerCase().indexOf(String(query).toLowerCase()) !== -1
+    );
   }
   return stabilizedThis.map((el) => el[0]);
 }
 
-SolicitudesPage.propTypes = {
-  solicitantesConfirmados: PropTypes.bool,
-};
-export default function SolicitudesPage(solicitantesConfirmados) {
+export default function ClassroomsPage() {
   const [openInRowMenu, setOpenInRowMenu] = useState(null);
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
   const [selected, setSelected] = useState([]);
-  const [orderBy, setOrderBy] = useState('name');
+  const [orderBy, setOrderBy] = useState('nomb_aula');
   const [filterValue, setFilterValue] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [isFormVisible, setIsFormVisible] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({});
-  const [isFormDialogVisible, setIsFormDialogVisible] = useState(false);
   const [refresh, setRefresh] = useState(0);
 
-  const { activeCourse } = UseActiveCourse();
-  const [SOLICITANTESSLIST, setSOLICITANTESSLIST] = useState([]);
-  const [SOLICITUDESLIST, setSOLICITUDESLIST] = useState([]);
-  const [OFERTASLIST, setOFERTASLIST] = useState([]);
-  const [CARRERASLIST, setCARRERASLIST] = useState([]);
+  const [CLASSROOMSLIST, setCLASSROOMSLIST] = useState([]);
+  const [BUILDINGSLIST, setBUILDINGSLIST] = useState([]);
+  const [FACULTIESLIST, setFACULTIESLIST] = useState([]);
 
   useEffect(() => {
-    getSolicitantesByCurso(activeCourse.cod_curso, solicitantesConfirmados.solicitantesConfirmados)
-      .then((response) => {
-        if (response.status === 200 && SOLICITUDESLIST.length > 0 && OFERTASLIST.length > 0) {
-          console.log(response.data);
-          const updatedSOLICITANTESLIST = response.data.map((solicitante) => {
-            const relatedSolicitudes = SOLICITUDESLIST.filter(
-              (solicitud) => solicitud.cod_solicitante === solicitante.cod_solicitante
-            );
-
-            const updatedOptions = Array.from({ length: 5 }, (_, index) => {
-              const optionIndex = index + 1;
-              const relatedSolicitud = relatedSolicitudes.find((solicitud) => solicitud.opcion === optionIndex);
-              if (relatedSolicitud) {
-                const relatedOferta = OFERTASLIST.find((oferta) => oferta.cod_oferta === relatedSolicitud.cod_oferta);
-                return relatedOferta ? relatedOferta.nomb_carrera : 'no solicitada';
-              }
-              return 'no solicitada';
-            });
-
-            return {
-              ...solicitante,
-              opcion1: updatedOptions[0],
-              opcion2: updatedOptions[1],
-              opcion3: updatedOptions[2],
-              opcion4: updatedOptions[3],
-              opcion5: updatedOptions[4],
-            };
-          });
-
-          setSOLICITANTESSLIST(updatedSOLICITANTESLIST);
-        }
-      })
-      .catch((error) => {
-        console.log('Error al cargar solicitantes en curso', error);
-      });
-  }, [SOLICITUDESLIST, OFERTASLIST, solicitantesConfirmados]);
-
-  useEffect(() => {
-    getSolicitudesByCurso(activeCourse.cod_curso)
+    getFaculties()
       .then((response) => {
         if (response.status === 200) {
-          setSOLICITUDESLIST(response.data);
+          setFACULTIESLIST(response.data);
         }
       })
       .catch((error) => {
-        console.log('Error al cargar las solicitudes', error);
+        console.log('Error al cargar las facultades', error);
       });
   }, []);
 
   useEffect(() => {
-    getAllOfertasByCurso(activeCourse.cod_curso)
+    getBuildings()
       .then((response) => {
         if (response.status === 200) {
-          const updatedOfertasList = response.data.map((oferta) => {
-            const relatedCarrera = CARRERASLIST.find((carrera) => carrera.cod_carrera === oferta.cod_carrera);
-            return {
-              ...oferta,
-              nomb_carrera: relatedCarrera ? relatedCarrera.nomb_carrera : 'Unknown', // Replace 'Unknown' with a default name
-            };
-          });
-          setOFERTASLIST(updatedOfertasList);
+          setBUILDINGSLIST(response.data);
         }
       })
       .catch((error) => {
-        console.log('Error al cargar ofertas: ', error);
-      });
-  }, [CARRERASLIST]);
-
-  useEffect(() => {
-    getCarreras()
-      .then((response) => {
-        if (response.status === 200) {
-          setCARRERASLIST(response.data);
-        }
-      })
-      .catch((error) => {
-        console.log('Error al cargar las carreras', error);
+        console.log('Error al cargar los edificios', error);
       });
   }, []);
+
+  useEffect(() => {
+    getClassrooms()
+      .then((response) => {
+        if (response.status === 200 && BUILDINGSLIST.length > 0 && FACULTIESLIST.length > 0) {
+          const updatedClassroomsList = response.data.map((classroom) => {
+            const relatedBuilding = BUILDINGSLIST.find((building) => building.cod_edif === classroom.cod_edif);
+
+            const relatedFaculty = FACULTIESLIST.find((faculty) => faculty.cod_facultad === relatedBuilding.facultad);
+
+            return {
+              ...classroom,
+              nomb_edif: relatedBuilding ? relatedBuilding.nomb_edif : 'Unknown',
+              nomb_facultad: relatedFaculty ? relatedFaculty.nomb_facultad : 'Unknown',
+            };
+          });
+
+          setCLASSROOMSLIST(updatedClassroomsList);
+        }
+      })
+      .catch((error) => {
+        console.log('Error al cargar las aulas', error);
+      });
+  }, [BUILDINGSLIST, FACULTIESLIST]);
 
   const handleOpenInRowMenu = (event) => {
     setOpenInRowMenu(event.currentTarget);
@@ -191,19 +148,19 @@ export default function SolicitudesPage(solicitantesConfirmados) {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = SOLICITANTESSLIST.map((s) => s.cod_solicitante);
+      const newSelecteds = CLASSROOMSLIST.map((n) => n.cod_aula);
       setSelected(newSelecteds);
       return;
     }
     setSelected([]);
   };
 
-  const handleSelectClick = (event, cod_solicitante) => {
-    const selectedIndex = selected.indexOf(cod_solicitante);
+  const handleSelectClick = (event, classroomCode) => {
+    const selectedIndex = selected.indexOf(classroomCode);
     let newSelected = [];
     if (selectedIndex === -1) {
       // not found, add element to selected list
-      newSelected = newSelected.concat(selected, cod_solicitante);
+      newSelected = newSelected.concat(selected, classroomCode);
     } else if (selectedIndex === 0) {
       // found at start, remove first element
       newSelected = newSelected.concat(selected.slice(1));
@@ -231,68 +188,67 @@ export default function SolicitudesPage(solicitantesConfirmados) {
     setFilterValue(event.target.value);
   };
 
-  const handleConfirmClick = () => {
+  const handleEditClick = () => {
     if (selected.length === 1) {
-      const selectedItem = filteredSolicitudes.find((solicitud) => solicitud.cod_solicitante === selected[0]);
+      const selectedItem = filteredClassrooms.find((classroom) => classroom.cod_aula === selected[0]);
       if (selectedItem) {
-        setIsFormDialogVisible(true);
+        handleCloseInRowMenu();
+        setIsFormVisible(true);
         setEditMode(true);
         setFormData(selectedItem);
-        handleCloseInRowMenu();
       }
     }
   };
 
-  const handleRowClick = (codSol) => {
-    const newSelected = [codSol];
+  const handleRowClick = (classroomCode) => {
+    const newSelected = [classroomCode];
     setSelected(newSelected);
   };
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - SOLICITANTESSLIST.length) : 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - CLASSROOMSLIST.length) : 0;
 
-  const filteredSolicitudes = applySortFilter(SOLICITANTESSLIST, getComparator(order, orderBy), filterValue);
+  const filteredClassrooms = applySortFilter(CLASSROOMSLIST, getComparator(order, orderBy), filterValue);
 
-  const isNotFound = !filteredSolicitudes.length && !!filterValue;
+  const isNotFound = !filteredClassrooms.length && !!filterValue;
 
   return (
     <>
       <Helmet>
-        <title> Solicitudes | CPE </title>
+        <title> Aulas | CPE </title>
       </Helmet>
 
-      {isFormDialogVisible ? (
-        <SolicitudesFormDialog
-          open={isFormDialogVisible}
-          handleCloseClick={() => setIsFormDialogVisible(false)}
-          Data={formData}
+      {isFormVisible ? (
+        <ClassroomsForm
+          formData={formData}
           editMode={editMode}
-          onSubmit={(data) => {
-            setIsFormDialogVisible(false);
+          onSubmit={() => {
+            setRefresh(refresh + 1);
             setEditMode(false);
             setFormData({});
+            setIsFormVisible(false);
           }}
         />
       ) : (
         <Container>
           <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
             <Typography variant="h4" gutterBottom>
-              {solicitantesConfirmados ? 'Solicitudes Confirmadas' : 'Solicitudes Sin Confirmar'}
+              Aulas
             </Typography>
             <Button
               variant="contained"
               startIcon={<Iconify icon="eva:plus-fill" />}
               onClick={() => {
-                setIsFormDialogVisible(true);
+                setIsFormVisible(true);
                 setEditMode(false);
                 setFormData({});
               }}
             >
-              Registrar Solicitud
+              Registrar Aula
             </Button>
           </Stack>
 
           <Card>
-            <SolicitudesListToolbar
+            <ClassroomsListToolbar
               numSelected={selected.length}
               filterValue={filterValue}
               onFilterValue={handleFilterByValue}
@@ -301,61 +257,41 @@ export default function SolicitudesPage(solicitantesConfirmados) {
             <Scrollbar>
               <TableContainer>
                 <Table size="small">
-                  <SolicitudesListHead
+                  <ClassroomsListHead
                     order={order}
                     orderBy={orderBy}
                     headLabel={TABLE_HEAD}
-                    rowCount={SOLICITANTESSLIST.length}
+                    rowCount={CLASSROOMSLIST.length}
                     numSelected={selected.length}
                     onRequestSort={handleRequestSort}
                     onSelectAllClick={handleSelectAllClick}
                   />
                   <TableBody>
-                    {filteredSolicitudes.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                      const {
-                        cod_solicitante,
-                        num_id,
-                        nomb_solicitante,
-                        apell_solicitante,
-                        cod_municipio,
-                        fuente_ingreso,
-                        num_telefono,
-                        confirmado,
-                        eliminado,
-                        opcion1,
-                        opcion2,
-                        opcion3,
-                        opcion4,
-                        opcion5,
-                      } = row;
-                      const [firstLastName, SecondLastName] = apell_solicitante.split(' ');
-                      const selectedSolicitud = selected.indexOf(cod_solicitante) !== -1;
+                    {filteredClassrooms.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                      const { cod_aula, nomb_aula, cod_edif, nomb_edif, nomb_facultad, eliminada } = row;
+                      const selectedClassroom = selected.indexOf(cod_aula) !== -1;
 
                       return (
                         <TableRow
-                          onClick={() => handleRowClick(cod_solicitante)}
+                          onClick={() => handleRowClick(cod_aula)}
                           hover
-                          key={cod_solicitante}
+                          key={cod_aula}
                           tabIndex={-1}
                           role="checkbox"
-                          selected={selectedSolicitud}
+                          selected={selectedClassroom}
                         >
                           <TableCell padding="checkbox">
                             <Checkbox
-                              checked={selectedSolicitud}
-                              onChange={(event) => handleSelectClick(event, cod_solicitante)}
+                              checked={selectedClassroom}
+                              onChange={(event) => handleSelectClick(event, cod_aula)}
                             />
                           </TableCell>
 
-                          <TableCell align="left">{num_id}</TableCell>
-                          <TableCell align="left">{nomb_solicitante}</TableCell>
-                          <TableCell align="left">{firstLastName}</TableCell>
-                          <TableCell align="left">{SecondLastName}</TableCell>
-                          <TableCell align="left">{opcion1}</TableCell>
-                          <TableCell align="left">{opcion2}</TableCell>
-                          <TableCell align="left">{opcion3}</TableCell>
-                          <TableCell align="left">{opcion4}</TableCell>
-                          <TableCell align="left">{opcion5}</TableCell>
+                          <TableCell align="left">{nomb_aula}</TableCell>
+
+                          <TableCell align="left">{nomb_edif}</TableCell>
+
+                          <TableCell align="left">{nomb_facultad}</TableCell>
 
                           <TableCell align="right">
                             <IconButton size="large" color="inherit" onClick={handleOpenInRowMenu}>
@@ -401,7 +337,7 @@ export default function SolicitudesPage(solicitantesConfirmados) {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={SOLICITANTESSLIST.length}
+            count={CLASSROOMSLIST.length}
             rowsPerPage={rowsPerPage}
             page={page}
             labelRowsPerPage={'Filas por página'}
@@ -410,6 +346,7 @@ export default function SolicitudesPage(solicitantesConfirmados) {
           />
         </Container>
       )}
+
       <Popover
         open={Boolean(openInRowMenu)}
         anchorEl={openInRowMenu}
@@ -428,9 +365,9 @@ export default function SolicitudesPage(solicitantesConfirmados) {
           },
         }}
       >
-        <MenuItem onClick={handleConfirmClick}>
+        <MenuItem onClick={handleEditClick}>
           <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
-          Confirmar
+          Editar
         </MenuItem>
 
         <MenuItem sx={{ color: 'error.main' }}>

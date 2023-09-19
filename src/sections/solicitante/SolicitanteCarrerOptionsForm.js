@@ -5,7 +5,8 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import solicitudes from '../../_mock/solicitud';
 import SelectAutoWidth from '../../components/ComboBox/ComboBoxAutoWidth';
-import { getCarreras } from '../../utils/codificadores/codificadoresStore';
+
+import { getCarreras } from '../gestionCodificadores/carreras/store/store';
 import { UseActiveCourse } from '../gestionCurso/curso/context/ActiveCourseContext';
 import { getAllOfertasByCurso } from '../gestionCurso/ofertas/store/store';
 import { getSolicitanteById, insertarSolicitudes, sendSolicitantePersonalData } from './store/store';

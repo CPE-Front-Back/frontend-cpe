@@ -19,8 +19,8 @@ import {
   getMunicipiosPorProvincia,
   getMunicipiosPorID,
   getProvincias,
-  getCarreras,
 } from '../../../utils/codificadores/codificadoresStore';
+import { getCarreras } from '../../gestionCodificadores/carreras/store/store';
 import {
   getSolicitanteById,
   insertarSolicitudes,

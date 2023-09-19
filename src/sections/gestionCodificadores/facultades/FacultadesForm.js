@@ -1,49 +1,49 @@
 import { Box, Button, Grid, TextField, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
-import OfertasForm from '../../gestionCurso/ofertas/OfertasForm';
-import { insertCarrera, updateCarrera } from './store/store';
+import { UseActiveCourse } from '../../gestionCurso/curso/context/ActiveCourseContext';
+import { insertarOferta } from '../../gestionCurso/ofertas/store/store';
+import { insertFaculty, updateFaculty } from './store/store';
 
-OfertasForm.propTypes = {
+FacultadesForm.propTypes = {
   editMode: PropTypes.bool,
   formData: PropTypes.object,
   onSubmit: PropTypes.func,
 };
-export default function CarrerasForm({ editMode, formData, onSubmit }) {
-  const { cod_carrera, nomb_carrera } = formData;
-  const [codCarreraInput, setCodCarreraInput] = useState(cod_carrera);
-  const [nombCarreraInput, setNombCarreraInput] = useState(nomb_carrera);
+export default function FacultadesForm({ editMode, formData, onSubmit }) {
+  const { cod_facultad, nomb_facultad, eliminada } = formData;
+  const [facultyNameInput, setFacultyNameInput] = useState(nomb_facultad);
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
     const updatedData = {
-      cod_carrera: codCarreraInput,
-      nomb_carrera: nombCarreraInput,
+      cod_facultad: formData.cod_facultad,
+      nomb_facultad: facultyNameInput,
       eliminada: false,
     };
 
     if (editMode) {
-      updateCarrera(updatedData)
+      updateFaculty(updatedData)
         .then((response) => {
           if (response.status === 200) {
             console.log(response.data);
           }
         })
         .catch((error) => {
-          console.log('Error al registrar la carrera: ', error);
+          console.log('Error al modificar la facultad: ', error);
         });
     } else {
-      insertCarrera(updatedData)
+      insertFaculty(updatedData)
         .then((response) => {
           if (response.status === 200) {
             console.log(response.data);
           }
         })
         .catch((error) => {
-          console.log('Error al modificar la carrera: ', error);
+          console.log('Error al registrar la facultad: ', error);
         });
     }
+
     onSubmit();
   };
 
@@ -54,29 +54,17 @@ export default function CarrerasForm({ editMode, formData, onSubmit }) {
         sx={{ backgroundColor: 'white', marginTop: '80px', pr: '100px', pl: '100px', pb: '20px', pt: '20px' }}
       >
         <Typography variant="h4" sx={{ pb: '10px' }}>
-          {editMode ? 'Editar Carrera' : 'Registrar Carrera'}
+          {editMode ? 'Editar Facultad' : 'Registrar Facultad'}
         </Typography>
+
         <Grid container spacing={2}>
-          <Grid item xs>
-            <TextField
-              type="number"
-              label="Codigo"
-              variant="outlined"
-              value={codCarreraInput}
-              onChange={(event) => setCodCarreraInput(event.target.value)}
-              required
-            />
-          </Grid>
-
-          <Grid item xs />
-
           <Grid item xs>
             <TextField
               type="text"
               label="Nombre"
               variant="outlined"
-              value={nombCarreraInput}
-              onChange={(event) => setNombCarreraInput(event.target.value)}
+              value={facultyNameInput}
+              onChange={(event) => setFacultyNameInput(event.target.value)}
               required
             />
           </Grid>

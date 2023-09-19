@@ -1,7 +1,8 @@
 import { Autocomplete, Box, Button, Grid, TextField, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
-import { getCarreras } from '../../../utils/codificadores/codificadoresStore';
+
+import { getCarreras } from '../../gestionCodificadores/carreras/store/store';
 import { UseActiveCourse } from '../curso/context/ActiveCourseContext';
 import { getAllOfertasByCurso, insertarOferta, updateOferta } from './store/store';
 
@@ -102,7 +103,7 @@ export default function OfertasForm({ editMode, formData, onSubmit }) {
           }
         })
         .catch((error) => {
-          console.log('Error al insertar la oferta: ', error);
+          console.log('Error al registrar la oferta: ', error);
         });
 
       // console.log('la oferta a insertar: ', updatedData);
@@ -128,7 +129,7 @@ export default function OfertasForm({ editMode, formData, onSubmit }) {
               onChange={(event, newValue) => {
                 setSelectedCarrera(newValue);
               }}
-              disabled={editMode}
+              readOnly={editMode}
               renderInput={(params) => <TextField {...params} label="Carreras disponibles" />}
             />
           </Grid>

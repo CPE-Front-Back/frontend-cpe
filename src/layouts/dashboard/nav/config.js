@@ -50,8 +50,35 @@ const navConfig = [
   },
   {
     title: 'Gestión de codificadores',
-    path: '/dashboard/apps',
     icon: icon('ic_analytics'),
+    showSubItems: false,
+    subItems: [
+      {
+        title: 'Actualizar aulas',
+        path: '/dashboard/classrooms',
+        icon: icon('ic_analytics'),
+      },
+      {
+        title: 'Actualizar carreras',
+        path: '/dashboard/careers',
+        icon: icon('ic_analytics'),
+      },
+      {
+        title: 'Actualizar edificios',
+        path: '/dashboard/buildings',
+        icon: icon('ic_analytics'),
+      },
+      {
+        title: 'Actualizar facultades',
+        path: '/dashboard/faculties',
+        icon: icon('ic_analytics'),
+      },
+      {
+        title: 'Actualizar fuentes de Ingreso',
+        path: '/dashboard/incomeSources',
+        icon: icon('ic_analytics'),
+      },
+    ],
   },
   {
     title: 'Procesamiento',
@@ -118,12 +145,12 @@ const navConfig = [
       },
     ],
   },
-  /* {
+  {
     title: 'user',
     path: '/dashboard/user',
     icon: icon('ic_user'),
   },
-  {
+  /* {
     title: 'product',
     path: '/dashboard/products',
     icon: icon('ic_cart'),

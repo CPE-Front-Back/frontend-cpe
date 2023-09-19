@@ -17,29 +17,19 @@ import {
   Typography,
 } from '@mui/material';
 import { filter } from 'lodash';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import PropTypes from 'prop-types';
 import Iconify from '../components/iconify';
 import Scrollbar from '../components/scrollbar';
+import CarrerasForm from '../sections/gestionCodificadores/carreras/CarrerasForm';
+import CarrerasListHead from '../sections/gestionCodificadores/carreras/CarrerasListHead';
+import CarrerasListToolbar from '../sections/gestionCodificadores/carreras/CarrerasListToolbar';
 import { getCarreras } from '../sections/gestionCodificadores/carreras/store/store';
 import { UseActiveCourse } from '../sections/gestionCurso/curso/context/ActiveCourseContext';
-import { getAllOfertasByCurso } from '../sections/gestionCurso/ofertas/store/store';
-import SolicitudesFormDialog from '../sections/gestionCurso/solicitudes/SolicitudesFormDialog';
-import SolicitudesListHead from '../sections/gestionCurso/solicitudes/SolicitudesListHead';
-import SolicitudesListToolbar from '../sections/gestionCurso/solicitudes/SolicitudesListToolbar';
-import { getSolicitantesByCurso, getSolicitudesByCurso } from '../sections/gestionCurso/solicitudes/store/store';
 
 const TABLE_HEAD = [
-  { id: 'num_id', label: 'No. Identidad', alignRight: false },
-  { id: 'nomb_solicitante', label: 'Nombre', alignRight: false },
-  { id: 'firstLastName', label: '1er Apellido', alignRight: false },
-  { id: 'SecondLastName', label: '2do Apellido', alignRight: false },
-  { id: 'opcion1', label: 'Opción 1', alignRight: false },
-  { id: 'opcion2', label: 'Opción 2', alignRight: false },
-  { id: 'opcion3', label: 'Opción 3', alignRight: false },
-  { id: 'opcion4', label: 'Opción 4', alignRight: false },
-  { id: 'opcion5', label: 'Opción 5', alignRight: false },
+  { id: 'cod_carrera', label: 'Código', alignRight: false },
+  { id: 'nomb_carrera', label: 'Nombre carrera', alignRight: false },
   { id: '' },
 ];
 
@@ -67,101 +57,28 @@ function applySortFilter(array, comparator, query) {
     return a[1] - b[1];
   });
   if (query) {
-    return filter(array, (_offer) => _offer.nomb_solicitante.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+    return filter(
+      array,
+      (_career) => String(_career.nomb_carrera).toLowerCase().indexOf(String(query).toLowerCase()) !== -1
+    );
   }
   return stabilizedThis.map((el) => el[0]);
 }
-
-SolicitudesPage.propTypes = {
-  solicitantesConfirmados: PropTypes.bool,
-};
-export default function SolicitudesPage(solicitantesConfirmados) {
+export default function CarrerasPage() {
   const [openInRowMenu, setOpenInRowMenu] = useState(null);
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
   const [selected, setSelected] = useState([]);
-  const [orderBy, setOrderBy] = useState('name');
+  const [orderBy, setOrderBy] = useState('nomb_carrera');
   const [filterValue, setFilterValue] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [isFormVisible, setIsFormVisible] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({});
-  const [isFormDialogVisible, setIsFormDialogVisible] = useState(false);
   const [refresh, setRefresh] = useState(0);
-
   const { activeCourse } = UseActiveCourse();
-  const [SOLICITANTESSLIST, setSOLICITANTESSLIST] = useState([]);
-  const [SOLICITUDESLIST, setSOLICITUDESLIST] = useState([]);
-  const [OFERTASLIST, setOFERTASLIST] = useState([]);
+
   const [CARRERASLIST, setCARRERASLIST] = useState([]);
-
-  useEffect(() => {
-    getSolicitantesByCurso(activeCourse.cod_curso, solicitantesConfirmados.solicitantesConfirmados)
-      .then((response) => {
-        if (response.status === 200 && SOLICITUDESLIST.length > 0 && OFERTASLIST.length > 0) {
-          console.log(response.data);
-          const updatedSOLICITANTESLIST = response.data.map((solicitante) => {
-            const relatedSolicitudes = SOLICITUDESLIST.filter(
-              (solicitud) => solicitud.cod_solicitante === solicitante.cod_solicitante
-            );
-
-            const updatedOptions = Array.from({ length: 5 }, (_, index) => {
-              const optionIndex = index + 1;
-              const relatedSolicitud = relatedSolicitudes.find((solicitud) => solicitud.opcion === optionIndex);
-              if (relatedSolicitud) {
-                const relatedOferta = OFERTASLIST.find((oferta) => oferta.cod_oferta === relatedSolicitud.cod_oferta);
-                return relatedOferta ? relatedOferta.nomb_carrera : 'no solicitada';
-              }
-              return 'no solicitada';
-            });
-
-            return {
-              ...solicitante,
-              opcion1: updatedOptions[0],
-              opcion2: updatedOptions[1],
-              opcion3: updatedOptions[2],
-              opcion4: updatedOptions[3],
-              opcion5: updatedOptions[4],
-            };
-          });
-
-          setSOLICITANTESSLIST(updatedSOLICITANTESLIST);
-        }
-      })
-      .catch((error) => {
-        console.log('Error al cargar solicitantes en curso', error);
-      });
-  }, [SOLICITUDESLIST, OFERTASLIST, solicitantesConfirmados]);
-
-  useEffect(() => {
-    getSolicitudesByCurso(activeCourse.cod_curso)
-      .then((response) => {
-        if (response.status === 200) {
-          setSOLICITUDESLIST(response.data);
-        }
-      })
-      .catch((error) => {
-        console.log('Error al cargar las solicitudes', error);
-      });
-  }, []);
-
-  useEffect(() => {
-    getAllOfertasByCurso(activeCourse.cod_curso)
-      .then((response) => {
-        if (response.status === 200) {
-          const updatedOfertasList = response.data.map((oferta) => {
-            const relatedCarrera = CARRERASLIST.find((carrera) => carrera.cod_carrera === oferta.cod_carrera);
-            return {
-              ...oferta,
-              nomb_carrera: relatedCarrera ? relatedCarrera.nomb_carrera : 'Unknown', // Replace 'Unknown' with a default name
-            };
-          });
-          setOFERTASLIST(updatedOfertasList);
-        }
-      })
-      .catch((error) => {
-        console.log('Error al cargar ofertas: ', error);
-      });
-  }, [CARRERASLIST]);
 
   useEffect(() => {
     getCarreras()
@@ -191,19 +108,19 @@ export default function SolicitudesPage(solicitantesConfirmados) {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = SOLICITANTESSLIST.map((s) => s.cod_solicitante);
+      const newSelecteds = CARRERASLIST.map((n) => n.cod_carrera);
       setSelected(newSelecteds);
       return;
     }
     setSelected([]);
   };
 
-  const handleSelectClick = (event, cod_solicitante) => {
-    const selectedIndex = selected.indexOf(cod_solicitante);
+  const handleSelectClick = (event, codCarrera) => {
+    const selectedIndex = selected.indexOf(codCarrera);
     let newSelected = [];
     if (selectedIndex === -1) {
       // not found, add element to selected list
-      newSelected = newSelected.concat(selected, cod_solicitante);
+      newSelected = newSelected.concat(selected, codCarrera);
     } else if (selectedIndex === 0) {
       // found at start, remove first element
       newSelected = newSelected.concat(selected.slice(1));
@@ -231,68 +148,67 @@ export default function SolicitudesPage(solicitantesConfirmados) {
     setFilterValue(event.target.value);
   };
 
-  const handleConfirmClick = () => {
+  const handleEditClick = () => {
     if (selected.length === 1) {
-      const selectedItem = filteredSolicitudes.find((solicitud) => solicitud.cod_solicitante === selected[0]);
+      const selectedItem = filteredCareers.find((career) => career.cod_carrera === selected[0]);
       if (selectedItem) {
-        setIsFormDialogVisible(true);
+        handleCloseInRowMenu();
+        setIsFormVisible(true);
         setEditMode(true);
         setFormData(selectedItem);
-        handleCloseInRowMenu();
       }
     }
   };
 
-  const handleRowClick = (codSol) => {
-    const newSelected = [codSol];
+  const handleRowClick = (codCarrera) => {
+    const newSelected = [codCarrera];
     setSelected(newSelected);
   };
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - SOLICITANTESSLIST.length) : 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - CARRERASLIST.length) : 0;
 
-  const filteredSolicitudes = applySortFilter(SOLICITANTESSLIST, getComparator(order, orderBy), filterValue);
+  const filteredCareers = applySortFilter(CARRERASLIST, getComparator(order, orderBy), filterValue);
 
-  const isNotFound = !filteredSolicitudes.length && !!filterValue;
+  const isNotFound = !filteredCareers.length && !!filterValue;
 
   return (
     <>
       <Helmet>
-        <title> Solicitudes | CPE </title>
+        <title> Carreras | CPE </title>
       </Helmet>
 
-      {isFormDialogVisible ? (
-        <SolicitudesFormDialog
-          open={isFormDialogVisible}
-          handleCloseClick={() => setIsFormDialogVisible(false)}
-          Data={formData}
+      {isFormVisible ? (
+        <CarrerasForm
+          formData={formData}
           editMode={editMode}
-          onSubmit={(data) => {
-            setIsFormDialogVisible(false);
+          onSubmit={() => {
+            setRefresh(refresh + 1);
             setEditMode(false);
             setFormData({});
+            setIsFormVisible(false);
           }}
         />
       ) : (
         <Container>
           <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
             <Typography variant="h4" gutterBottom>
-              {solicitantesConfirmados ? 'Solicitudes Confirmadas' : 'Solicitudes Sin Confirmar'}
+              Carreras
             </Typography>
             <Button
               variant="contained"
               startIcon={<Iconify icon="eva:plus-fill" />}
               onClick={() => {
-                setIsFormDialogVisible(true);
+                setIsFormVisible(true);
                 setEditMode(false);
                 setFormData({});
               }}
             >
-              Registrar Solicitud
+              Registrar Carrera
             </Button>
           </Stack>
 
           <Card>
-            <SolicitudesListToolbar
+            <CarrerasListToolbar
               numSelected={selected.length}
               filterValue={filterValue}
               onFilterValue={handleFilterByValue}
@@ -301,61 +217,39 @@ export default function SolicitudesPage(solicitantesConfirmados) {
             <Scrollbar>
               <TableContainer>
                 <Table size="small">
-                  <SolicitudesListHead
+                  <CarrerasListHead
                     order={order}
                     orderBy={orderBy}
                     headLabel={TABLE_HEAD}
-                    rowCount={SOLICITANTESSLIST.length}
+                    rowCount={CARRERASLIST.length}
                     numSelected={selected.length}
                     onRequestSort={handleRequestSort}
                     onSelectAllClick={handleSelectAllClick}
                   />
                   <TableBody>
-                    {filteredSolicitudes.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                      const {
-                        cod_solicitante,
-                        num_id,
-                        nomb_solicitante,
-                        apell_solicitante,
-                        cod_municipio,
-                        fuente_ingreso,
-                        num_telefono,
-                        confirmado,
-                        eliminado,
-                        opcion1,
-                        opcion2,
-                        opcion3,
-                        opcion4,
-                        opcion5,
-                      } = row;
-                      const [firstLastName, SecondLastName] = apell_solicitante.split(' ');
-                      const selectedSolicitud = selected.indexOf(cod_solicitante) !== -1;
+                    {CARRERASLIST.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                      const { cod_carrera, nomb_carrera, eliminada } = row;
+                      const selectedCareer = selected.indexOf(cod_carrera) !== -1;
 
                       return (
                         <TableRow
-                          onClick={() => handleRowClick(cod_solicitante)}
+                          onClick={() => handleRowClick(cod_carrera)}
                           hover
-                          key={cod_solicitante}
+                          key={cod_carrera}
                           tabIndex={-1}
                           role="checkbox"
-                          selected={selectedSolicitud}
+                          selected={selectedCareer}
                         >
                           <TableCell padding="checkbox">
                             <Checkbox
-                              checked={selectedSolicitud}
-                              onChange={(event) => handleSelectClick(event, cod_solicitante)}
+                              checked={selectedCareer}
+                              onChange={(event) => handleSelectClick(event, cod_carrera)}
                             />
                           </TableCell>
 
-                          <TableCell align="left">{num_id}</TableCell>
-                          <TableCell align="left">{nomb_solicitante}</TableCell>
-                          <TableCell align="left">{firstLastName}</TableCell>
-                          <TableCell align="left">{SecondLastName}</TableCell>
-                          <TableCell align="left">{opcion1}</TableCell>
-                          <TableCell align="left">{opcion2}</TableCell>
-                          <TableCell align="left">{opcion3}</TableCell>
-                          <TableCell align="left">{opcion4}</TableCell>
-                          <TableCell align="left">{opcion5}</TableCell>
+                          <TableCell align="left">{cod_carrera}</TableCell>
+
+                          <TableCell align="left">{nomb_carrera}</TableCell>
 
                           <TableCell align="right">
                             <IconButton size="large" color="inherit" onClick={handleOpenInRowMenu}>
@@ -401,7 +295,7 @@ export default function SolicitudesPage(solicitantesConfirmados) {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={SOLICITANTESSLIST.length}
+            count={CARRERASLIST.length}
             rowsPerPage={rowsPerPage}
             page={page}
             labelRowsPerPage={'Filas por página'}
@@ -410,6 +304,7 @@ export default function SolicitudesPage(solicitantesConfirmados) {
           />
         </Container>
       )}
+
       <Popover
         open={Boolean(openInRowMenu)}
         anchorEl={openInRowMenu}
@@ -428,9 +323,9 @@ export default function SolicitudesPage(solicitantesConfirmados) {
           },
         }}
       >
-        <MenuItem onClick={handleConfirmClick}>
+        <MenuItem onClick={handleEditClick}>
           <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
-          Confirmar
+          Editar
         </MenuItem>
 
         <MenuItem sx={{ color: 'error.main' }}>

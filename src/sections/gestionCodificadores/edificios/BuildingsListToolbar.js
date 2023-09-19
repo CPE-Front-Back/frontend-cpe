@@ -28,12 +28,12 @@ const StyledSearch = styled(OutlinedInput)(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-OfertasListToolbar.propTypes = {
+BuildingsListToolbar.propTypes = {
   numSelected: PropTypes.number,
   filterValue: PropTypes.string,
   onFilterValue: PropTypes.func,
 };
-export default function OfertasListToolbar({ numSelected, filterValue, onFilterValue }) {
+export default function BuildingsListToolbar({ numSelected, filterValue, onFilterValue }) {
   return (
     <StyledRoot
       sx={{
@@ -51,7 +51,7 @@ export default function OfertasListToolbar({ numSelected, filterValue, onFilterV
         <StyledSearch
           value={filterValue}
           onChange={onFilterValue}
-          placeholder="Buscar oferta..."
+          placeholder="Buscar edificio..."
           startAdornment={
             <InputAdornment position="start">
               <Iconify icon="eva:search-fill" sx={{ color: 'text.disabled', width: 20, height: 20 }} />

@@ -1,5 +1,6 @@
 import { Box, Checkbox, TableCell, TableHead, TableRow, TableSortLabel } from '@mui/material';
 import PropTypes from 'prop-types';
+import OfertasListHead from '../../gestionCurso/ofertas/OfertasListHead';
 
 const visuallyHidden = {
   border: 0,
@@ -13,7 +14,7 @@ const visuallyHidden = {
   clip: 'rect(0 0 0 0)',
 };
 
-CarrerasListHead.propTypes = {
+FacultadesListHead.propTypes = {
   order: PropTypes.oneOf(['asc', 'desc']),
   orderBy: PropTypes.string,
   rowCount: PropTypes.number,
@@ -22,7 +23,7 @@ CarrerasListHead.propTypes = {
   onRequestSort: PropTypes.func,
   onSelectAllClick: PropTypes.func,
 };
-export default function CarrerasListHead({
+export default function FacultadesListHead({
   order,
   orderBy,
   rowCount,

@@ -4,7 +4,11 @@ import DashboardLayout from './layouts/dashboard';
 import SimpleLayout from './layouts/simple';
 //
 import BlogPage from './pages/BlogPage';
+import BuildingsPage from './pages/BuildingsPage';
+import CarrerasPage from './pages/CarrerasPage';
+import ClassroomsPage from './pages/ClassroomsPage';
 import CursoPage from './pages/CursoPage';
+import FacultadesPage from './pages/FacultadesPage';
 import OfertasPage from './pages/OfertasPage';
 import SolicitantePage from './pages/SolicitantePage';
 import SolicitudesPage from './pages/SolicitudesPage';
@@ -27,6 +31,10 @@ export default function Router() {
         { element: <Navigate to="/dashboard/app" />, index: true },
         { path: 'curso', element: <CursoPage /> },
         { path: 'offers', element: <OfertasPage /> },
+        { path: 'careers', element: <CarrerasPage /> },
+        { path: 'faculties', element: <FacultadesPage /> },
+        { path: 'buildings', element: <BuildingsPage /> },
+        { path: 'classrooms', element: <ClassroomsPage /> },
         { path: 'solicitudesConfirmadas', element: <SolicitudesPage solicitantesConfirmados /> },
         { path: 'solicitudesSinConfirmar', element: <SolicitudesPage solicitantesConfirmados={false} /> },
         { path: 'app', element: <DashboardLogedInPage /> },
