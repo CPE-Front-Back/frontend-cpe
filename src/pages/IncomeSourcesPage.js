@@ -72,9 +72,12 @@ export default function IncomeSourcesPage() {
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({});
   const [refresh, setRefresh] = useState(0);
-  const { activeCourse } = UseActiveCourse();
 
   const [INCOMESOURCESlIST, setINCOMESOURCESlIST] = useState([]);
+
+  const [filteredIncomeSources, setFilteredIncomeSources] = useState([]);
+  const [isNotFound, setIsNotFound] = useState(false);
+  const [emptyRows, setEmptyRows] = useState(0);
 
   useEffect(() => {
     getIncomeSources()
@@ -86,7 +89,7 @@ export default function IncomeSourcesPage() {
       .catch((error) => {
         console.log('Error al cargar las fuentes de ingreso', error);
       });
-  }, []);
+  }, [refresh]);
 
   const handleOpenInRowMenu = (event) => {
     setOpenInRowMenu(event.currentTarget);
@@ -161,11 +164,11 @@ export default function IncomeSourcesPage() {
     setSelected(newSelected);
   };
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - INCOMESOURCESlIST.length) : 0;
-
-  const filteredIncomeSources = applySortFilter(INCOMESOURCESlIST, getComparator(order, orderBy), filterValue);
-
-  const isNotFound = !filteredIncomeSources.length && !!filterValue;
+  useEffect(() => {
+    setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - INCOMESOURCESlIST.length) : 0);
+    setFilteredIncomeSources(applySortFilter(INCOMESOURCESlIST, getComparator(order, orderBy), filterValue));
+    setIsNotFound(!filteredIncomeSources.length && !!filterValue);
+  }, [INCOMESOURCESlIST, filterValue, order, orderBy]);
 
   return (
     <>
@@ -192,6 +195,7 @@ export default function IncomeSourcesPage() {
             </Typography>
             <Button
               variant="contained"
+              style={{ textTransform: 'none' }}
               startIcon={<Iconify icon="eva:plus-fill" />}
               onClick={() => {
                 setIsFormVisible(true);
@@ -199,7 +203,7 @@ export default function IncomeSourcesPage() {
                 setFormData({});
               }}
             >
-              Registrar Fuente de ingreso
+              Registrar Fuente de Ingreso
             </Button>
           </Stack>
 

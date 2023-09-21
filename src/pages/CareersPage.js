@@ -21,9 +21,9 @@ import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import Iconify from '../components/iconify';
 import Scrollbar from '../components/scrollbar';
-import CarrerasForm from '../sections/gestionCodificadores/carreras/CarrerasForm';
-import CarrerasListHead from '../sections/gestionCodificadores/carreras/CarrerasListHead';
-import CarrerasListToolbar from '../sections/gestionCodificadores/carreras/CarrerasListToolbar';
+import CareersForm from '../sections/gestionCodificadores/carreras/CareersForm';
+import CareersListHead from '../sections/gestionCodificadores/carreras/CareersListHead';
+import CareersListToolbar from '../sections/gestionCodificadores/carreras/CareersListToolbar';
 import { getCarreras } from '../sections/gestionCodificadores/carreras/store/store';
 import { UseActiveCourse } from '../sections/gestionCurso/curso/context/ActiveCourseContext';
 
@@ -64,7 +64,8 @@ function applySortFilter(array, comparator, query) {
   }
   return stabilizedThis.map((el) => el[0]);
 }
-export default function CarrerasPage() {
+
+export default function CareersPage() {
   const [openInRowMenu, setOpenInRowMenu] = useState(null);
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
@@ -76,9 +77,12 @@ export default function CarrerasPage() {
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({});
   const [refresh, setRefresh] = useState(0);
-  const { activeCourse } = UseActiveCourse();
 
   const [CARRERASLIST, setCARRERASLIST] = useState([]);
+
+  const [filteredCareers, setFilteredCareers] = useState([]);
+  const [isNotFound, setIsNotFound] = useState(false);
+  const [emptyRows, setEmptyRows] = useState(0);
 
   useEffect(() => {
     getCarreras()
@@ -90,7 +94,7 @@ export default function CarrerasPage() {
       .catch((error) => {
         console.log('Error al cargar las carreras', error);
       });
-  }, []);
+  }, [refresh]);
 
   const handleOpenInRowMenu = (event) => {
     setOpenInRowMenu(event.currentTarget);
@@ -165,11 +169,11 @@ export default function CarrerasPage() {
     setSelected(newSelected);
   };
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - CARRERASLIST.length) : 0;
-
-  const filteredCareers = applySortFilter(CARRERASLIST, getComparator(order, orderBy), filterValue);
-
-  const isNotFound = !filteredCareers.length && !!filterValue;
+  useEffect(() => {
+    setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - CARRERASLIST.length) : 0);
+    setFilteredCareers(applySortFilter(CARRERASLIST, getComparator(order, orderBy), filterValue));
+    setIsNotFound(!filteredCareers.length && !!filterValue);
+  }, [CARRERASLIST, filterValue, order, orderBy]);
 
   return (
     <>
@@ -178,7 +182,7 @@ export default function CarrerasPage() {
       </Helmet>
 
       {isFormVisible ? (
-        <CarrerasForm
+        <CareersForm
           formData={formData}
           editMode={editMode}
           onSubmit={() => {
@@ -196,6 +200,7 @@ export default function CarrerasPage() {
             </Typography>
             <Button
               variant="contained"
+              style={{ textTransform: 'none' }}
               startIcon={<Iconify icon="eva:plus-fill" />}
               onClick={() => {
                 setIsFormVisible(true);
@@ -208,7 +213,7 @@ export default function CarrerasPage() {
           </Stack>
 
           <Card>
-            <CarrerasListToolbar
+            <CareersListToolbar
               numSelected={selected.length}
               filterValue={filterValue}
               onFilterValue={handleFilterByValue}
@@ -217,7 +222,7 @@ export default function CarrerasPage() {
             <Scrollbar>
               <TableContainer>
                 <Table size="small">
-                  <CarrerasListHead
+                  <CareersListHead
                     order={order}
                     orderBy={orderBy}
                     headLabel={TABLE_HEAD}
@@ -227,7 +232,7 @@ export default function CarrerasPage() {
                     onSelectAllClick={handleSelectAllClick}
                   />
                   <TableBody>
-                    {CARRERASLIST.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                    {filteredCareers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                       const { cod_carrera, nomb_carrera, eliminada } = row;
                       const selectedCareer = selected.indexOf(cod_carrera) !== -1;
 

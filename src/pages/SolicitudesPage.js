@@ -95,6 +95,49 @@ export default function SolicitudesPage(solicitantesConfirmados) {
   const [CARRERASLIST, setCARRERASLIST] = useState([]);
 
   useEffect(() => {
+    getSolicitudesByCurso(activeCourse.cod_curso)
+      .then((response) => {
+        if (response.status === 200) {
+          setSOLICITUDESLIST(response.data);
+        }
+      })
+      .catch((error) => {
+        console.log('Error al cargar las solicitudes', error);
+      });
+  }, []);
+
+  useEffect(() => {
+    getCarreras()
+      .then((response) => {
+        if (response.status === 200) {
+          setCARRERASLIST(response.data);
+        }
+      })
+      .catch((error) => {
+        console.log('Error al cargar las carreras', error);
+      });
+  }, []);
+
+  useEffect(() => {
+    getAllOfertasByCurso(activeCourse.cod_curso)
+      .then((response) => {
+        if (response.status === 200) {
+          const updatedOfertasList = response.data.map((oferta) => {
+            const relatedCarrera = CARRERASLIST.find((carrera) => carrera.cod_carrera === oferta.cod_carrera);
+            return {
+              ...oferta,
+              nomb_carrera: relatedCarrera ? relatedCarrera.nomb_carrera : 'Unknown', // Replace 'Unknown' with a default name
+            };
+          });
+          setOFERTASLIST(updatedOfertasList);
+        }
+      })
+      .catch((error) => {
+        console.log('Error al cargar ofertas: ', error);
+      });
+  }, [CARRERASLIST]);
+
+  useEffect(() => {
     getSolicitantesByCurso(activeCourse.cod_curso, solicitantesConfirmados.solicitantesConfirmados)
       .then((response) => {
         if (response.status === 200 && SOLICITUDESLIST.length > 0 && OFERTASLIST.length > 0) {
@@ -130,50 +173,7 @@ export default function SolicitudesPage(solicitantesConfirmados) {
       .catch((error) => {
         console.log('Error al cargar solicitantes en curso', error);
       });
-  }, [SOLICITUDESLIST, OFERTASLIST, solicitantesConfirmados]);
-
-  useEffect(() => {
-    getSolicitudesByCurso(activeCourse.cod_curso)
-      .then((response) => {
-        if (response.status === 200) {
-          setSOLICITUDESLIST(response.data);
-        }
-      })
-      .catch((error) => {
-        console.log('Error al cargar las solicitudes', error);
-      });
-  }, []);
-
-  useEffect(() => {
-    getAllOfertasByCurso(activeCourse.cod_curso)
-      .then((response) => {
-        if (response.status === 200) {
-          const updatedOfertasList = response.data.map((oferta) => {
-            const relatedCarrera = CARRERASLIST.find((carrera) => carrera.cod_carrera === oferta.cod_carrera);
-            return {
-              ...oferta,
-              nomb_carrera: relatedCarrera ? relatedCarrera.nomb_carrera : 'Unknown', // Replace 'Unknown' with a default name
-            };
-          });
-          setOFERTASLIST(updatedOfertasList);
-        }
-      })
-      .catch((error) => {
-        console.log('Error al cargar ofertas: ', error);
-      });
-  }, [CARRERASLIST]);
-
-  useEffect(() => {
-    getCarreras()
-      .then((response) => {
-        if (response.status === 200) {
-          setCARRERASLIST(response.data);
-        }
-      })
-      .catch((error) => {
-        console.log('Error al cargar las carreras', error);
-      });
-  }, []);
+  }, [refresh, SOLICITUDESLIST, OFERTASLIST, solicitantesConfirmados]);
 
   const handleOpenInRowMenu = (event) => {
     setOpenInRowMenu(event.currentTarget);
@@ -263,23 +263,26 @@ export default function SolicitudesPage(solicitantesConfirmados) {
       {isFormDialogVisible ? (
         <SolicitudesFormDialog
           open={isFormDialogVisible}
-          handleCloseClick={() => setIsFormDialogVisible(false)}
-          Data={formData}
-          editMode={editMode}
-          onSubmit={(data) => {
+          handleCloseClick={() => {
+            setRefresh(refresh + 1);
             setIsFormDialogVisible(false);
             setEditMode(false);
             setFormData({});
           }}
+          Data={formData}
+          editMode={editMode}
         />
       ) : (
         <Container>
           <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
             <Typography variant="h4" gutterBottom>
-              {solicitantesConfirmados ? 'Solicitudes Confirmadas' : 'Solicitudes Sin Confirmar'}
+              {solicitantesConfirmados.solicitantesConfirmados
+                ? 'Solicitudes confirmadas'
+                : 'Solicitudes sin confirmar'}
             </Typography>
             <Button
               variant="contained"
+              style={{ textTransform: 'none' }}
               startIcon={<Iconify icon="eva:plus-fill" />}
               onClick={() => {
                 setIsFormDialogVisible(true);
@@ -287,7 +290,7 @@ export default function SolicitudesPage(solicitantesConfirmados) {
                 setFormData({});
               }}
             >
-              Registrar Solicitud
+              Registrar Solicitud confirmada
             </Button>
           </Stack>
 
@@ -430,7 +433,7 @@ export default function SolicitudesPage(solicitantesConfirmados) {
       >
         <MenuItem onClick={handleConfirmClick}>
           <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
-          Confirmar
+          {solicitantesConfirmados.solicitantesConfirmados ? 'Editar' : 'Confirmar'}
         </MenuItem>
 
         <MenuItem sx={{ color: 'error.main' }}>

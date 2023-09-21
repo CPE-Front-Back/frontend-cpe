@@ -84,6 +84,10 @@ export default function ClassroomsPage() {
   const [BUILDINGSLIST, setBUILDINGSLIST] = useState([]);
   const [FACULTIESLIST, setFACULTIESLIST] = useState([]);
 
+  const [filteredClassrooms, setFilteredClassrooms] = useState([]);
+  const [isNotFound, setIsNotFound] = useState(false);
+  const [emptyRows, setEmptyRows] = useState(0);
+
   useEffect(() => {
     getFaculties()
       .then((response) => {
@@ -130,7 +134,7 @@ export default function ClassroomsPage() {
       .catch((error) => {
         console.log('Error al cargar las aulas', error);
       });
-  }, [BUILDINGSLIST, FACULTIESLIST]);
+  }, [refresh, BUILDINGSLIST, FACULTIESLIST]);
 
   const handleOpenInRowMenu = (event) => {
     setOpenInRowMenu(event.currentTarget);
@@ -205,11 +209,11 @@ export default function ClassroomsPage() {
     setSelected(newSelected);
   };
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - CLASSROOMSLIST.length) : 0;
-
-  const filteredClassrooms = applySortFilter(CLASSROOMSLIST, getComparator(order, orderBy), filterValue);
-
-  const isNotFound = !filteredClassrooms.length && !!filterValue;
+  useEffect(() => {
+    setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - CLASSROOMSLIST.length) : 0);
+    setFilteredClassrooms(applySortFilter(CLASSROOMSLIST, getComparator(order, orderBy), filterValue));
+    setIsNotFound(!filteredClassrooms.length && !!filterValue);
+  }, [CLASSROOMSLIST, filterValue, order, orderBy]);
 
   return (
     <>
@@ -236,6 +240,7 @@ export default function ClassroomsPage() {
             </Typography>
             <Button
               variant="contained"
+              style={{ textTransform: 'none' }}
               startIcon={<Iconify icon="eva:plus-fill" />}
               onClick={() => {
                 setIsFormVisible(true);

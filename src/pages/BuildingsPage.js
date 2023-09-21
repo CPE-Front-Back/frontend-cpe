@@ -81,6 +81,10 @@ export default function BuildingsPage() {
   const [BUILDINGSLIST, setBUILDINGSLIST] = useState([]);
   const [FACULTIESLIST, setFACULTIESLIST] = useState([]);
 
+  const [filteredBuildings, setFilteredBuildings] = useState([]);
+  const [isNotFound, setIsNotFound] = useState(false);
+  const [emptyRows, setEmptyRows] = useState(0);
+
   useEffect(() => {
     getFaculties()
       .then((response) => {
@@ -89,7 +93,7 @@ export default function BuildingsPage() {
         }
       })
       .catch((error) => {
-        console.log('Error al cargar las facultades', error);
+        console.log('Error al cargar los edificios', error);
       });
   }, []);
 
@@ -186,11 +190,11 @@ export default function BuildingsPage() {
     setSelected(newSelected);
   };
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - BUILDINGSLIST.length) : 0;
-
-  const filteredBuildings = applySortFilter(BUILDINGSLIST, getComparator(order, orderBy), filterValue);
-
-  const isNotFound = !filteredBuildings.length && !!filterValue;
+  useEffect(() => {
+    setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - BUILDINGSLIST.length) : 0);
+    setFilteredBuildings(applySortFilter(BUILDINGSLIST, getComparator(order, orderBy), filterValue));
+    setIsNotFound(!filteredBuildings.length && !!filterValue);
+  }, [BUILDINGSLIST, filterValue, order, orderBy]);
 
   return (
     <>
@@ -217,6 +221,7 @@ export default function BuildingsPage() {
             </Typography>
             <Button
               variant="contained"
+              style={{ textTransform: 'none' }}
               startIcon={<Iconify icon="eva:plus-fill" />}
               onClick={() => {
                 setIsFormVisible(true);

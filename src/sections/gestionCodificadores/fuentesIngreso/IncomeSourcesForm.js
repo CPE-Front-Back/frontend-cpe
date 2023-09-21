@@ -42,7 +42,9 @@ export default function IncomeSourcesForm({ editMode, formData, onSubmit }) {
         });
     }
 
-    onSubmit();
+    setTimeout(() => {
+      onSubmit();
+    }, 500);
   };
 
   const handleBack = (event) => {

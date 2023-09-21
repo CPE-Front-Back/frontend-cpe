@@ -109,7 +109,9 @@ export default function ClassroomsForm({ editMode, formData, onSubmit }) {
         });
     }
 
-    onSubmit();
+    setTimeout(() => {
+      onSubmit();
+    }, 500);
   };
 
   const handleBack = (event) => {

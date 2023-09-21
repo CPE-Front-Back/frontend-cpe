@@ -38,9 +38,8 @@ SolicitudesFormDialog.propTypes = {
   handleCloseClick: PropTypes.func,
   editMode: PropTypes.bool,
   formData: PropTypes.object,
-  onSubmit: PropTypes.func,
 };
-export default function SolicitudesFormDialog({ open, handleCloseClick, editMode, Data, onSubmit }) {
+export default function SolicitudesFormDialog({ open, handleCloseClick, editMode, Data }) {
   /* {
     cod_solicitante,
     num_id,
@@ -134,7 +133,10 @@ export default function SolicitudesFormDialog({ open, handleCloseClick, editMode
                               .then((response) => {
                                 if (response) {
                                   console.log('Insertadas: ', response);
-                                  handleCloseClick();
+
+                                  setTimeout(() => {
+                                    handleCloseClick();
+                                  }, 500);
                                 }
                               })
                               .catch((error) => {

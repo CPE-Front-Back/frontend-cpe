@@ -28,13 +28,12 @@ const StyledSearch = styled(OutlinedInput)(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-CarrerasListToolbar.propTypes = {
+CareersListToolbar.propTypes = {
   numSelected: PropTypes.number,
   filterValue: PropTypes.string,
   onFilterValue: PropTypes.func,
 };
-
-export default function CarrerasListToolbar({ numSelected, filterValue, onFilterValue }) {
+export default function CareersListToolbar({ numSelected, filterValue, onFilterValue }) {
   return (
     <StyledRoot
       sx={{

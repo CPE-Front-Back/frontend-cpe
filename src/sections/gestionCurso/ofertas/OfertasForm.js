@@ -109,7 +109,9 @@ export default function OfertasForm({ editMode, formData, onSubmit }) {
       // console.log('la oferta a insertar: ', updatedData);
     }
 
-    onSubmit();
+    setTimeout(() => {
+      onSubmit();
+    }, 500);
   };
 
   const handleBack = (event) => {

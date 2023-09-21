@@ -72,9 +72,12 @@ export default function FacultadesPage() {
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({});
   const [refresh, setRefresh] = useState(0);
-  const { activeCourse } = UseActiveCourse();
 
   const [FACULTADESlIST, setFACULTADESlIST] = useState([]);
+
+  const [filteredFaculties, setFilteredFaculties] = useState([]);
+  const [isNotFound, setIsNotFound] = useState(false);
+  const [emptyRows, setEmptyRows] = useState(0);
 
   useEffect(() => {
     getFaculties()
@@ -86,7 +89,7 @@ export default function FacultadesPage() {
       .catch((error) => {
         console.log('Error al cargar las facultades', error);
       });
-  }, []);
+  }, [refresh]);
 
   const handleOpenInRowMenu = (event) => {
     setOpenInRowMenu(event.currentTarget);
@@ -161,11 +164,11 @@ export default function FacultadesPage() {
     setSelected(newSelected);
   };
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - FACULTADESlIST.length) : 0;
-
-  const filteredFaculties = applySortFilter(FACULTADESlIST, getComparator(order, orderBy), filterValue);
-
-  const isNotFound = !filteredFaculties.length && !!filterValue;
+  useEffect(() => {
+    setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - FACULTADESlIST.length) : 0);
+    setFilteredFaculties(applySortFilter(FACULTADESlIST, getComparator(order, orderBy), filterValue));
+    setIsNotFound(!filteredFaculties.length && !!filterValue);
+  }, [FACULTADESlIST, filterValue, order, orderBy]);
 
   return (
     <>
@@ -192,6 +195,7 @@ export default function FacultadesPage() {
             </Typography>
             <Button
               variant="contained"
+              style={{ textTransform: 'none' }}
               startIcon={<Iconify icon="eva:plus-fill" />}
               onClick={() => {
                 setIsFormVisible(true);

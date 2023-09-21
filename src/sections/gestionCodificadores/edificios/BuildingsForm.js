@@ -63,7 +63,9 @@ export default function BuildingsForm({ editMode, formData, onSubmit }) {
         });
     }
 
-    onSubmit();
+    setTimeout(() => {
+      onSubmit();
+    }, 500);
   };
 
   return (

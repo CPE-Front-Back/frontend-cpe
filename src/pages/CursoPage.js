@@ -101,8 +101,13 @@ export default function CursoPage() {
           <Typography variant="h4" gutterBottom>
             Cursos
           </Typography>
-          <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleGenerarCursoClick}>
-            Generar nuevo curso
+          <Button
+            variant="contained"
+            style={{ textTransform: 'none' }}
+            startIcon={<Iconify icon="eva:plus-fill" />}
+            onClick={handleGenerarCursoClick}
+          >
+            Generar nuevo Curso
           </Button>
         </Stack>
 

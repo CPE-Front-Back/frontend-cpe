@@ -85,6 +85,10 @@ export default function OfertasPage() {
   const [OFERTASLIST, setOFERTASLIST] = useState([]);
   const [CARRERASLIST, setCARRERASLIST] = useState([]);
 
+  const [filteredOffers, setFilteredOffers] = useState([]);
+  const [isNotFound, setIsNotFound] = useState(false);
+  const [emptyRows, setEmptyRows] = useState(0);
+
   const { activeCourse } = UseActiveCourse();
 
   useEffect(() => {
@@ -192,11 +196,11 @@ export default function OfertasPage() {
     setSelected(newSelected);
   };
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - OFERTASLIST.length) : 0;
-
-  const filteredOffers = applySortFilter(OFERTASLIST, getComparator(order, orderBy), filterValue);
-
-  const isNotFound = !filteredOffers.length && !!filterValue;
+  useEffect(() => {
+    setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - OFERTASLIST.length) : 0);
+    setFilteredOffers(applySortFilter(OFERTASLIST, getComparator(order, orderBy), filterValue));
+    setIsNotFound(!filteredOffers.length && !!filterValue);
+  }, [OFERTASLIST, filterValue, order, orderBy]);
 
   return (
     <>
@@ -223,6 +227,17 @@ export default function OfertasPage() {
             </Typography>
             <Button
               variant="contained"
+              style={{ textTransform: 'none' }}
+              startIcon={<Iconify icon="eva:plus-fill" />}
+              onClick={() => {
+                setRefresh(refresh + 1);
+              }}
+            >
+              Refresh
+            </Button>
+            <Button
+              variant="contained"
+              style={{ textTransform: 'none' }}
               startIcon={<Iconify icon="eva:plus-fill" />}
               onClick={() => {
                 setIsFormVisible(true);
@@ -288,7 +303,7 @@ export default function OfertasPage() {
                     })}
                     {emptyRows > 0 && (
                       <TableRow style={{ height: 53 * emptyRows }}>
-                        <TableCell colSpan={6} />
+                        <TableCell colSpan={6}>Nada que mostrar</TableCell>
                       </TableRow>
                     )}
                   </TableBody>

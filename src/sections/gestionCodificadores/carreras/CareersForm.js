@@ -9,7 +9,7 @@ OfertasForm.propTypes = {
   formData: PropTypes.object,
   onSubmit: PropTypes.func,
 };
-export default function CarrerasForm({ editMode, formData, onSubmit }) {
+export default function CareersForm({ editMode, formData, onSubmit }) {
   const { cod_carrera, nomb_carrera } = formData;
   const [codCarreraInput, setCodCarreraInput] = useState(cod_carrera);
   const [nombCarreraInput, setNombCarreraInput] = useState(nomb_carrera);
@@ -50,7 +50,9 @@ export default function CarrerasForm({ editMode, formData, onSubmit }) {
   const handleBack = (event) => {
     event.preventDefault();
 
-    onSubmit();
+    setTimeout(() => {
+      onSubmit();
+    }, 500);
   };
 
   return (
