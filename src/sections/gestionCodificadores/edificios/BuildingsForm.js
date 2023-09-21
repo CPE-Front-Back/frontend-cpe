@@ -74,7 +74,6 @@ export default function BuildingsForm({ editMode, formData, onSubmit }) {
       >
         <Grid container spacing={2}>
           <Grid item xs sx={{ minWidth: '400px' }}>
-            {/* <Typography variant="body1">Carrera: {nomb_carrera}</Typography> */}
             <Autocomplete
               id="FacultyCombo"
               options={faculties}

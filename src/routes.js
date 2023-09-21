@@ -9,6 +9,7 @@ import CarrerasPage from './pages/CarrerasPage';
 import ClassroomsPage from './pages/ClassroomsPage';
 import CursoPage from './pages/CursoPage';
 import FacultadesPage from './pages/FacultadesPage';
+import IncomeSourcesPage from './pages/IncomeSourcesPage';
 import OfertasPage from './pages/OfertasPage';
 import SolicitantePage from './pages/SolicitantePage';
 import SolicitudesPage from './pages/SolicitudesPage';
@@ -35,6 +36,7 @@ export default function Router() {
         { path: 'faculties', element: <FacultadesPage /> },
         { path: 'buildings', element: <BuildingsPage /> },
         { path: 'classrooms', element: <ClassroomsPage /> },
+        { path: 'incomeSources', element: <IncomeSourcesPage /> },
         { path: 'solicitudesConfirmadas', element: <SolicitudesPage solicitantesConfirmados /> },
         { path: 'solicitudesSinConfirmar', element: <SolicitudesPage solicitantesConfirmados={false} /> },
         { path: 'app', element: <DashboardLogedInPage /> },

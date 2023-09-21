@@ -1,49 +1,47 @@
 import { Box, Button, Grid, TextField, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
-import OfertasForm from '../../gestionCurso/ofertas/OfertasForm';
-import { insertCarrera, updateCarrera } from './store/store';
+import { insertIncomeSource, updateIncomeSource } from './store/store';
 
-OfertasForm.propTypes = {
+IncomeSourcesForm.propTypes = {
   editMode: PropTypes.bool,
   formData: PropTypes.object,
   onSubmit: PropTypes.func,
 };
-export default function CarrerasForm({ editMode, formData, onSubmit }) {
-  const { cod_carrera, nomb_carrera } = formData;
-  const [codCarreraInput, setCodCarreraInput] = useState(cod_carrera);
-  const [nombCarreraInput, setNombCarreraInput] = useState(nomb_carrera);
+export default function IncomeSourcesForm({ editMode, formData, onSubmit }) {
+  const { cod_fuente, nomb_fuente, eliminada } = formData;
+  const [IncomeSourceNameInput, setIncomeSourceNameInput] = useState(nomb_fuente);
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
     const updatedData = {
-      cod_carrera: codCarreraInput,
-      nomb_carrera: nombCarreraInput,
+      cod_fuente: formData.cod_fuente,
+      nomb_fuente: IncomeSourceNameInput,
       eliminada: false,
     };
 
     if (editMode) {
-      updateCarrera(updatedData)
+      updateIncomeSource(updatedData)
         .then((response) => {
           if (response.status === 200) {
             console.log(response.data);
           }
         })
         .catch((error) => {
-          console.log('Error al registrar la carrera: ', error);
+          console.log('Error al modificar la fuente de ingreso: ', error);
         });
     } else {
-      insertCarrera(updatedData)
+      insertIncomeSource(updatedData)
         .then((response) => {
           if (response.status === 200) {
             console.log(response.data);
           }
         })
         .catch((error) => {
-          console.log('Error al modificar la carrera: ', error);
+          console.log('Error al registrar la fuente de ingreso: ', error);
         });
     }
+
     onSubmit();
   };
 
@@ -60,29 +58,17 @@ export default function CarrerasForm({ editMode, formData, onSubmit }) {
         sx={{ backgroundColor: 'white', marginTop: '80px', pr: '100px', pl: '100px', pb: '20px', pt: '20px' }}
       >
         <Typography variant="h4" sx={{ pb: '10px' }}>
-          {editMode ? 'Editar Carrera' : 'Registrar Carrera'}
+          {editMode ? 'Editar Fuente de ingreso' : 'Registrar Fuente de ingreso'}
         </Typography>
+
         <Grid container spacing={2}>
-          <Grid item xs>
-            <TextField
-              type="number"
-              label="Codigo"
-              variant="outlined"
-              value={codCarreraInput}
-              onChange={(event) => setCodCarreraInput(event.target.value)}
-              required
-            />
-          </Grid>
-
-          <Grid item xs />
-
           <Grid item xs>
             <TextField
               type="text"
               label="Nombre"
               variant="outlined"
-              value={nombCarreraInput}
-              onChange={(event) => setNombCarreraInput(event.target.value)}
+              value={IncomeSourceNameInput}
+              onChange={(event) => setIncomeSourceNameInput(event.target.value)}
               required
             />
           </Grid>

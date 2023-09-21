@@ -1,8 +1,6 @@
 import { Box, Button, Grid, TextField, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
-import { UseActiveCourse } from '../../gestionCurso/curso/context/ActiveCourseContext';
-import { insertarOferta } from '../../gestionCurso/ofertas/store/store';
 import { insertFaculty, updateFaculty } from './store/store';
 
 FacultadesForm.propTypes = {
@@ -47,6 +45,12 @@ export default function FacultadesForm({ editMode, formData, onSubmit }) {
     onSubmit();
   };
 
+  const handleBack = (event) => {
+    event.preventDefault();
+
+    onSubmit();
+  };
+
   return (
     <>
       <Box
@@ -77,7 +81,11 @@ export default function FacultadesForm({ editMode, formData, onSubmit }) {
               {editMode ? 'Modificar' : 'Registrar'}
             </Button>
           </Grid>
-          <Grid item xs />
+          <Grid item xs>
+            <Button type="submit" variant="contained" color="primary" onClick={handleBack}>
+              Cancelar
+            </Button>
+          </Grid>
         </Grid>
       </Box>
     </>

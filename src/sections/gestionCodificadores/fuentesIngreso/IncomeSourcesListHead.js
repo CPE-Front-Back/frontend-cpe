@@ -13,7 +13,7 @@ const visuallyHidden = {
   clip: 'rect(0 0 0 0)',
 };
 
-FacultadesListHead.propTypes = {
+IncomeSourcesListHead.propTypes = {
   order: PropTypes.oneOf(['asc', 'desc']),
   orderBy: PropTypes.string,
   rowCount: PropTypes.number,
@@ -22,7 +22,7 @@ FacultadesListHead.propTypes = {
   onRequestSort: PropTypes.func,
   onSelectAllClick: PropTypes.func,
 };
-export default function FacultadesListHead({
+export default function IncomeSourcesListHead({
   order,
   orderBy,
   rowCount,

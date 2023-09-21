@@ -112,6 +112,12 @@ export default function ClassroomsForm({ editMode, formData, onSubmit }) {
     onSubmit();
   };
 
+  const handleBack = (event) => {
+    event.preventDefault();
+
+    onSubmit();
+  };
+
   return (
     <>
       <Box
@@ -163,7 +169,11 @@ export default function ClassroomsForm({ editMode, formData, onSubmit }) {
               {editMode ? 'Modificar' : 'Registrar'}
             </Button>
           </Grid>
-          <Grid item xs />
+          <Grid item xs>
+            <Button type="submit" variant="contained" color="primary" onClick={handleBack}>
+              Cancelar
+            </Button>
+          </Grid>
         </Grid>
       </Box>
     </>
