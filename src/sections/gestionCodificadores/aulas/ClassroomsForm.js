@@ -20,13 +20,6 @@ export default function ClassroomsForm({ editMode, formData, onSubmit }) {
   const [buildings, setBuildings] = useState([]);
 
   useEffect(() => {
-    if (formData.nomb_facultad) {
-      const faculty = faculties.find((faculty) => faculty.nomb_facultad === formData.nomb_facultad);
-      setSelectedFaculty(faculty);
-    }
-  }, [faculties]);
-
-  useEffect(() => {
     getFaculties()
       .then((response) => {
         if (response.status === 200) {
@@ -37,6 +30,13 @@ export default function ClassroomsForm({ editMode, formData, onSubmit }) {
         console.log('Error al cargar las facultades', error);
       });
   }, []);
+
+  useEffect(() => {
+    if (formData.nomb_facultad) {
+      const faculty = faculties.find((faculty) => faculty.nomb_facultad === formData.nomb_facultad);
+      setSelectedFaculty(faculty);
+    }
+  }, [faculties]);
 
   /* useEffect(() => {
     if (formData.cod_edif) {
@@ -88,7 +88,7 @@ export default function ClassroomsForm({ editMode, formData, onSubmit }) {
     };
 
     if (editMode) {
-      insertClassroom()
+      updateClassroom(updatedData)
         .then((response) => {
           if (response.status === 200) {
             console.log(response.data);
@@ -98,7 +98,7 @@ export default function ClassroomsForm({ editMode, formData, onSubmit }) {
           console.log('Error al actualizar el aula: ', error);
         });
     } else {
-      updateClassroom()
+      insertClassroom(updatedData)
         .then((response) => {
           if (response.status === 200) {
             console.log(response.data);

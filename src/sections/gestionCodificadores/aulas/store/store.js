@@ -10,6 +10,16 @@ export const getClassrooms = async () => {
   }
 };
 
+export const getClassroomsByBuilding = async (buildingCode) => {
+  try {
+    const response = await instance.get(`aula/edificio/${buildingCode}`);
+    return response;
+  } catch (error) {
+    console.log('Error en getClassroomsByBuilding', error);
+    throw error;
+  }
+};
+
 export const insertClassroom = async (classroom) => {
   try {
     const response = await instance.post(`aula/`, classroom);

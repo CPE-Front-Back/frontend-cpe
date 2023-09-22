@@ -5,6 +5,7 @@ import SimpleLayout from './layouts/simple';
 //
 import BlogPage from './pages/BlogPage';
 import BuildingsPage from './pages/BuildingsPage';
+import CapacitiesPage from './pages/CapacitiesPage';
 import CareersPage from './pages/CareersPage';
 import ClassroomsPage from './pages/ClassroomsPage';
 import CursoPage from './pages/CursoPage';
@@ -31,6 +32,7 @@ export default function Router() {
       children: [
         { element: <Navigate to="/dashboard/app" />, index: true },
         { path: 'curso', element: <CursoPage /> },
+        { path: 'capacities', element: <CapacitiesPage /> },
         { path: 'offers', element: <OfertasPage /> },
         { path: 'careers', element: <CareersPage /> },
         { path: 'faculties', element: <FacultadesPage /> },

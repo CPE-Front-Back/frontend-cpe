@@ -28,7 +28,7 @@ const navConfig = [
       },
       {
         title: 'Actualizar capacidades',
-        path: '/dashboard/appa',
+        path: '/dashboard/capacities',
         icon: icon('ic_analytics'),
       },
       {
