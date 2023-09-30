@@ -225,7 +225,7 @@ export default function OfertasPage() {
             <Typography variant="h4" gutterBottom>
               Ofertas
             </Typography>
-            <Button
+            {/* <Button
               variant="contained"
               style={{ textTransform: 'none' }}
               startIcon={<Iconify icon="eva:plus-fill" />}
@@ -234,7 +234,7 @@ export default function OfertasPage() {
               }}
             >
               Refresh
-            </Button>
+            </Button> */}
             <Button
               variant="contained"
               style={{ textTransform: 'none' }}

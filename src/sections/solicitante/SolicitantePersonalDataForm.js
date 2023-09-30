@@ -1,6 +1,6 @@
 import { FormControl } from '@mui/base';
 import { LoadingButton } from '@mui/lab';
-import { Autocomplete, Container, Grid, InputLabel, MenuItem, Select, TextField } from '@mui/material';
+import { Autocomplete, Container, Grid, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
@@ -227,7 +227,8 @@ export default function SolicitantePersonalDataForm({ togleFormVisibility }) {
           <Container sx={{ backgroundColor: 'white' }}>
             {!isCarrersFormVisible ? (
               <>
-                <Grid container spacing={3} sx={{ pb: '50px' }}>
+                <Typography variant="h4">Introduzca sus datos personales</Typography>
+                <Grid container spacing={3} sx={{ pb: '50px', mt: '10px' }}>
                   <Grid item xs={12} sm={6} md={3}>
                     <TextField
                       name="num_id"

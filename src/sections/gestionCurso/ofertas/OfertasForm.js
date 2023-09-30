@@ -126,7 +126,10 @@ export default function OfertasForm({ editMode, formData, onSubmit }) {
         flexGrow={{ flexGrow: 1 }}
         sx={{ backgroundColor: 'white', marginTop: '80px', pr: '100px', pl: '100px', pb: '20px', pt: '20px' }}
       >
-        <Grid container spacing={2}>
+        <Typography variant="h4" gutterBottom>
+          {editMode ? 'Editar Oferta' : 'Registrar Oferta'}
+        </Typography>
+        <Grid container spacing={2} sx={{ pt: 5 }}>
           <Grid item xs sx={{ minWidth: '400px' }}>
             {/* <Typography variant="body1">Carrera: {nomb_carrera}</Typography> */}
             <Autocomplete
