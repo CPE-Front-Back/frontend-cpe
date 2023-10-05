@@ -3,6 +3,7 @@ import { HelmetProvider } from 'react-helmet-async';
 // routes
 import Router from './routes';
 import { ActiveCourseProvider } from './sections/gestionCurso/curso/context/ActiveCourseContext';
+import { ProcessingStatusProvider } from './sections/procesamiento/context/ProcessingStatus';
 // theme
 import ThemeProvider from './theme';
 // components
@@ -16,11 +17,13 @@ export default function App() {
     <HelmetProvider>
       <BrowserRouter>
         <ActiveCourseProvider>
-          <ThemeProvider>
-            <ScrollToTop />
+          <ProcessingStatusProvider>
+            <ThemeProvider>
+              <ScrollToTop />
 
-            <Router />
-          </ThemeProvider>
+              <Router />
+            </ThemeProvider>
+          </ProcessingStatusProvider>
         </ActiveCourseProvider>
       </BrowserRouter>
     </HelmetProvider>

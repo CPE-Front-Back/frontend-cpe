@@ -89,7 +89,7 @@ export default function Nav({ openNav, onCloseNav }) {
         </Link>
       </Box>
 
-      <NavSection data={navConfig} onSubmenuItemClicked={handleSubmenuItemClicked} />
+      <NavSection data={navConfig()} onSubmenuItemClicked={handleSubmenuItemClicked} />
 
       <Box sx={{ flexGrow: 1 }} />
 
