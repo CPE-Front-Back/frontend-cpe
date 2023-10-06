@@ -67,8 +67,9 @@ export default function SimpleLayout() {
                 onClick={() => {
                   navigate('/login', { replace: true });
                 }}
+                sx={{ textTransform: 'none' }}
               >
-                Iniciar Sesión
+                Iniciar sesión
               </LoadingButton>
             </Stack>
           </Stack>

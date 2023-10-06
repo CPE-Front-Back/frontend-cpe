@@ -45,8 +45,15 @@ export default function LoginForm() {
         </Link>
       </Stack>
 
-      <LoadingButton fullWidth size="large" type="submit" variant="contained" onClick={handleClick}>
-        Iniciar Sesión
+      <LoadingButton
+        fullWidth
+        size="large"
+        type="submit"
+        variant="contained"
+        onClick={handleClick}
+        sx={{ textTransform: 'none' }}
+      >
+        Iniciar sesión
       </LoadingButton>
     </>
   );

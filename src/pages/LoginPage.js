@@ -61,7 +61,7 @@ export default function LoginPage() {
         <Container maxWidth="sm">
           <StyledContent>
             <Typography variant="h4" gutterBottom>
-              Iniciar Sesión
+              Iniciar sesión
             </Typography>
 
             <LoginForm />
