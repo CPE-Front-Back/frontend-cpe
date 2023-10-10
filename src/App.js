@@ -1,5 +1,6 @@
 import { BrowserRouter } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
+import MainToastContainer from './components/messages/MainToastContainer';
 // routes
 import Router from './routes';
 import { ActiveCourseProvider } from './sections/gestionCurso/curso/context/ActiveCourseContext';
@@ -26,6 +27,7 @@ export default function App() {
           </ProcessingStatusProvider>
         </ActiveCourseProvider>
       </BrowserRouter>
+      <MainToastContainer />
     </HelmetProvider>
   );
 }

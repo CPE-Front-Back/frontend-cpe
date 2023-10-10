@@ -1,9 +1,10 @@
 import { faker } from '@faker-js/faker';
-import { Container, Grid, Typography } from '@mui/material';
+import { Button, Container, Grid, Typography } from '@mui/material';
 // @mui
 import { useTheme } from '@mui/material/styles';
 import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
+import setMessage from '../components/messages/messages';
 // components
 // sections
 import CourseStatisticsViewer from '../sections/@dashboard/app/CourseStatisticsViewer';
@@ -30,6 +31,7 @@ export default function DashboardLogedInPage() {
         <Grid container>
           <Grid item xs />
           <Grid item xs={9}>
+            <Button onClick={() => setMessage('success', 'mensaje de prueba')}>Show Message</Button>
             <CourseStatisticsViewer title={`Curso: ${activeCourse.nomb_curso}`} />
           </Grid>
           <Grid item xs />
