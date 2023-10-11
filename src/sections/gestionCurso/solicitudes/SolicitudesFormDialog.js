@@ -68,8 +68,74 @@ export default function SolicitudesFormDialog({ open, handleCloseClick, editMode
   const [firstLastName, setFirstLastName] = useState(firstLN);
   const [secondLastName, setSecondLastName] = useState(secondLN);
 
+  const [errors, setErrors] = useState({
+    num_id: '',
+    nomb_solicitante: '',
+    apell_solicitante: '',
+    secondLastName: '',
+    num_telefono: '',
+    provinciaSeleccionada: '',
+    municipioSeleccionado: '',
+    fuenteIngresoSeleccionada: '',
+    selectedOption: '',
+  });
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!formData.num_id) {
+      newErrors.num_id = 'Carnet de identidad es requerido';
+    }
+
+    if (!formData.nomb_solicitante) {
+      newErrors.nomb_solicitante = 'Nombre(s) son requeridos';
+    }
+
+    if (!firstLastName) {
+      newErrors.apell_solicitante = 'Primer apellido requerido';
+    }
+
+    if (!secondLastName) {
+      newErrors.secondLastName = 'Segundo apellido requerido';
+    }
+
+    if (!formData.num_telefono) {
+      newErrors.num_telefono = 'Teléfono es requerido';
+    }
+
+    if (!provinciaSeleccionada) {
+      newErrors.provinciaSeleccionada = 'Provincia es requerida';
+    }
+
+    if (!municipioSeleccionado) {
+      newErrors.municipioSeleccionado = 'Municipio es requerido';
+    }
+
+    if (!fuenteIngresoSeleccionada) {
+      newErrors.fuenteIngresoSeleccionada = 'Fuente de Ingreso es requerida';
+    }
+
+    if (!selectedOptions.opcion1) {
+      newErrors.selectedOption = 'Debe seleccionar al menos una carrera';
+    }
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleNameInputChange = (event) => {
+    const { name } = event.target;
+    const names = event.target.value;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: names,
+    }));
+  };
+
   const handleInputsChange = (event) => {
-    const { name, value } = event.target;
+    const { name } = event.target;
+    const value = event.target.value.trim();
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
@@ -77,7 +143,34 @@ export default function SolicitudesFormDialog({ open, handleCloseClick, editMode
   };
 
   const handleEnviarClick = async () => {
-    await concatLastNames();
+    const isValid = validateForm();
+
+    if (isValid) {
+      if (formData.num_id.length !== 11) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          num_id: 'El carnet de identidad debe tener 11 dígitos.',
+        }));
+      } else if (!/^[0-9]*$/.test(formData.num_id)) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          num_id: 'El carnet de identidad debe contener solo números.',
+        }));
+      } else if (!/^(\w+\s)?(\w+\s)?(\w+\s)?\w+$/.test(formData.nomb_solicitante)) {
+        console.log('nombre', formData.nomb_solicitante);
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          nomb_solicitante: 'Formato de nombres inválidos.',
+        }));
+      } else if (!/^(\+53\s?)?[5-9]\d{7}$/.test(formData.num_telefono)) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          num_telefono: 'El teléfono debe ser un número válido.',
+        }));
+      } else {
+        await concatLastNames();
+      }
+    }
   };
 
   const concatLastNames = () => {
@@ -276,6 +369,30 @@ export default function SolicitudesFormDialog({ open, handleCloseClick, editMode
     getOptionLabel: (option) => option.nomb_fuente,
   };
 
+  const handleLastNamesInput = (event) => {
+    // allow only letters
+    const inputValue = event.target.value.replace(/[^a-z]/g, '');
+    event.target.value = inputValue;
+  };
+
+  const handleNameInput = (event) => {
+    // allow only one blank space and letters
+    const inputValue = event.target.value.replace(/[^a-z][\s]/g, '');
+    event.target.value = inputValue;
+  };
+
+  const handlePhoneInput = (event) => {
+    // Allow only numbers and the plus (+) symbol
+    const inputValue = event.target.value.replace(/[^0-9+]/g, '');
+    event.target.value = inputValue;
+  };
+
+  const handleIdInput = (event) => {
+    // Allow only numbers
+    const inputValue = event.target.value.replace(/[^0-9]/g, '');
+    event.target.value = inputValue;
+  };
+
   // FINAL DE LA LOGICA PARA LOS DATOS DE LOS SOLICITANTES
 
   // INICIO DE LA LOGICA PARA LAS ******CARRERAS******
@@ -397,10 +514,14 @@ export default function SolicitudesFormDialog({ open, handleCloseClick, editMode
             <Grid item xs={12} sm={6} md={3}>
               <TextField
                 name="num_id"
-                type={'number'}
+                type="text"
                 value={formData.num_id}
                 label="Carnet de identidad"
                 onChange={handleInputsChange}
+                onInput={handleIdInput}
+                error={!!errors.num_id}
+                helperText={errors.num_id}
+                inputProps={{ maxLength: 11 }}
               />
             </Grid>
             <Grid item xs={12} sm={6} md={3}>
@@ -409,7 +530,11 @@ export default function SolicitudesFormDialog({ open, handleCloseClick, editMode
                 type="text"
                 value={formData.nomb_solicitante}
                 label="Nombres"
-                onChange={handleInputsChange}
+                onChange={handleNameInputChange}
+                onInput={handleNameInput}
+                error={!!errors.nomb_solicitante}
+                helperText={errors.nomb_solicitante}
+                inputProps={{ maxLength: 40 }}
               />
             </Grid>
             <Grid item xs={12} sm={6} md={3}>
@@ -419,8 +544,12 @@ export default function SolicitudesFormDialog({ open, handleCloseClick, editMode
                 value={firstLastName}
                 label="1er apellido"
                 onChange={(event) => {
-                  setFirstLastName(event.target.value);
+                  setFirstLastName(event.target.value.trim());
                 }}
+                onInput={handleLastNamesInput}
+                error={!!errors.apell_solicitante}
+                helperText={errors.apell_solicitante}
+                inputProps={{ maxLength: 25 }}
               />
             </Grid>
             <Grid item xs={12} sm={6} md={3}>
@@ -429,8 +558,12 @@ export default function SolicitudesFormDialog({ open, handleCloseClick, editMode
                 label="2do apellido"
                 value={secondLastName}
                 onChange={(event) => {
-                  setSecondLastName(event.target.value);
+                  setSecondLastName(event.target.value.trim());
                 }}
+                onInput={handleLastNamesInput}
+                error={!!errors.secondLastName}
+                helperText={errors.secondLastName}
+                inputProps={{ maxLength: 25 }}
               />
             </Grid>
           </Grid>
@@ -443,6 +576,10 @@ export default function SolicitudesFormDialog({ open, handleCloseClick, editMode
                 value={formData.num_telefono}
                 label="Teléfono"
                 onChange={handleInputsChange}
+                onInput={handlePhoneInput}
+                error={!!errors.num_telefono}
+                helperText={errors.num_telefono}
+                inputProps={{ maxLength: 11 }}
               />
             </Grid>
             <Grid item xs={12} sm={6} md={1}>
@@ -454,7 +591,16 @@ export default function SolicitudesFormDialog({ open, handleCloseClick, editMode
                   setProvinciaSeleccionada(newValue);
                   setMunicipioSeleccionado(null);
                 }}
-                renderInput={(params) => <TextField {...params} label="Provincia" />}
+                sx={{ maxWidth: '240px' }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Provincia"
+                    error={!!errors.provinciaSeleccionada}
+                    helperText={errors.provinciaSeleccionada}
+                  />
+                )}
+                noOptionsText={'No hay opciones'}
               />
             </Grid>
             <Grid item xs={12} sm={6} md={1}>
@@ -469,7 +615,16 @@ export default function SolicitudesFormDialog({ open, handleCloseClick, editMode
                     cod_municipio: newValue ? newValue.cod_municipio : null,
                   }));
                 }}
-                renderInput={(params) => <TextField {...params} label="Municipio" />}
+                sx={{ maxWidth: '240px' }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Municipio"
+                    error={!!errors.municipioSeleccionado}
+                    helperText={errors.municipioSeleccionado}
+                  />
+                )}
+                noOptionsText={'Seleccione una provincia'}
               />
             </Grid>
             <Grid item xs={12} sm={6} md={1}>
@@ -484,7 +639,16 @@ export default function SolicitudesFormDialog({ open, handleCloseClick, editMode
                     fuente_ingreso: newValue ? newValue.cod_fuente : null,
                   }));
                 }}
-                renderInput={(params) => <TextField {...params} label="Fuente de Ingreso" />}
+                sx={{ maxWidth: '240px' }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Fuente de Ingreso"
+                    error={!!errors.fuenteIngresoSeleccionada}
+                    helperText={errors.fuenteIngresoSeleccionada}
+                  />
+                )}
+                noOptionsText={'No hay opciones'}
               />
             </Grid>
           </Grid>
@@ -501,7 +665,15 @@ export default function SolicitudesFormDialog({ open, handleCloseClick, editMode
                     setOpcion1(newValue);
                     handleOptionChange(event, newValue, 'opcion1');
                   }}
-                  renderInput={(params) => <TextField {...params} label="Carrera en 1ra opción" />}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Carrera en 1ra opción"
+                      error={!!errors.selectedOption}
+                      helperText={errors.selectedOption}
+                    />
+                  )}
+                  noOptionsText={'No hay opciones'}
                 />
               </Grid>
               <Grid item xs>
@@ -514,7 +686,9 @@ export default function SolicitudesFormDialog({ open, handleCloseClick, editMode
                     setOpcion2(newValue);
                     handleOptionChange(event, newValue, 'opcion2');
                   }}
+                  disabled={!selectedOptions?.opcion1}
                   renderInput={(params) => <TextField {...params} label="Carrera en 2da opción" />}
+                  noOptionsText={'No hay opciones'}
                 />
               </Grid>
               <Grid item xs>
@@ -527,7 +701,9 @@ export default function SolicitudesFormDialog({ open, handleCloseClick, editMode
                     setOpcion3(newValue);
                     handleOptionChange(event, newValue, 'opcion3');
                   }}
+                  disabled={!selectedOptions?.opcion2}
                   renderInput={(params) => <TextField {...params} label="Carrera en 3ra opción" />}
+                  noOptionsText={'No hay opciones'}
                 />
               </Grid>
               <Grid item xs>
@@ -540,7 +716,9 @@ export default function SolicitudesFormDialog({ open, handleCloseClick, editMode
                     setOpcion4(newValue);
                     handleOptionChange(event, newValue, 'opcion4');
                   }}
+                  disabled={!selectedOptions?.opcion3}
                   renderInput={(params) => <TextField {...params} label="Carrera en 4ta opción" />}
+                  noOptionsText={'No hay opciones'}
                 />
               </Grid>
               <Grid item xs>
@@ -553,7 +731,9 @@ export default function SolicitudesFormDialog({ open, handleCloseClick, editMode
                     setOpcion5(newValue);
                     handleOptionChange(event, newValue, 'opcion5');
                   }}
+                  disabled={!selectedOptions?.opcion4}
                   renderInput={(params) => <TextField {...params} label="Carrera en 5ta opción" />}
+                  noOptionsText={'No hay opciones'}
                 />
               </Grid>
             </Stack>

@@ -1,4 +1,3 @@
-import { FormControl } from '@mui/base';
 import { LoadingButton } from '@mui/lab';
 import { Autocomplete, Container, Grid, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
@@ -13,6 +12,7 @@ import {
 } from '../../utils/codificadores/codificadoresStore';
 import SolicitanteCarrerOptionsForm from './SolicitanteCarrerOptionsForm';
 import { sendSolicitantePersonalData } from './store/store';
+import { validateForm } from '../../utils/validations';
 
 const StyledRoot = styled('div')(({ theme }) => ({
   [theme.breakpoints.up('md')]: {
@@ -153,16 +153,16 @@ export default function SolicitantePersonalDataForm({ togleFormVisibility }) {
           ...prevErrors,
           num_id: 'El carnet de identidad debe contener solo números.',
         }));
-      } else if (!/^(\+53\s?)?[5-9]\d{7}$/.test(formData.num_telefono)) {
-        setErrors((prevErrors) => ({
-          ...prevErrors,
-          num_telefono: 'El teléfono debe ser un número válido.',
-        }));
-      } else if (!/^(\w+\s)?\w+$/.test(formData.nomb_solicitante)) {
+      } else if (!/^(\w+\s)?(\w+\s)?(\w+\s)?\w+$/.test(formData.nomb_solicitante)) {
         console.log('nombre', formData.nomb_solicitante);
         setErrors((prevErrors) => ({
           ...prevErrors,
           nomb_solicitante: 'Formato de nombres inválidos.',
+        }));
+      } else if (!/^(\+53\s?)?[5-9]\d{7}$/.test(formData.num_telefono)) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          num_telefono: 'El teléfono debe ser un número válido.',
         }));
       } else {
         await concatLastNames();
@@ -240,11 +240,18 @@ export default function SolicitantePersonalDataForm({ togleFormVisibility }) {
     getOptionLabel: (option) => option.nomb_fuente,
   };
 
+  const handleLastNamesInput = (event) => {
+    // allow only letters
+    const inputValue = event.target.value.replace(/[^a-z]/g, '');
+    event.target.value = inputValue;
+  };
+
   const handleNameInput = (event) => {
     // allow only one blank space and letters
     const inputValue = event.target.value.replace(/[^a-z][\s]/g, '');
     event.target.value = inputValue;
   };
+
   const handlePhoneInput = (event) => {
     // Allow only numbers and the plus (+) symbol
     const inputValue = event.target.value.replace(/[^0-9+]/g, '');
@@ -291,7 +298,7 @@ export default function SolicitantePersonalDataForm({ togleFormVisibility }) {
                       onInput={handleNameInput}
                       error={!!errors.nomb_solicitante}
                       helperText={errors.nomb_solicitante}
-                      inputProps={{ maxLength: 25 }}
+                      inputProps={{ maxLength: 40 }}
                     />
                   </Grid>
                   <Grid item xs={12} sm={6} md={3}>
@@ -303,6 +310,7 @@ export default function SolicitantePersonalDataForm({ togleFormVisibility }) {
                       onChange={(event) => {
                         setFirstLastName(event.target.value.trim());
                       }}
+                      onInput={handleLastNamesInput}
                       error={!!errors.apell_solicitante}
                       helperText={errors.apell_solicitante}
                       inputProps={{ maxLength: 25 }}
@@ -316,6 +324,7 @@ export default function SolicitantePersonalDataForm({ togleFormVisibility }) {
                       onChange={(event) => {
                         setSecondLastName(event.target.value.trim());
                       }}
+                      onInput={handleLastNamesInput}
                       error={!!errors.secondLastName}
                       helperText={errors.secondLastName}
                       inputProps={{ maxLength: 25 }}
