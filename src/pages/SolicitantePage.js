@@ -1,3 +1,5 @@
+import { mdiSchoolOutline, mdiTextBoxMultipleOutline } from '@mdi/js';
+import { Icon } from '@mdi/react';
 import { LoadingButton } from '@mui/lab';
 import { Container, Grid, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
@@ -26,8 +28,13 @@ const Main = styled('div')(({ theme }) => ({
   minHeight: '100%',
   paddingTop: APP_BAR_MOBILE + 24,
   paddingBottom: theme.spacing(0),
-  [theme.breakpoints.up('md')]: {
+  [theme.breakpoints.up('sm')]: {
     paddingTop: APP_BAR_DESKTOP + 24,
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2),
+  },
+  [theme.breakpoints.down('sm')]: {
+    paddingTop: APP_BAR_DESKTOP + 90,
     paddingLeft: theme.spacing(2),
     paddingRight: theme.spacing(2),
   },
@@ -59,29 +66,30 @@ export default function SolicitantePage() {
                     variant="contained"
                     sx={{ margin: '0 auto' }}
                     onClick={toggleFormView}
+                    startIcon={<Icon size={1} path={mdiSchoolOutline} />}
                   >
                     Prematrícula
                   </LoadingButton>
                 </Grid>
 
                 <Grid item xs={12} sm={6} md={3}>
-                  <AppWidgetSummary title="Reporte 1" total={100} icon={'ant-design:android-filled'} />
+                  <AppWidgetSummary title="Reporte 1" /* total={100} */ icon={mdiTextBoxMultipleOutline} />
                 </Grid>
 
                 <Grid item xs={12} sm={6} md={3}>
-                  <AppWidgetSummary title="Reporte 2" total={100} icon={'ant-design:android-filled'} />
+                  <AppWidgetSummary title="Reporte 2" /* total={100} */ icon={mdiTextBoxMultipleOutline} />
                 </Grid>
 
                 <Grid item xs={12} sm={6} md={3}>
-                  <AppWidgetSummary title="Reporte 3" total={100} icon={'ant-design:android-filled'} />
+                  <AppWidgetSummary title="Reporte 3" /* total={100} */ icon={mdiTextBoxMultipleOutline} />
                 </Grid>
 
                 <Grid item xs={12} sm={6} md={3}>
-                  <AppWidgetSummary title="Reporte 4" total={100} icon={'ant-design:android-filled'} />
+                  <AppWidgetSummary title="Reporte 4" /* total={100} */ icon={mdiTextBoxMultipleOutline} />
                 </Grid>
 
                 <Grid item xs={12} sm={6} md={3}>
-                  <AppWidgetSummary title="Reporte 5" total={100} icon={'ant-design:android-filled'} />
+                  <AppWidgetSummary title="Reporte 5" /* total={100} */ icon={mdiTextBoxMultipleOutline} />
                 </Grid>
               </Grid>
             ) : (

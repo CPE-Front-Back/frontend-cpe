@@ -29,10 +29,15 @@ const Main = styled('div')(({ theme }) => ({
   flexGrow: 1,
   overflow: 'auto',
   minHeight: '100%',
-  paddingTop: APP_BAR_MOBILE + 24,
+  paddingTop: APP_BAR_MOBILE + 100,
   paddingBottom: theme.spacing(0),
   [theme.breakpoints.up('md')]: {
     paddingTop: APP_BAR_DESKTOP + 100,
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2),
+  },
+  [theme.breakpoints.down('sm')]: {
+    paddingTop: APP_BAR_MOBILE - 60,
     paddingLeft: theme.spacing(2),
     paddingRight: theme.spacing(2),
   },
@@ -116,8 +121,18 @@ export default function SolicitantePersonalDataForm({ togleFormVisibility }) {
     return Object.keys(newErrors).length === 0;
   };
 
+  const handleNameInputChange = (event) => {
+    const { name } = event.target;
+    const names = event.target.value;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: names,
+    }));
+  };
+
   const handleInputsChange = (event) => {
-    const { name, value } = event.target;
+    const { name } = event.target;
+    const value = event.target.value.trim();
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
@@ -138,13 +153,16 @@ export default function SolicitantePersonalDataForm({ togleFormVisibility }) {
           ...prevErrors,
           num_id: 'El carnet de identidad debe contener solo números.',
         }));
-      } else if (
-        !/^(\+53\s?)?[5-9]\d{7}$/.test(formData.num_telefono) &&
-        !/^(\+53\s?)?[5-9]\d{8}$/.test(formData.num_telefono)
-      ) {
+      } else if (!/^(\+53\s?)?[5-9]\d{7}$/.test(formData.num_telefono)) {
         setErrors((prevErrors) => ({
           ...prevErrors,
-          num_telefono: 'El teléfono debe ser un número válido de 8 o 10 dígitos.',
+          num_telefono: 'El teléfono debe ser un número válido.',
+        }));
+      } else if (!/^(\w+\s)?\w+$/.test(formData.nomb_solicitante)) {
+        console.log('nombre', formData.nomb_solicitante);
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          nomb_solicitante: 'Formato de nombres inválidos.',
         }));
       } else {
         await concatLastNames();
@@ -157,9 +175,11 @@ export default function SolicitantePersonalDataForm({ togleFormVisibility }) {
       apell_solicitante: `${firstLastName} ${secondLastName}`,
     });
   };
+
   // esta es la funcion que abre el formulario de las carreras
   useEffect(() => {
     if (secondLastName !== '' && formData.apell_solicitante.includes(secondLastName)) {
+      console.log('datos del formulario', formData);
       setIsCarrersFormVisible(!isCarrersFormVisible);
     }
   }, [formData]);
@@ -220,6 +240,23 @@ export default function SolicitantePersonalDataForm({ togleFormVisibility }) {
     getOptionLabel: (option) => option.nomb_fuente,
   };
 
+  const handleNameInput = (event) => {
+    // allow only one blank space and letters
+    const inputValue = event.target.value.replace(/[^a-z][\s]/g, '');
+    event.target.value = inputValue;
+  };
+  const handlePhoneInput = (event) => {
+    // Allow only numbers and the plus (+) symbol
+    const inputValue = event.target.value.replace(/[^0-9+]/g, '');
+    event.target.value = inputValue;
+  };
+
+  const handleIdInput = (event) => {
+    // Allow only numbers
+    const inputValue = event.target.value.replace(/[^0-9]/g, '');
+    event.target.value = inputValue;
+  };
+
   return (
     <>
       <StyledRoot>
@@ -227,17 +264,21 @@ export default function SolicitantePersonalDataForm({ togleFormVisibility }) {
           <Container sx={{ backgroundColor: 'white' }}>
             {!isCarrersFormVisible ? (
               <>
-                <Typography variant="h4">Introduzca sus datos personales</Typography>
-                <Grid container spacing={3} sx={{ pb: '50px', mt: '10px' }}>
+                <Typography variant="h4" sx={{ textAlign: 'center' }}>
+                  Introduzca sus datos personales
+                </Typography>
+                <Grid container spacing={3} sx={{ pb: '25px', mt: '10px' }}>
                   <Grid item xs={12} sm={6} md={3}>
                     <TextField
                       name="num_id"
-                      type={'number'}
+                      type="text"
                       value={formData.num_id}
                       label="Carnet de identidad"
                       onChange={handleInputsChange}
+                      onInput={handleIdInput}
                       error={!!errors.num_id}
                       helperText={errors.num_id}
+                      inputProps={{ maxLength: 11 }}
                     />
                   </Grid>
                   <Grid item xs={12} sm={6} md={3}>
@@ -246,9 +287,11 @@ export default function SolicitantePersonalDataForm({ togleFormVisibility }) {
                       type="text"
                       value={formData.nomb_solicitante}
                       label="Nombres"
-                      onChange={handleInputsChange}
+                      onChange={handleNameInputChange}
+                      onInput={handleNameInput}
                       error={!!errors.nomb_solicitante}
                       helperText={errors.nomb_solicitante}
+                      inputProps={{ maxLength: 25 }}
                     />
                   </Grid>
                   <Grid item xs={12} sm={6} md={3}>
@@ -258,10 +301,11 @@ export default function SolicitantePersonalDataForm({ togleFormVisibility }) {
                       value={firstLastName}
                       label="1er apellido"
                       onChange={(event) => {
-                        setFirstLastName(event.target.value);
+                        setFirstLastName(event.target.value.trim());
                       }}
                       error={!!errors.apell_solicitante}
                       helperText={errors.apell_solicitante}
+                      inputProps={{ maxLength: 25 }}
                     />
                   </Grid>
                   <Grid item xs={12} sm={6} md={3}>
@@ -270,15 +314,16 @@ export default function SolicitantePersonalDataForm({ togleFormVisibility }) {
                       label="2do apellido"
                       value={secondLastName}
                       onChange={(event) => {
-                        setSecondLastName(event.target.value);
+                        setSecondLastName(event.target.value.trim());
                       }}
                       error={!!errors.secondLastName}
                       helperText={errors.secondLastName}
+                      inputProps={{ maxLength: 25 }}
                     />
                   </Grid>
                 </Grid>
 
-                <Grid container spacyng={1} columns={{ xs: 12, sm: 12, md: 4 }}>
+                <Grid container spacing={3} columns={{ xs: 12, sm: 12, md: 4 }}>
                   <Grid item xs={12} sm={6} md={1}>
                     <TextField
                       name="num_telefono"
@@ -286,8 +331,10 @@ export default function SolicitantePersonalDataForm({ togleFormVisibility }) {
                       value={formData.num_telefono}
                       label="Teléfono"
                       onChange={handleInputsChange}
+                      onInput={handlePhoneInput}
                       error={!!errors.num_telefono}
                       helperText={errors.num_telefono}
+                      inputProps={{ maxLength: 11 }}
                     />
                   </Grid>
                   <Grid item xs={12} sm={6} md={1}>
@@ -299,7 +346,7 @@ export default function SolicitantePersonalDataForm({ togleFormVisibility }) {
                         setProvinciaSeleccionada(newValue);
                         setMunicipioSeleccionado(null);
                       }}
-                      // sx={{ width: '100%' }}
+                      sx={{ maxWidth: '240px' }}
                       renderInput={(params) => (
                         <TextField
                           {...params}
@@ -308,6 +355,7 @@ export default function SolicitantePersonalDataForm({ togleFormVisibility }) {
                           helperText={errors.provinciaSeleccionada}
                         />
                       )}
+                      noOptionsText={'No hay opciones'}
                     />
                   </Grid>
                   <Grid item xs={12} sm={6} md={1}>
@@ -322,7 +370,7 @@ export default function SolicitantePersonalDataForm({ togleFormVisibility }) {
                           cod_municipio: newValue ? newValue.cod_municipio : null,
                         }));
                       }}
-                      // sx={{ width: '100%' }}
+                      sx={{ maxWidth: '240px' }}
                       renderInput={(params) => (
                         <TextField
                           {...params}
@@ -331,6 +379,7 @@ export default function SolicitantePersonalDataForm({ togleFormVisibility }) {
                           helperText={errors.municipioSeleccionado}
                         />
                       )}
+                      noOptionsText={'Seleccione una provincia'}
                     />
                   </Grid>
                   <Grid item xs={12} sm={6} md={1}>
@@ -345,7 +394,7 @@ export default function SolicitantePersonalDataForm({ togleFormVisibility }) {
                           fuente_ingreso: newValue ? newValue.cod_fuente : null,
                         }));
                       }}
-                      // sx={{ width: '100%' }}
+                      sx={{ maxWidth: '240px' }}
                       renderInput={(params) => (
                         <TextField
                           {...params}
@@ -354,6 +403,7 @@ export default function SolicitantePersonalDataForm({ togleFormVisibility }) {
                           helperText={errors.fuenteIngresoSeleccionada}
                         />
                       )}
+                      noOptionsText={'No hay opciones'}
                     />
                   </Grid>
                 </Grid>
@@ -373,6 +423,10 @@ export default function SolicitantePersonalDataForm({ togleFormVisibility }) {
                 personalData={formData}
                 onVolver={() => {
                   setIsCarrersFormVisible(!isCarrersFormVisible);
+                  setFormData({
+                    ...formData,
+                    apell_solicitante: ``,
+                  });
                 }}
                 onEnviar={() => togleFormVisibility()}
               />

@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import solicitudes from '../../_mock/solicitud';
 import SelectAutoWidth from '../../components/ComboBox/ComboBoxAutoWidth';
+import useResponsive from '../../hooks/useResponsive';
 
 import { getCarreras } from '../gestionCodificadores/carreras/store/store';
 import { UseActiveCourse } from '../gestionCurso/curso/context/ActiveCourseContext';
@@ -23,6 +24,9 @@ export default function SolicitanteCarrerOptionsForm({ personalData, options, on
   const [carreras, setCarreras] = useState([]);
 
   const { activeCourse } = UseActiveCourse();
+
+  const isPhoneSize = useResponsive('down', 'sm');
+  const mtSize = isPhoneSize ? '-10px' : '-140px';
 
   const [errors, setErrors] = useState({
     selectedOption: '',
@@ -152,10 +156,14 @@ export default function SolicitanteCarrerOptionsForm({ personalData, options, on
     getOptionLabel: (option) => option.nomb_carrera,
   };
 
+  useEffect(() => {
+    console.log('selectedOptions', selectedOptions);
+  }, [selectedOptions]);
+
   return (
-    <Grid container sx={{ mt: -20, pt: '30px' }}>
+    <Grid container sx={{ mt: mtSize, pt: '30px' }}>
       <Grid item xs />
-      <Grid item xs={3}>
+      <Grid item xs={6}>
         <Typography variant="h4" sx={{ textAlign: 'center' }}>
           Listado de solicitudes
         </Typography>
@@ -178,6 +186,7 @@ export default function SolicitanteCarrerOptionsForm({ personalData, options, on
                 helperText={errors.selectedOption}
               />
             )}
+            noOptionsText={'No hay opciones'}
           />
         </Grid>
         <Grid item xs>
@@ -187,7 +196,9 @@ export default function SolicitanteCarrerOptionsForm({ personalData, options, on
             onChange={(event, newValue) => {
               handleOptionChange(event, newValue, 'opcion2');
             }}
+            disabled={!selectedOptions?.opcion1}
             renderInput={(params) => <TextField {...params} label="Carrera en 2da opción" />}
+            noOptionsText={'No hay opciones'}
           />
         </Grid>
         <Grid item xs>
@@ -197,7 +208,9 @@ export default function SolicitanteCarrerOptionsForm({ personalData, options, on
             onChange={(event, newValue) => {
               handleOptionChange(event, newValue, 'opcion3');
             }}
+            disabled={!selectedOptions?.opcion2}
             renderInput={(params) => <TextField {...params} label="Carrera en 3ra opción" />}
+            noOptionsText={'No hay opciones'}
           />
         </Grid>
         <Grid item xs>
@@ -207,7 +220,9 @@ export default function SolicitanteCarrerOptionsForm({ personalData, options, on
             onChange={(event, newValue) => {
               handleOptionChange(event, newValue, 'opcion4');
             }}
+            disabled={!selectedOptions?.opcion3}
             renderInput={(params) => <TextField {...params} label="Carrera en 4ta opción" />}
+            noOptionsText={'No hay opciones'}
           />
         </Grid>
         <Grid item xs>
@@ -217,7 +232,9 @@ export default function SolicitanteCarrerOptionsForm({ personalData, options, on
             onChange={(event, newValue) => {
               handleOptionChange(event, newValue, 'opcion5');
             }}
+            disabled={!selectedOptions?.opcion4}
             renderInput={(params) => <TextField {...params} label="Carrera en 5ta opción" />}
+            noOptionsText={'No hay opciones'}
           />
         </Grid>
       </Stack>

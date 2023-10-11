@@ -1,4 +1,20 @@
 // component
+import {
+  mdiBank,
+  mdiBookOpenPageVariantOutline,
+  mdiChairSchool,
+  mdiFileCogOutline,
+  mdiFileDocumentCheckOutline,
+  mdiFileDocumentMultipleOutline,
+  mdiFileDocumentOutline,
+  mdiFileSign,
+  mdiFileSyncOutline,
+  mdiPlaylistEdit,
+  mdiSchoolOutline,
+  mdiStoreEditOutline,
+  mdiTextBoxMultipleOutline,
+} from '@mdi/js';
+import { Icon } from '@mdi/react';
 import SvgColor from '../../../components/svg-color';
 import { UseProcessingStatus } from '../../../sections/procesamiento/context/ProcessingStatus';
 
@@ -32,158 +48,158 @@ export default function navConfig() {
     }, */
     {
       title: 'Gestión de curso',
-      icon: icon('ic_analytics'),
+      icon: <Icon size={1} path={mdiBank} />,
       showSubItems: false,
       subItems: [
         {
           title: 'Cambiar curso activo',
           path: '/dashboard/curso',
-          icon: icon('ic_analytics'),
+          icon: <Icon size={1} path={mdiBank} />,
         },
         {
           title: 'Actualizar capacidades',
           path: '/dashboard/capacities',
-          icon: icon('ic_analytics'),
+          icon: <Icon size={1} path={mdiChairSchool} />,
           isDisabled: canActCapacities,
         },
         {
           title: 'Actualizar ofertas',
           path: '/dashboard/offers',
-          icon: icon('ic_analytics'),
+          icon: <Icon size={1} path={mdiPlaylistEdit} />,
           isDisabled: canActOffers,
         },
         {
           title: 'Actualizar solicitudes sin confirmar',
           path: '/dashboard/solicitudesSinConfirmar',
-          icon: icon('ic_analytics'),
+          icon: <Icon size={1} path={mdiFileDocumentOutline} />,
           isDisabled: canActRequests,
         },
         {
           title: 'Actualizar solicitudes confirmadas',
           path: '/dashboard/solicitudesConfirmadas',
-          icon: icon('ic_analytics'),
+          icon: <Icon size={1} path={mdiFileDocumentCheckOutline} />,
           isDisabled: canActRequests,
         },
       ],
     },
     {
       title: 'Gestión de codificadores',
-      icon: icon('ic_analytics'),
+      icon: <Icon size={1} path={mdiFileCogOutline} />,
       showSubItems: false,
       subItems: [
         {
           title: 'Actualizar aulas',
           path: '/dashboard/classrooms',
-          icon: icon('ic_analytics'),
+          icon: <Icon size={1} path={mdiStoreEditOutline} />,
         },
         {
           title: 'Actualizar carreras',
           path: '/dashboard/careers',
-          icon: icon('ic_analytics'),
+          icon: <Icon size={1} path={mdiSchoolOutline} />,
         },
         {
           title: 'Actualizar edificios',
           path: '/dashboard/buildings',
-          icon: icon('ic_analytics'),
+          icon: <Icon size={1} path={mdiStoreEditOutline} />,
         },
         {
           title: 'Actualizar facultades',
           path: '/dashboard/faculties',
-          icon: icon('ic_analytics'),
+          icon: <Icon size={1} path={mdiStoreEditOutline} />,
         },
         {
           title: 'Actualizar fuentes de Ingreso',
           path: '/dashboard/incomeSources',
-          icon: icon('ic_analytics'),
+          icon: <Icon size={1} path={mdiBookOpenPageVariantOutline} />,
         },
       ],
     },
     {
       title: 'Procesamiento',
-      icon: icon('ic_analytics'),
+      icon: <Icon size={1} path={mdiFileSyncOutline} />,
       showSubItems: false,
       subItems: [
         {
           title: 'Asignar Carreras 1ra vuelta',
-          icon: icon('ic_analytics'),
+          icon: <Icon size={1} path={mdiSchoolOutline} />,
           isDisabled: canAsigPrimVuelta,
         },
         {
           title: 'Asignar Carreras 2da vuelta',
           path: '/dashboard/apps',
-          icon: icon('ic_analytics'),
+          icon: <Icon size={1} path={mdiSchoolOutline} />,
           isDisabled: canAsigSegVuelta,
         },
         {
           title: 'Asignar Aulas',
           path: '/dashboard/apps',
-          icon: icon('ic_analytics'),
+          icon: <Icon size={1} path={mdiStoreEditOutline} />,
           isDisabled: canAsigClassrooms,
         },
         {
           title: 'Asignar Actas',
           path: '/dashboard/apps',
-          icon: icon('ic_analytics'),
+          icon: <Icon size={1} path={mdiFileDocumentMultipleOutline} />,
           isDisabled: canAsigActs,
         },
         {
           title: 'Calificación',
           path: '/dashboard/apps',
-          icon: icon('ic_analytics'),
+          icon: <Icon size={1} path={mdiFileSign} />,
           isDisabled: canCalify,
         },
         {
           title: 'Recalificación',
           path: '/dashboard/apps',
-          icon: icon('ic_analytics'),
+          icon: <Icon size={1} path={mdiFileSign} />,
           isDisabled: canRecalify,
         },
       ],
     },
     {
       title: 'Reportes',
-      icon: icon('ic_analytics'),
+      icon: <Icon size={1} path={mdiTextBoxMultipleOutline} />,
       showSubItems: false,
       subItems: [
         {
           title: 'Reporte 1',
           path: 'd',
-          icon: icon('ic_analytics'),
+          icon: <Icon size={1} path={mdiTextBoxMultipleOutline} />,
         },
         {
           title: 'Reporte 2',
           path: 'd',
-          icon: icon('ic_analytics'),
+          icon: <Icon size={1} path={mdiTextBoxMultipleOutline} />,
         },
         {
           title: 'Reporte 3',
           path: 'd',
-          icon: icon('ic_analytics'),
+          icon: <Icon size={1} path={mdiTextBoxMultipleOutline} />,
         },
         {
           title: 'Reporte 4',
           path: 'd',
-          icon: icon('ic_analytics'),
+          icon: <Icon size={1} path={mdiTextBoxMultipleOutline} />,
         },
         {
           title: 'Reporte 5',
           path: 'd',
-          icon: icon('ic_analytics'),
+          icon: <Icon size={1} path={mdiTextBoxMultipleOutline} />,
         },
         {
           title: 'Reporte 6',
           path: 'd',
-          icon: icon('ic_analytics'),
+          icon: <Icon size={1} path={mdiTextBoxMultipleOutline} />,
         },
         {
           title: 'Reporte 7',
           path: 'd',
-          icon: icon('ic_analytics'),
+          icon: <Icon size={1} path={mdiTextBoxMultipleOutline} />,
         },
         {
           title: 'Reporte 8',
           path: 'd',
-          icon: icon('ic_analytics'),
+          icon: <Icon size={1} path={mdiTextBoxMultipleOutline} />,
         },
       ],
     },
