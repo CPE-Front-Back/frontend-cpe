@@ -1,18 +1,14 @@
 import { LoadingButton } from '@mui/lab';
-import { Autocomplete, Container, Grid, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material';
+import { Autocomplete, Container, Grid, TextField, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import SelectAutoWidth from '../../components/ComboBox/ComboBoxAutoWidth';
 import {
   getFuentesIngreso,
   getMunicipiosPorProvincia,
   getProvincias,
 } from '../../utils/codificadores/codificadoresStore';
 import SolicitanteCarrerOptionsForm from './SolicitanteCarrerOptionsForm';
-import { sendSolicitantePersonalData } from './store/store';
-import { validateForm } from '../../utils/validations';
 
 const StyledRoot = styled('div')(({ theme }) => ({
   [theme.breakpoints.up('md')]: {
@@ -65,8 +61,8 @@ export default function SolicitantePersonalDataForm({ togleFormVisibility }) {
   const [municipioSeleccionado, setMunicipioSeleccionado] = useState(null);
   const [fuentesIngreso, setFuentesIngreso] = useState([]);
   const [fuenteIngresoSeleccionada, setFuenteIngresoSeleccionada] = useState(null);
-  const [num_id, setNum_id] = useState('');
-  const [nomb_solicitante, setNomb_solicitante] = useState('');
+  // const [num_id, setNum_id] = useState('');
+  // const [nomb_solicitante, setNomb_solicitante] = useState('');
   const [firstLastName, setFirstLastName] = useState('');
   const [secondLastName, setSecondLastName] = useState('');
 
