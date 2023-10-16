@@ -1,6 +1,7 @@
 import { Autocomplete, Box, Button, Grid, TextField } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
+import setMessage from '../../../components/messages/messages';
 import { getClassroomsByBuilding } from '../../gestionCodificadores/aulas/store/store';
 import { getBuildingsByFaclulty } from '../../gestionCodificadores/edificios/store/store';
 import { getFaculties } from '../../gestionCodificadores/facultades/store/store';
@@ -105,20 +106,24 @@ export default function CapacitiesForm({ editMode, formData, onSubmit }) {
         .then((response) => {
           if (response.status === 200) {
             console.log(response.data);
+            setMessage('success', '¡Capacidad actualizada con éxito!');
           }
         })
         .catch((error) => {
           console.log('Error al actualizar la capacidad: ', error);
+          setMessage('error', '¡Ha ocurrido un error!');
         });
     } else {
       insertCapacity(updatedData)
         .then((response) => {
           if (response.status === 200) {
             console.log(response.data);
+            setMessage('success', '¡Capacidad registrada con éxito!');
           }
         })
         .catch((error) => {
           console.log('Error al insertar la capacidad: ', error);
+          setMessage('error', '¡Ha ocurrido un error!');
         });
     }
 
@@ -165,6 +170,7 @@ export default function CapacitiesForm({ editMode, formData, onSubmit }) {
               }}
               disabled={editMode}
               renderInput={(params) => <TextField {...params} label="Edificios disponibles" />}
+              noOptionsText={'Seleccione una facultad'}
             />
           </Grid>
           <Grid item xs sx={{ minWidth: '200px' }}>
@@ -178,6 +184,7 @@ export default function CapacitiesForm({ editMode, formData, onSubmit }) {
               }}
               disabled={editMode}
               renderInput={(params) => <TextField {...params} label="Aulas disponibles" />}
+              noOptionsText={'Seleccione un edificio'}
             />
           </Grid>
         </Grid>

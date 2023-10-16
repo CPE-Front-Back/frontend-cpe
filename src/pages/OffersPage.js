@@ -16,18 +16,26 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
+import axios from 'axios';
 import { filter } from 'lodash';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import Iconify from '../components/iconify';
-import Scrollbar from '../components/scrollbar';
-import FacultadesForm from '../sections/gestionCodificadores/facultades/FacultadesForm';
-import FacultadesListHead from '../sections/gestionCodificadores/facultades/FacultadesListHead';
-import FacultadesListToolbar from '../sections/gestionCodificadores/facultades/FacultadesListToolbar';
-import { getFaculties } from '../sections/gestionCodificadores/facultades/store/store';
+import { getCarreras } from '../sections/gestionCodificadores/carreras/store/store';
 import { UseActiveCourse } from '../sections/gestionCurso/curso/context/ActiveCourseContext';
 
-const TABLE_HEAD = [{ id: 'nomb_facultad', label: 'Facultad', alignRight: false }, { id: '' }];
+import { getAllOfertasByCurso, updateOferta } from '../sections/gestionCurso/ofertas/store/store';
+
+import Iconify from '../components/iconify';
+import Scrollbar from '../components/scrollbar';
+import OfertasForm from '../sections/gestionCurso/ofertas/OfertasForm';
+import OfertasListHead from '../sections/gestionCurso/ofertas/OfertasListHead';
+import OfertasListToolbar from '../sections/gestionCurso/ofertas/OfertasListToolbar';
+
+const TABLE_HEAD = [
+  { id: 'nomb_carrera', label: 'Carrera', alignRight: false },
+  { id: 'cant_ofertas', label: 'Cantidad de ofertas', alignRight: false },
+  { id: '' },
+];
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -55,17 +63,18 @@ function applySortFilter(array, comparator, query) {
   if (query) {
     return filter(
       array,
-      (_faculty) => String(_faculty.nomb_facultad).toLowerCase().indexOf(String(query).toLowerCase()) !== -1
+      (_offer) => String(_offer.nomb_carrera).toLowerCase().indexOf(String(query).toLowerCase()) !== -1
     );
   }
   return stabilizedThis.map((el) => el[0]);
 }
-export default function FacultadesPage() {
+
+export default function OffersPage() {
   const [openInRowMenu, setOpenInRowMenu] = useState(null);
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
   const [selected, setSelected] = useState([]);
-  const [orderBy, setOrderBy] = useState('nomb_facultad');
+  const [orderBy, setOrderBy] = useState('nomb_carrera');
   const [filterValue, setFilterValue] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [isFormVisible, setIsFormVisible] = useState(false);
@@ -73,23 +82,46 @@ export default function FacultadesPage() {
   const [formData, setFormData] = useState({});
   const [refresh, setRefresh] = useState(0);
 
-  const [FACULTADESlIST, setFACULTADESlIST] = useState([]);
+  const [OFERTASLIST, setOFERTASLIST] = useState([]);
+  const [CARRERASLIST, setCARRERASLIST] = useState([]);
 
-  const [filteredFaculties, setFilteredFaculties] = useState([]);
+  const [filteredOffers, setFilteredOffers] = useState([]);
   const [isNotFound, setIsNotFound] = useState(false);
   const [emptyRows, setEmptyRows] = useState(0);
 
+  const { activeCourse } = UseActiveCourse();
+
   useEffect(() => {
-    getFaculties()
+    getCarreras()
       .then((response) => {
         if (response.status === 200) {
-          setFACULTADESlIST(response.data);
+          setCARRERASLIST(response.data);
         }
       })
       .catch((error) => {
-        console.log('Error al cargar las facultades', error);
+        console.log('Error al cargar las carreras', error);
       });
-  }, [refresh]);
+  }, []);
+
+  useEffect(() => {
+    getAllOfertasByCurso(activeCourse.cod_curso)
+      .then((response) => {
+        if (response.status === 200) {
+          const updatedOfertasList = response.data.map((oferta) => {
+            const relatedCarrera = CARRERASLIST.find((carrera) => carrera.cod_carrera === oferta.cod_carrera);
+            return {
+              ...oferta,
+              nomb_carrera: relatedCarrera ? relatedCarrera.nomb_carrera : 'Unknown', // Replace 'Unknown' with a default name
+            };
+          });
+          setOFERTASLIST(updatedOfertasList);
+          console.log('Cargar las ofertas', refresh);
+        }
+      })
+      .catch((error) => {
+        console.log('Error al cargar ofertas: ', error);
+      });
+  }, [refresh, CARRERASLIST]);
 
   const handleOpenInRowMenu = (event) => {
     setOpenInRowMenu(event.currentTarget);
@@ -107,19 +139,19 @@ export default function FacultadesPage() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = FACULTADESlIST.map((n) => n.nomb_facultad);
+      const newSelecteds = OFERTASLIST.map((n) => n.cod_carrera);
       setSelected(newSelecteds);
       return;
     }
     setSelected([]);
   };
 
-  const handleSelectClick = (event, codFacultad) => {
-    const selectedIndex = selected.indexOf(codFacultad);
+  const handleSelectClick = (event, codCarrera) => {
+    const selectedIndex = selected.indexOf(codCarrera);
     let newSelected = [];
     if (selectedIndex === -1) {
       // not found, add element to selected list
-      newSelected = newSelected.concat(selected, codFacultad);
+      newSelected = newSelected.concat(selected, codCarrera);
     } else if (selectedIndex === 0) {
       // found at start, remove first element
       newSelected = newSelected.concat(selected.slice(1));
@@ -149,7 +181,7 @@ export default function FacultadesPage() {
 
   const handleEditClick = () => {
     if (selected.length === 1) {
-      const selectedItem = FACULTADESlIST.find((faculty) => faculty.cod_facultad === selected[0]);
+      const selectedItem = filteredOffers.find((offer) => offer.cod_carrera === selected[0]);
       if (selectedItem) {
         handleCloseInRowMenu();
         setIsFormVisible(true);
@@ -159,25 +191,25 @@ export default function FacultadesPage() {
     }
   };
 
-  const handleRowClick = (codFaculty) => {
-    const newSelected = [codFaculty];
+  const handleRowClick = (codCarrera) => {
+    const newSelected = [codCarrera];
     setSelected(newSelected);
   };
 
   useEffect(() => {
-    setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - FACULTADESlIST.length) : 0);
-    setFilteredFaculties(applySortFilter(FACULTADESlIST, getComparator(order, orderBy), filterValue));
-    setIsNotFound(!filteredFaculties.length && !!filterValue);
-  }, [FACULTADESlIST, filterValue, order, orderBy]);
+    setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - OFERTASLIST.length) : 0);
+    setFilteredOffers(applySortFilter(OFERTASLIST, getComparator(order, orderBy), filterValue));
+    setIsNotFound(!filteredOffers.length && !!filterValue);
+  }, [OFERTASLIST, filterValue, order, orderBy]);
 
   return (
     <>
       <Helmet>
-        <title> Facultades | CPE </title>
+        <title> Ofertas | CPE </title>
       </Helmet>
 
       {isFormVisible ? (
-        <FacultadesForm
+        <OfertasForm
           formData={formData}
           editMode={editMode}
           onSubmit={() => {
@@ -191,8 +223,18 @@ export default function FacultadesPage() {
         <Container>
           <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
             <Typography variant="h4" gutterBottom>
-              Facultades
+              Ofertas
             </Typography>
+            {/* <Button
+              variant="contained"
+              style={{ textTransform: 'none' }}
+              startIcon={<Iconify icon="eva:plus-fill" />}
+              onClick={() => {
+                setRefresh(refresh + 1);
+              }}
+            >
+              Refresh
+            </Button> */}
             <Button
               variant="contained"
               style={{ textTransform: 'none' }}
@@ -203,12 +245,12 @@ export default function FacultadesPage() {
                 setFormData({});
               }}
             >
-              Registrar Facultad
+              Registrar Oferta
             </Button>
           </Stack>
 
           <Card>
-            <FacultadesListToolbar
+            <OfertasListToolbar
               numSelected={selected.length}
               filterValue={filterValue}
               onFilterValue={handleFilterByValue}
@@ -217,37 +259,39 @@ export default function FacultadesPage() {
             <Scrollbar>
               <TableContainer>
                 <Table size="small">
-                  <FacultadesListHead
+                  <OfertasListHead
                     order={order}
                     orderBy={orderBy}
                     headLabel={TABLE_HEAD}
-                    rowCount={FACULTADESlIST.length}
+                    rowCount={OFERTASLIST.length}
                     numSelected={selected.length}
                     onRequestSort={handleRequestSort}
                     onSelectAllClick={handleSelectAllClick}
                   />
                   <TableBody>
-                    {filteredFaculties.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                      const { cod_facultad, nomb_facultad, eliminada } = row;
-                      const selectedFaculty = selected.indexOf(cod_facultad) !== -1;
+                    {filteredOffers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                      const { cod_oferta, cod_carrera, nomb_carrera, cod_curso, cant_ofertas, eliminada } = row;
+                      const selectedOffer = selected.indexOf(cod_carrera) !== -1;
 
                       return (
                         <TableRow
-                          onClick={() => handleRowClick(cod_facultad)}
+                          onClick={() => handleRowClick(cod_carrera)}
                           hover
-                          key={cod_facultad}
+                          key={cod_oferta}
                           tabIndex={-1}
                           role="checkbox"
-                          selected={selectedFaculty}
+                          selected={selectedOffer}
                         >
                           <TableCell padding="checkbox">
                             <Checkbox
-                              checked={selectedFaculty}
-                              onChange={(event) => handleSelectClick(event, cod_facultad)}
+                              checked={selectedOffer}
+                              onChange={(event) => handleSelectClick(event, cod_carrera)}
                             />
                           </TableCell>
 
-                          <TableCell align="left">{nomb_facultad}</TableCell>
+                          <TableCell align="left">{nomb_carrera}</TableCell>
+
+                          <TableCell align="left">{cant_ofertas}</TableCell>
 
                           <TableCell align="right">
                             <IconButton size="large" color="inherit" onClick={handleOpenInRowMenu}>
@@ -259,7 +303,7 @@ export default function FacultadesPage() {
                     })}
                     {emptyRows > 0 && (
                       <TableRow style={{ height: 53 * emptyRows }}>
-                        <TableCell colSpan={6} />
+                        <TableCell colSpan={6}>Nada que mostrar</TableCell>
                       </TableRow>
                     )}
                   </TableBody>
@@ -293,7 +337,7 @@ export default function FacultadesPage() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={FACULTADESlIST.length}
+            count={OFERTASLIST.length}
             rowsPerPage={rowsPerPage}
             page={page}
             labelRowsPerPage={'Filas por página'}

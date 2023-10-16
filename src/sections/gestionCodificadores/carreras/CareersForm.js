@@ -1,6 +1,7 @@
 import { Box, Button, Grid, TextField, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
+import setMessage from '../../../components/messages/messages';
 import OfertasForm from '../../gestionCurso/ofertas/OfertasForm';
 import { insertCarrera, updateCarrera } from './store/store';
 
@@ -28,20 +29,24 @@ export default function CareersForm({ editMode, formData, onSubmit }) {
         .then((response) => {
           if (response.status === 200) {
             console.log(response.data);
+            setMessage('success', '¡Carrera actualizada con éxito!');
           }
         })
         .catch((error) => {
           console.log('Error al registrar la carrera: ', error);
+          setMessage('error', '¡Ha ocurrido un error!');
         });
     } else {
       insertCarrera(updatedData)
         .then((response) => {
           if (response.status === 200) {
             console.log(response.data);
+            setMessage('success', '¡Carrera registrada con éxito!');
           }
         })
         .catch((error) => {
           console.log('Error al modificar la carrera: ', error);
+          setMessage('error', '¡Ha ocurrido un error!');
         });
     }
     onSubmit();

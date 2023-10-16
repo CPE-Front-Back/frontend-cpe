@@ -72,10 +72,10 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-SolicitudesPage.propTypes = {
+RequestsPage.propTypes = {
   solicitantesConfirmados: PropTypes.bool,
 };
-export default function SolicitudesPage(solicitantesConfirmados) {
+export default function RequestsPage(solicitantesConfirmados) {
   const [openInRowMenu, setOpenInRowMenu] = useState(null);
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');

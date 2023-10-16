@@ -40,7 +40,7 @@ const Main = styled('div')(({ theme }) => ({
   },
 }));
 
-export default function SolicitantePage() {
+export default function RequesterPage() {
   const navigate = useNavigate();
   const [isFormVisible, setIsFormVisible] = useState(false);
 

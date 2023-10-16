@@ -1,6 +1,7 @@
 import { Autocomplete, Box, Button, Grid, TextField, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
+import setMessage from '../../../components/messages/messages';
 
 import { getCarreras } from '../../gestionCodificadores/carreras/store/store';
 import { UseActiveCourse } from '../curso/context/ActiveCourseContext';
@@ -81,10 +82,12 @@ export default function OfertasForm({ editMode, formData, onSubmit }) {
         .then((response) => {
           if (response.status === 200) {
             console.log(response.data);
+            setMessage('success', '¡Oferta actualizada con éxito!');
           }
         })
         .catch((error) => {
           console.log('Error al actualizar la oferta: ', error);
+          setMessage('error', '¡Ha ocurrido un error!');
         });
     } else {
       const updatedData = {
@@ -100,10 +103,12 @@ export default function OfertasForm({ editMode, formData, onSubmit }) {
         .then((response) => {
           if (response.status === 200) {
             console.log(response.data);
+            setMessage('success', '¡Oferta registrada con éxito!');
           }
         })
         .catch((error) => {
           console.log('Error al registrar la oferta: ', error);
+          setMessage('error', '¡Ha ocurrido un error!');
         });
 
       // console.log('la oferta a insertar: ', updatedData);

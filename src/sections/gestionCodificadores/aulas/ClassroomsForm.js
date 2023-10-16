@@ -1,6 +1,7 @@
 import { Autocomplete, Box, Button, Grid, TextField } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
+import setMessage from '../../../components/messages/messages';
 import { getBuildingById, getBuildings, getBuildingsByFaclulty } from '../edificios/store/store';
 import { getFaculties } from '../facultades/store/store';
 import { insertClassroom, updateClassroom } from './store/store';
@@ -92,20 +93,24 @@ export default function ClassroomsForm({ editMode, formData, onSubmit }) {
         .then((response) => {
           if (response.status === 200) {
             console.log(response.data);
+            setMessage('success', '¡Aula actualizada con éxito!');
           }
         })
         .catch((error) => {
           console.log('Error al actualizar el aula: ', error);
+          setMessage('error', '¡Ha ocurrido un error!');
         });
     } else {
       insertClassroom(updatedData)
         .then((response) => {
           if (response.status === 200) {
             console.log(response.data);
+            setMessage('success', '¡Aula registrada con éxito!');
           }
         })
         .catch((error) => {
           console.log('Error al registrar el aula: ', error);
+          setMessage('error', '¡Ha ocurrido un error!');
         });
     }
 

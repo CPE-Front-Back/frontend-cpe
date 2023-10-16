@@ -40,12 +40,12 @@ export const asignarActas = async (codCurso) => {
   }
 };
 
-export const isSegVueltaAsig = async (codCurso) => {
+export const isPrimVueltaAsig = async (codCurso) => {
   try {
     const response = await instance.get(`carreraAsigPrimVuelta/cursoAsignado/${codCurso}`);
     return response;
   } catch (error) {
-    console.log('Error en isSegVueltaAsig', error);
+    console.log('Error en isPrimVueltaAsig', error);
     throw error;
   }
 };

@@ -1,6 +1,7 @@
 import { Box, Button, Grid, TextField, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
+import setMessage from '../../../components/messages/messages';
 import { insertFaculty, updateFaculty } from './store/store';
 
 FacultadesForm.propTypes = {
@@ -25,20 +26,24 @@ export default function FacultadesForm({ editMode, formData, onSubmit }) {
         .then((response) => {
           if (response.status === 200) {
             console.log(response.data);
+            setMessage('success', '¡Facultad actualizada con éxito!');
           }
         })
         .catch((error) => {
           console.log('Error al modificar la facultad: ', error);
+          setMessage('error', '¡Ha ocurrido un error!');
         });
     } else {
       insertFaculty(updatedData)
         .then((response) => {
           if (response.status === 200) {
             console.log(response.data);
+            setMessage('success', '¡Facultad registrada con éxito!');
           }
         })
         .catch((error) => {
           console.log('Error al registrar la facultad: ', error);
+          setMessage('error', '¡Ha ocurrido un error!');
         });
     }
 

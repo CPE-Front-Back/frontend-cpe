@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import solicitudes from '../../_mock/solicitud';
 import SelectAutoWidth from '../../components/ComboBox/ComboBoxAutoWidth';
+import setMessage from '../../components/messages/messages';
 import useResponsive from '../../hooks/useResponsive';
 
 import { getCarreras } from '../gestionCodificadores/carreras/store/store';
@@ -99,6 +100,8 @@ export default function SolicitanteCarrerOptionsForm({ personalData, options, on
                     .then((response) => {
                       if (response) {
                         console.log('Insertadas: ', response);
+                        setMessage('success', '¡Su solicitud ha sido creada con éxito!');
+
                         onEnviar();
                       }
                     })
@@ -114,6 +117,7 @@ export default function SolicitanteCarrerOptionsForm({ personalData, options, on
         })
         .catch((error) => {
           console.log('Error al insertar solicitante.', error);
+          setMessage('error', '¡Ha ocurrido un error!');
         });
     }
   };

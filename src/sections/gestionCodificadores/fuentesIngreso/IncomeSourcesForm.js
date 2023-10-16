@@ -1,6 +1,7 @@
 import { Box, Button, Grid, TextField, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
+import setMessage from '../../../components/messages/messages';
 import { insertIncomeSource, updateIncomeSource } from './store/store';
 
 IncomeSourcesForm.propTypes = {
@@ -25,20 +26,24 @@ export default function IncomeSourcesForm({ editMode, formData, onSubmit }) {
         .then((response) => {
           if (response.status === 200) {
             console.log(response.data);
+            setMessage('success', '¡Fuente de ingreso actualizada con éxito!');
           }
         })
         .catch((error) => {
           console.log('Error al modificar la fuente de ingreso: ', error);
+          setMessage('error', '¡Ha ocurrido un error!');
         });
     } else {
       insertIncomeSource(updatedData)
         .then((response) => {
           if (response.status === 200) {
             console.log(response.data);
+            setMessage('success', '¡Fuente de ingreso registrada con éxito!');
           }
         })
         .catch((error) => {
           console.log('Error al registrar la fuente de ingreso: ', error);
+          setMessage('error', '¡Ha ocurrido un error!');
         });
     }
 

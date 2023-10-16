@@ -1,6 +1,7 @@
 import { Autocomplete, Box, Button, Grid, TextField } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
+import setMessage from '../../../components/messages/messages';
 import { getFaculties } from '../facultades/store/store';
 import { insertBuilding, updateBuilding } from './store/store';
 
@@ -46,20 +47,24 @@ export default function BuildingsForm({ editMode, formData, onSubmit }) {
         .then((response) => {
           if (response.status === 200) {
             console.log(response.data);
+            setMessage('success', '¡Edificio actualizado con éxito!');
           }
         })
         .catch((error) => {
           console.log('Error al actualizar la oferta: ', error);
+          setMessage('error', '¡Ha ocurrido un error!');
         });
     } else {
       insertBuilding(updatedData)
         .then((response) => {
           if (response.status === 200) {
             console.log(response.data);
+            setMessage('success', '¡Edificio registrado con éxito!');
           }
         })
         .catch((error) => {
           console.log('Error al insertar la oferta: ', error);
+          setMessage('error', '¡Ha ocurrido un error!');
         });
     }
 

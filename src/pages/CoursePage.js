@@ -2,10 +2,11 @@ import { LoadingButton } from '@mui/lab';
 import { Autocomplete, Button, Container, Grid, Stack, TextField, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import Iconify from '../components/iconify';
+import setMessage from '../components/messages/messages';
 import { UseActiveCourse } from '../sections/gestionCurso/curso/context/ActiveCourseContext';
 import { activarCurso, desactivarCursos, getCursos, insertarCurso } from '../sections/gestionCurso/curso/store/store';
 
-export default function CursoPage() {
+export default function CoursePage() {
   const { activeCourse, setActiveCourse } = UseActiveCourse();
   const [isActivating, setIsActivating] = useState(false);
 
@@ -51,11 +52,14 @@ export default function CursoPage() {
             .then((response) => {
               if (response.status === 200) {
                 console.log('Curso generado correctamente');
+                setMessage('success', '¡Curso generado con éxito!');
+
                 setActiveCourse(generatedCourse);
               }
             })
             .catch((error) => {
               console.log('Error al generar el curso', error);
+              setMessage('error', '¡Ha ocurrido un error!');
             })
             .finally(() => {
               setIsActivating(false);
@@ -78,11 +82,14 @@ export default function CursoPage() {
             .then((response) => {
               if (response.status === 200) {
                 console.log(response.data);
+                setMessage('success', '¡Curso activado con éxito!');
+
                 setActiveCourse(selectedCurso);
               }
             })
             .catch((error) => {
               console.log('Error al activar el curso', error);
+              setMessage('error', '¡Ha ocurrido un error!');
             })
             .finally(() => {
               setIsActivating(false);

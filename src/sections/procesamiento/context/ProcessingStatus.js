@@ -5,7 +5,7 @@ import { getSolicitudesByCurso } from '../../gestionCurso/solicitudes/store/stor
 import {
   cantAsigCourse,
   getAnonimatosCourse,
-  isSegVueltaAsig,
+  isPrimVueltaAsig,
   verifyCanCalify,
   verifyCanRecalify,
 } from '../store/store';
@@ -40,7 +40,9 @@ export function ProcessingStatusProvider({ children }) {
     }
   }, [activeCourse]);
 
+  // ok
   const verifyCanAsigPrimVuelta = async (codCurso) => {
+    console.log('verificando asigPrimVuelta');
     getSolicitudesByCurso(codCurso)
       .then((response) => {
         if (response.status === 200) {
@@ -56,7 +58,10 @@ export function ProcessingStatusProvider({ children }) {
       });
   };
 
+  // ok
   const verifyCanAsigSegVuelta = async (codCurso) => {
+    console.log('verificando asignSegVuelta');
+
     getCantCarrerasAsigSegundaVueltaCurso(codCurso)
       .then((response) => {
         if (response.status === 200) {
@@ -73,8 +78,11 @@ export function ProcessingStatusProvider({ children }) {
       });
   };
 
+  // ok
   const VerifyCanCapacityOfferRequest = async (codCurso) => {
-    isSegVueltaAsig(codCurso)
+    console.log('verificando canCapacityOfferRequest');
+
+    isPrimVueltaAsig(codCurso)
       .then((response) => {
         if (response.status === 200) {
           if (response.data) {
@@ -93,13 +101,16 @@ export function ProcessingStatusProvider({ children }) {
       });
   };
 
+  // ok
   const verifyCanAsigClassrooms = async (codCurso) => {
+    console.log('verificando asignAulas');
+
     cantAsigCourse(codCurso)
       .then((response) => {
         if (response.status === 200) {
           if (response.data.length > 0) {
             setCanAsigClassrooms(false);
-            setCanAsigActs(false);
+            setCanAsigActs(true);
             setCanActCapacities(false);
             // todo implementation of reports
           } else {
@@ -112,7 +123,10 @@ export function ProcessingStatusProvider({ children }) {
       });
   };
 
+  // ok
   const verifyCanAsigActs = async (codCurso) => {
+    console.log('verificando asigActas');
+
     getAnonimatosCourse(codCurso)
       .then((response) => {
         if (response.status === 200) {
@@ -128,7 +142,10 @@ export function ProcessingStatusProvider({ children }) {
       });
   };
 
+  // ok
   const verifyCalify = async (codCurso) => {
+    console.log('verificando calify');
+
     verifyCanCalify(codCurso)
       .then((response) => {
         if (response.status === 200) {
@@ -144,7 +161,10 @@ export function ProcessingStatusProvider({ children }) {
       });
   };
 
+  //
   const verifyRecalify = async (codCurso) => {
+    console.log('verificando Recalify');
+
     verifyCanRecalify(codCurso)
       .then((response) => {
         if (response.status === 200) {

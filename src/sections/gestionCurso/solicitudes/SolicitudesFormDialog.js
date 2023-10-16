@@ -14,6 +14,7 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import PropTypes from 'prop-types';
 import { forwardRef, useEffect, useState } from 'react';
+import setMessage from '../../../components/messages/messages';
 import {
   getFuentesIngreso,
   getMunicipiosPorProvincia,
@@ -226,6 +227,7 @@ export default function SolicitudesFormDialog({ open, handleCloseClick, editMode
                               .then((response) => {
                                 if (response) {
                                   console.log('Insertadas: ', response);
+                                  setMessage('success', '¡Solicitante confirmado con éxito!');
 
                                   setTimeout(() => {
                                     handleCloseClick();
@@ -249,6 +251,7 @@ export default function SolicitudesFormDialog({ open, handleCloseClick, editMode
             })
             .catch((error) => {
               console.log('Error al actualizar el solicitante.', error);
+              setMessage('error', '¡Ha ocurrido un error!');
             });
         } else {
           console.log(selectedOptions);
@@ -263,6 +266,8 @@ export default function SolicitudesFormDialog({ open, handleCloseClick, editMode
                         .then((response) => {
                           if (response) {
                             console.log('Insertadas: ', response);
+                            setMessage('success', '¡Solicitante confirmado con éxito!');
+
                             handleCloseClick();
                           }
                         })
@@ -278,6 +283,7 @@ export default function SolicitudesFormDialog({ open, handleCloseClick, editMode
             })
             .catch((error) => {
               console.log('Error al insertar solicitante.', error);
+              setMessage('error', '¡Ha ocurrido un error!');
             });
         }
       }

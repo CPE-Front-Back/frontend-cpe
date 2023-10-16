@@ -8,12 +8,12 @@ import BuildingsPage from './pages/BuildingsPage';
 import CapacitiesPage from './pages/CapacitiesPage';
 import CareersPage from './pages/CareersPage';
 import ClassroomsPage from './pages/ClassroomsPage';
-import CursoPage from './pages/CursoPage';
-import FacultadesPage from './pages/FacultadesPage';
+import CoursePage from './pages/CoursePage';
+import FacultiesPage from './pages/FacultiesPage';
 import IncomeSourcesPage from './pages/IncomeSourcesPage';
-import OfertasPage from './pages/OfertasPage';
-import SolicitantePage from './pages/SolicitantePage';
-import SolicitudesPage from './pages/SolicitudesPage';
+import OffersPage from './pages/OffersPage';
+import RequesterPage from './pages/RequesterPage';
+import RequestsPage from './pages/RequestsPage';
 import UserPage from './pages/UserPage';
 import LoginPage from './pages/LoginPage';
 import Page404 from './pages/Page404';
@@ -31,16 +31,16 @@ export default function Router() {
       element: <DashboardLayout />,
       children: [
         { element: <Navigate to="/dashboard/app" />, index: true },
-        { path: 'curso', element: <CursoPage /> },
+        { path: 'curso', element: <CoursePage /> },
         { path: 'capacities', element: <CapacitiesPage /> },
-        { path: 'offers', element: <OfertasPage /> },
+        { path: 'offers', element: <OffersPage /> },
         { path: 'careers', element: <CareersPage /> },
-        { path: 'faculties', element: <FacultadesPage /> },
+        { path: 'faculties', element: <FacultiesPage /> },
         { path: 'buildings', element: <BuildingsPage /> },
         { path: 'classrooms', element: <ClassroomsPage /> },
         { path: 'incomeSources', element: <IncomeSourcesPage /> },
-        { path: 'solicitudesConfirmadas', element: <SolicitudesPage solicitantesConfirmados /> },
-        { path: 'solicitudesSinConfirmar', element: <SolicitudesPage solicitantesConfirmados={false} /> },
+        { path: 'solicitudesConfirmadas', element: <RequestsPage solicitantesConfirmados /> },
+        { path: 'solicitudesSinConfirmar', element: <RequestsPage solicitantesConfirmados={false} /> },
         { path: 'app', element: <DashboardLogedInPage /> },
         { path: 'user', element: <UserPage /> },
         { path: 'products', element: <ProductsPage /> },
@@ -52,7 +52,7 @@ export default function Router() {
       element: <SimpleLayout />,
       children: [
         { element: <Navigate to="/solicitante/solicitante-page" />, index: true },
-        { path: 'solicitante-page', element: <SolicitantePage /> },
+        { path: 'solicitante-page', element: <RequesterPage /> },
         { path: 'formulario-personal-data', element: <SolicitantePersonalDataForm /> },
         { path: 'formulario-carreras', element: <SolicitanteCarrerOptionsForm /> },
       ],
