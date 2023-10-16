@@ -227,7 +227,7 @@ export default function SolicitudesFormDialog({ open, handleCloseClick, editMode
                               .then((response) => {
                                 if (response) {
                                   console.log('Insertadas: ', response);
-                                  setMessage('success', '¡Solicitante confirmado con éxito!');
+                                  setMessage('success', '¡Solicitante actualizado con éxito!');
 
                                   setTimeout(() => {
                                     handleCloseClick();
