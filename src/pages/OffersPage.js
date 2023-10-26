@@ -16,7 +16,6 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
-import axios from 'axios';
 import { filter } from 'lodash';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';

@@ -53,7 +53,7 @@ export default function navConfig() {
       subItems: [
         {
           title: 'Cambiar curso activo',
-          path: '/dashboard/curso',
+          path: '/dashboard/course',
           icon: <Icon size={1} path={mdiBank} />,
         },
         {
@@ -144,13 +144,13 @@ export default function navConfig() {
         },
         {
           title: 'Calificación',
-          path: '/dashboard/apps',
+          path: '/dashboard/qualifications',
           icon: <Icon size={1} path={mdiFileSign} />,
           // isDisabled: canCalify,
         },
         {
           title: 'Recalificación',
-          path: '/dashboard/apps',
+          path: '/dashboard/requalifications',
           icon: <Icon size={1} path={mdiFileSign} />,
           // isDisabled: canRecalify,
         },

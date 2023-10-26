@@ -19,6 +19,8 @@ import LoginPage from './pages/LoginPage';
 import Page404 from './pages/Page404';
 import ProductsPage from './pages/ProductsPage';
 import DashboardLogedInPage from './pages/DashboardLogedInPage';
+import QualificationPage from './sections/procesamiento/calificacion/QualificationPage';
+import RequalificationPage from './sections/procesamiento/recalificacion/RequalificationPage';
 import SolicitanteCarrerOptionsForm from './sections/solicitante/SolicitanteCarrerOptionsForm';
 import SolicitantePersonalDataForm from './sections/solicitante/SolicitantePersonalDataForm';
 
@@ -31,7 +33,7 @@ export default function Router() {
       element: <DashboardLayout />,
       children: [
         { element: <Navigate to="/dashboard/app" />, index: true },
-        { path: 'curso', element: <CoursePage /> },
+        { path: 'course', element: <CoursePage /> },
         { path: 'capacities', element: <CapacitiesPage /> },
         { path: 'offers', element: <OffersPage /> },
         { path: 'careers', element: <CareersPage /> },
@@ -41,6 +43,8 @@ export default function Router() {
         { path: 'incomeSources', element: <IncomeSourcesPage /> },
         { path: 'solicitudesConfirmadas', element: <RequestsPage solicitantesConfirmados /> },
         { path: 'solicitudesSinConfirmar', element: <RequestsPage solicitantesConfirmados={false} /> },
+        { path: 'qualifications', element: <QualificationPage /> },
+        { path: 'requalifications', element: <RequalificationPage /> },
         { path: 'app', element: <DashboardLogedInPage /> },
         { path: 'user', element: <UserPage /> },
         { path: 'products', element: <ProductsPage /> },
