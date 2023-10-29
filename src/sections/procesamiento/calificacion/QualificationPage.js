@@ -49,7 +49,7 @@ export default function QualificationPage() {
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Ofertas
+            Calificación del instrumento
           </Typography>
         </Stack>
 
