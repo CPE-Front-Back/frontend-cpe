@@ -138,6 +138,7 @@ export default function CoursePage() {
                 setSelectedCurso(newValue);
               }}
               renderInput={(params) => <TextField {...params} label="Cursos disponibles" />}
+              noOptionsText={'No hay opciones'}
             />
           </Grid>
           <Grid item xs />

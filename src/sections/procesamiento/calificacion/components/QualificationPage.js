@@ -13,10 +13,11 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import Scrollbar from '../../../../components/scrollbar';
 import { UseActiveCourse } from '../../../gestionCurso/curso/context/ActiveCourseContext';
+import { getActasNotas, getAsignaciones, getComparecenciasCurso } from '../store/store';
 import QualificationListHead from './QualificationListHead';
 
 const TABLE_HEAD = [
@@ -26,19 +27,92 @@ const TABLE_HEAD = [
 ];
 
 export default function QualificationPage() {
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [comparecenciasList, setComparecenciasList] = useState([]);
+  const [selectedComp, setSelectedComp] = useState(null);
+
+  const [actasNotasList, setActasNotasList] = useState([]);
+  const [asignacionesList, setAsignacionesList] = useState([]);
 
   const [requestersList, setRequestersList] = useState([]);
+  const [requesterListDump, setRequesterListDump] = useState([]);
+  const [updatedQualifications, setUpdatedQualifications] = useState([]);
 
-  const [filteredOffers, setFilteredOffers] = useState([
-    { no_anonimato: 1, calificacion: 1 },
-    { no_anonimato: 2, calificacion: 2 },
-  ]);
-  const [isNotFound, setIsNotFound] = useState(false);
   const [emptyRows, setEmptyRows] = useState(0);
+  const { activeCourse } = UseActiveCourse();
 
-  const { active_course } = UseActiveCourse();
-  // todo: recuperar actas de notas
+  useEffect(() => {
+    getComparecenciasCurso(activeCourse.cod_curso)
+      .then((response) => {
+        if (response.status === 200) {
+          setComparecenciasList(response.data);
+        }
+      })
+      .catch((error) => {
+        console.log('Error al cargar los actas de comparecencia', error);
+      });
+  }, [activeCourse]);
+
+  // cargar las actas de notas y las asiganciones
+  useEffect(() => {
+    if (selectedComp) {
+      console.log('selected', selectedComp.cod_acta_comp);
+      getActasNotas(activeCourse.cod_curso, selectedComp.cod_acta_comp)
+        .then((response) => {
+          if (response.status === 200) {
+            setActasNotasList(response.data);
+          }
+        })
+        .catch((error) => {
+          console.log('Error al cargar los actas de notas', error);
+        });
+
+      getAsignaciones(activeCourse.cod_curso, selectedComp.cod_acta_comp)
+        .then((response) => {
+          if (response.status === 200) {
+            setAsignacionesList(response.data);
+          }
+        })
+        .catch((error) => {
+          console.log('Error al cargar las asignaciones', error);
+        });
+    }
+  }, [selectedComp]);
+
+  useEffect(() => {
+    if (actasNotasList.length > 0 && asignacionesList.length > 0) {
+      const req = actasNotasList.map((actaNota, index) => ({
+        no_anonimato: actaNota.cod_anonimato,
+        calificacion: asignacionesList[index].calificacion,
+      }));
+
+      setRequestersList(req);
+      setRequesterListDump(req);
+      setEmptyRows(1);
+      console.log('actasNotasList', actasNotasList);
+      console.log('asignacionesList', asignacionesList);
+    }
+  }, [actasNotasList, asignacionesList]);
+
+  const handleChange = (no_anonimato, event) => {
+    const updatedRequestersList = requestersList.map((requester) => {
+      if (requester.no_anonimato === no_anonimato) {
+        // Update the calificacion for the matching requester
+        return { ...requester, calificacion: event.target.value };
+      }
+      return requester; // Keep other requesters as they are
+    });
+
+    // Set the updated requestersList
+    setRequestersList(updatedRequestersList);
+  };
+
+  const handleLimpiar = () => {
+    const confrimed = window.confirm('Está a punto de perder los cambios no guardados! ¿Desea continuar?');
+
+    if (confrimed) {
+      setRequestersList(requesterListDump);
+    }
+  };
 
   return (
     <>
@@ -55,7 +129,17 @@ export default function QualificationPage() {
 
         <Grid container spacing={2}>
           <Grid item xs={12} sx={{ minWidth: '400px' }}>
-            <Autocomplete renderInput={(params) => <TextField {...params} label="Actas de notas disponibles" />} />
+            <Autocomplete
+              id="comboComparecencias"
+              options={comparecenciasList}
+              value={selectedComp}
+              onChange={(event, newValue) => {
+                setSelectedComp(newValue);
+              }}
+              getOptionLabel={(option) => option.cod_acta_comp + 500}
+              renderInput={(params) => <TextField {...params} label="Actas de notas disponibles" />}
+              noOptionsText={'No hay opciones'}
+            />
           </Grid>
 
           <Grid item xs={12} sx={{ minWidth: '500px' }}>
@@ -66,20 +150,24 @@ export default function QualificationPage() {
                     <QualificationListHead headLabel={TABLE_HEAD} />
 
                     <TableBody>
-                      {filteredOffers.map((row) => {
+                      {requestersList.map((row) => {
                         const { no_anonimato, calificacion } = row;
 
                         return (
                           <TableRow key={no_anonimato} tabIndex={-1} hover>
                             <TableCell align="left">{no_anonimato}</TableCell>
 
-                            <TableCell align="left" contentEditable>
-                              <TextField type={'text'} value={calificacion} />
+                            <TableCell align="left">
+                              <TextField
+                                type={'text'}
+                                value={calificacion}
+                                onChange={(event) => handleChange(no_anonimato, event)}
+                              />
                             </TableCell>
                           </TableRow>
                         );
                       })}
-                      {emptyRows > 0 && (
+                      {emptyRows === 0 && (
                         <TableRow style={{ height: 53 * emptyRows }}>
                           <TableCell colSpan={6}>Nada que mostrar</TableCell>
                         </TableRow>
@@ -95,7 +183,7 @@ export default function QualificationPage() {
             <Button type="submit" variant="contained" color="primary" onClick={() => {}}>
               Aceptar
             </Button>
-            <Button type="submit" variant="contained" color="primary" onClick={() => {}}>
+            <Button type="submit" variant="contained" color="primary" onClick={handleLimpiar}>
               Cancelar
             </Button>
           </Grid>
