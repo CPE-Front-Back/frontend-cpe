@@ -143,13 +143,13 @@ export default function navConfig() {
           // isDisabled: canAsigActs,
         },
         {
-          title: 'Calificación',
+          title: 'Insertar calificaciones',
           path: '/dashboard/qualifications',
           icon: <Icon size={1} path={mdiFileSign} />,
           // isDisabled: canCalify,
         },
         {
-          title: 'Recalificación',
+          title: 'Insertar recalificación',
           path: '/dashboard/requalifications',
           icon: <Icon size={1} path={mdiFileSign} />,
           // isDisabled: canRecalify,

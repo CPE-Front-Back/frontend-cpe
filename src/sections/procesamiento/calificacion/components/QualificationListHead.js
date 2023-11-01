@@ -10,7 +10,7 @@ export default function QualificationListHead({ headLabel }) {
     <TableHead>
       <TableRow>
         {headLabel.map((headCell) => (
-          <TableCell key={headCell.id} align={headCell.alignRight ? 'right' : 'left'}>
+          <TableCell key={headCell.id} align={'center'}>
             {headCell.label}
           </TableCell>
         ))}
