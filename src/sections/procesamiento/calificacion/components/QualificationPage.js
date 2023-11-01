@@ -217,7 +217,7 @@ export default function QualificationPage() {
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Insertar notas del instrumento
+            Insertar calificaciones del instrumento
           </Typography>
         </Stack>
 
