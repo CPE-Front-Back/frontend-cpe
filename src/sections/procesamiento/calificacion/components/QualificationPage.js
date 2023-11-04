@@ -65,6 +65,7 @@ export default function QualificationPage() {
 
   // cargar las actas de notas y las asiganciones
   useEffect(() => {
+    // console.log('el selected del combo', selectedComp);
     if (selectedComp) {
       console.log('selected', selectedComp.cod_acta_comp);
       getActasNotas(activeCourse.cod_curso, selectedComp.cod_acta_comp)
@@ -87,7 +88,22 @@ export default function QualificationPage() {
           console.log('Error al cargar las asignaciones', error);
         });
     }
-  }, [selectedComp]);
+
+    // reset the list when no option selected
+    if (selectedComp === null && requestersList.length > 0) {
+      if (requestersList === requesterListDump) {
+        setRequestersList([]);
+        setEmptyRows(0);
+      } else {
+        const confrimed = window.confirm('Está a punto de perder los cambios no guardados! ¿Desea continuar?');
+
+        if (confrimed) {
+          setRequestersList([]);
+          setEmptyRows(0);
+        }
+      }
+    }
+  }, [selectedComp, activeCourse]);
 
   useEffect(() => {
     if (actasNotasList.length > 0 && asignacionesList.length > 0) {
