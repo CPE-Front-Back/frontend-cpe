@@ -1,3 +1,5 @@
+import { mdiDelete, mdiDotsVertical, mdiPencilOutline } from '@mdi/js';
+import { Icon } from '@mdi/react';
 import {
   Button,
   Card,
@@ -25,9 +27,9 @@ import Scrollbar from '../../../../components/scrollbar';
 import { getCarreras } from '../../../gestionCodificadores/carreras/store/store';
 import { UseActiveCourse } from '../../curso/context/ActiveCourseContext';
 import { getAllOfertasByCurso } from '../../ofertas/store/store';
-import SolicitudesFormDialog from './SolicitudesFormDialog';
-import SolicitudesListHead from './SolicitudesListHead';
-import SolicitudesListToolbar from './SolicitudesListToolbar';
+import RequestsFormDialog from './RequestsFormDialog';
+import RequestsListHead from './RequestsListHead';
+import RequestsListToolbar from './RequestsListToolbar';
 import { getSolicitantesByCurso, getSolicitudesByCurso } from '../store/store';
 
 const TABLE_HEAD = [
@@ -261,7 +263,7 @@ export default function RequestsPage(solicitantesConfirmados) {
       </Helmet>
 
       {isFormDialogVisible ? (
-        <SolicitudesFormDialog
+        <RequestsFormDialog
           open={isFormDialogVisible}
           handleCloseClick={() => {
             setRefresh(refresh + 1);
@@ -295,7 +297,7 @@ export default function RequestsPage(solicitantesConfirmados) {
           </Stack>
 
           <Card>
-            <SolicitudesListToolbar
+            <RequestsListToolbar
               numSelected={selected.length}
               filterValue={filterValue}
               onFilterValue={handleFilterByValue}
@@ -304,7 +306,7 @@ export default function RequestsPage(solicitantesConfirmados) {
             <Scrollbar>
               <TableContainer>
                 <Table size="small">
-                  <SolicitudesListHead
+                  <RequestsListHead
                     order={order}
                     orderBy={orderBy}
                     headLabel={TABLE_HEAD}
@@ -361,8 +363,8 @@ export default function RequestsPage(solicitantesConfirmados) {
                           <TableCell align="left">{opcion5}</TableCell>
 
                           <TableCell align="right">
-                            <IconButton size="large" color="inherit" onClick={handleOpenInRowMenu}>
-                              <Iconify icon={'eva:more-vertical-fill'} />
+                            <IconButton size="small" color="inherit" onClick={handleOpenInRowMenu}>
+                              <Icon size={1} path={mdiDotsVertical} />
                             </IconButton>
                           </TableCell>
                         </TableRow>
@@ -432,13 +434,13 @@ export default function RequestsPage(solicitantesConfirmados) {
         }}
       >
         <MenuItem onClick={handleConfirmClick}>
-          <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
-          {solicitantesConfirmados.solicitantesConfirmados ? 'Editar' : 'Confirmar'}
+          <Icon size={1} path={mdiPencilOutline} />
+          <span style={{ marginLeft: 15 }}>Editar</span>
         </MenuItem>
 
         <MenuItem sx={{ color: 'error.main' }}>
-          <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
-          Eliminar
+          <Icon size={1} path={mdiDelete} />
+          <span style={{ marginLeft: 15 }}>Eliminar</span>
         </MenuItem>
       </Popover>
     </>

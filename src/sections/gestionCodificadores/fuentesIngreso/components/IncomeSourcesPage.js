@@ -1,3 +1,5 @@
+import { mdiDelete, mdiDotsVertical, mdiPencilOutline } from '@mdi/js';
+import { Icon } from '@mdi/react';
 import {
   Button,
   Card,
@@ -251,7 +253,7 @@ export default function IncomeSourcesPage() {
 
                           <TableCell align="right">
                             <IconButton size="large" color="inherit" onClick={handleOpenInRowMenu}>
-                              <Iconify icon={'eva:more-vertical-fill'} />
+                              <Icon size={1} path={mdiDotsVertical} />
                             </IconButton>
                           </TableCell>
                         </TableRow>
@@ -322,13 +324,13 @@ export default function IncomeSourcesPage() {
         }}
       >
         <MenuItem onClick={handleEditClick}>
-          <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
-          Editar
+          <Icon size={1} path={mdiPencilOutline} />
+          <span style={{ marginLeft: 15 }}>Editar</span>
         </MenuItem>
 
         <MenuItem sx={{ color: 'error.main' }}>
-          <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
-          Eliminar
+          <Icon size={1} path={mdiDelete} />
+          <span style={{ marginLeft: 15 }}>Eliminar</span>
         </MenuItem>
       </Popover>
     </>

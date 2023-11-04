@@ -1,3 +1,5 @@
+import { mdiDelete, mdiDotsVertical, mdiPencilOutline, mdiStoreEditOutline } from '@mdi/js';
+import { Icon } from '@mdi/react';
 import {
   Button,
   Card,
@@ -114,6 +116,7 @@ export default function OffersPage() {
             };
           });
           setOFERTASLIST(updatedOfertasList);
+          setEmptyRows(-1);
           console.log('Cargar las ofertas', refresh);
         }
       })
@@ -196,7 +199,7 @@ export default function OffersPage() {
   };
 
   useEffect(() => {
-    setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - OFERTASLIST.length) : 0);
+    // setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - OFERTASLIST.length) : 0);
     setFilteredOffers(applySortFilter(OFERTASLIST, getComparator(order, orderBy), filterValue));
     setIsNotFound(!filteredOffers.length && !!filterValue);
   }, [OFERTASLIST, filterValue, order, orderBy]);
@@ -293,14 +296,14 @@ export default function OffersPage() {
                           <TableCell align="left">{cant_ofertas}</TableCell>
 
                           <TableCell align="right">
-                            <IconButton size="large" color="inherit" onClick={handleOpenInRowMenu}>
-                              <Iconify icon={'eva:more-vertical-fill'} />
+                            <IconButton size="medium" color="inherit" onClick={handleOpenInRowMenu}>
+                              <Icon size={1} path={mdiDotsVertical} />
                             </IconButton>
                           </TableCell>
                         </TableRow>
                       );
                     })}
-                    {emptyRows > 0 && (
+                    {emptyRows === 0 && (
                       <TableRow style={{ height: 53 * emptyRows }}>
                         <TableCell colSpan={6}>Nada que mostrar</TableCell>
                       </TableRow>
@@ -354,10 +357,10 @@ export default function OffersPage() {
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
         PaperProps={{
           sx: {
-            p: 1,
+            px: 1,
             width: 140,
             '& .MuiMenuItem-root': {
-              px: 1,
+              pl: 1,
               typography: 'body2',
               borderRadius: 0.75,
             },
@@ -365,13 +368,13 @@ export default function OffersPage() {
         }}
       >
         <MenuItem onClick={handleEditClick}>
-          <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
-          Editar
+          <Icon size={1} path={mdiPencilOutline} />
+          <span style={{ marginLeft: 15 }}>Editar</span>
         </MenuItem>
 
         <MenuItem sx={{ color: 'error.main' }}>
-          <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
-          Eliminar
+          <Icon size={1} path={mdiDelete} />
+          <span style={{ marginLeft: 15 }}>Eliminar</span>
         </MenuItem>
       </Popover>
     </>

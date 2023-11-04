@@ -13,7 +13,7 @@ const visuallyHidden = {
   clip: 'rect(0 0 0 0)',
 };
 
-SolicitudesListHead.propTypes = {
+RequestsListHead.propTypes = {
   order: PropTypes.oneOf(['asc', 'desc']),
   orderBy: PropTypes.string,
   rowCount: PropTypes.number,
@@ -23,7 +23,7 @@ SolicitudesListHead.propTypes = {
   onSelectAllClick: PropTypes.func,
 };
 
-export default function SolicitudesListHead({
+export default function RequestsListHead({
   order,
   orderBy,
   rowCount,

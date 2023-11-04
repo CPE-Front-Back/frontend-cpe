@@ -28,13 +28,13 @@ const StyledSearch = styled(OutlinedInput)(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-SolicitudesListToolbar.propTypes = {
+RequestsListToolbar.propTypes = {
   numSelected: PropTypes.number,
   filterValue: PropTypes.string,
   onFilterValue: PropTypes.func,
 };
 
-export default function SolicitudesListToolbar({ numSelected, filterValue, onFilterValue }) {
+export default function RequestsListToolbar({ numSelected, filterValue, onFilterValue }) {
   return (
     <StyledRoot
       sx={{

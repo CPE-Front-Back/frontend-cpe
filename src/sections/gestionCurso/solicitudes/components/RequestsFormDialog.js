@@ -34,13 +34,13 @@ import { eliminarSolicitudesBySolicitante } from '../store/store';
 
 const Transition = forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
 
-SolicitudesFormDialog.propTypes = {
+RequestsFormDialog.propTypes = {
   open: PropTypes.bool,
   handleCloseClick: PropTypes.func,
   editMode: PropTypes.bool,
   formData: PropTypes.object,
 };
-export default function SolicitudesFormDialog({ open, handleCloseClick, editMode, Data }) {
+export default function RequestsFormDialog({ open, handleCloseClick, editMode, Data }) {
   /* {
     cod_solicitante,
     num_id,
