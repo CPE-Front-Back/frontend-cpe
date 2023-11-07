@@ -230,13 +230,11 @@ export default function QualificationPage() {
         <title> Calificaciones | CPE </title>
       </Helmet>
 
-      <Container>
-        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-          <Typography variant="h4" gutterBottom>
-            Insertar calificaciones del instrumento
-          </Typography>
-        </Stack>
+      <Typography variant="h4" gutterBottom>
+        Insertar calificaciones del instrumento
+      </Typography>
 
+      <Container sx={{ bgcolor: 'white', pt: '50px' }}>
         <Grid container spacing={2} justifyContent="center">
           <Grid item xs={1} sx={{ minWidth: '170px' }}>
             <Autocomplete
