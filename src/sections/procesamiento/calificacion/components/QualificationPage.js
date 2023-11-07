@@ -14,6 +14,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import { isNaN } from 'lodash';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Await } from 'react-router-dom';
@@ -138,9 +139,9 @@ export default function QualificationPage() {
 
     // Loop through the requestersList and validate califications
     requestersList.forEach((requester) => {
-      const calificacion = parseInt(requester.calificacion, 10);
+      const calificacion = requester.calificacion;
 
-      if (calificacion.isNaN || calificacion < -1 || calificacion > 100) {
+      if (isNaN(Number(calificacion)) || calificacion < -1 || calificacion > 100) {
         // Invalid calification, set isValid to false
         isValid = false;
       }
@@ -209,7 +210,7 @@ export default function QualificationPage() {
     }
   }, [updatedQualifications]);
 
-  const handleClean = () => {
+  const handleCancel = () => {
     // todo: use confirm dialog instead
     const confrimed = window.confirm('Está a punto de perder los cambios no guardados! ¿Desea continuar?');
 
@@ -218,9 +219,9 @@ export default function QualificationPage() {
     }
   };
 
-  const handleClaficationInput = (event) => {
+  const handleQualificationInput = (event) => {
     // Allow only numbers and minus sign
-    const inputValue = event.target.value.replace(/[^-0-9]/g, '');
+    const inputValue = event.target.value.replace(/[^-.0-9]/g, '');
     event.target.value = inputValue;
   };
 
@@ -272,12 +273,11 @@ export default function QualificationPage() {
                                 type={'text'}
                                 value={calificacion}
                                 onChange={(event) => handleChange(no_anonimato, event)}
-                                onInput={handleClaficationInput}
-                                inputProps={{ maxLength: 3 }}
+                                onInput={handleQualificationInput}
                                 variant={'standard'}
                                 size="large"
                                 margin={'none'}
-                                sx={{ padding: '0px', width: '35px', textAlign: 'center' }}
+                                sx={{ padding: '0px', width: '50px', textAlign: 'center' }}
                               />
                             </TableCell>
                             <TableCell align="center">{}</TableCell>
@@ -308,7 +308,7 @@ export default function QualificationPage() {
             </Grid>
 
             <Grid item xs>
-              <Button type="submit" variant="contained" color="primary" onClick={handleClean}>
+              <Button type="submit" variant="contained" color="primary" onClick={handleCancel}>
                 Cancelar
               </Button>
             </Grid>

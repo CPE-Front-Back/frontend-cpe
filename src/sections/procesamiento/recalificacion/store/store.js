@@ -29,3 +29,13 @@ export const getAssignmentByRequesterId = async (requesterId) => {
     throw error;
   }
 };
+
+export const insertRequalification = async (requalification) => {
+  try {
+    const response = await instance.post(`recalificacion/`, requalification);
+    return response;
+  } catch (error) {
+    console.log('Erroe en insertRequalification', error);
+    throw error;
+  }
+};

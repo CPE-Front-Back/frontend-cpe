@@ -1,57 +1,135 @@
 import { Button, Container, Grid, TextField, Typography } from '@mui/material';
+import { isNaN } from 'lodash';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
+import setMessage from '../../../../components/messages/messages';
 import { UseActiveCourse } from '../../../gestionCurso/curso/context/ActiveCourseContext';
-import { getActByRequesterId, getAssignmentByRequesterId, getRequesterInRoomById } from '../store/store';
+import {
+  getActByRequesterId,
+  getAssignmentByRequesterId,
+  getRequesterInRoomById,
+  insertRequalification,
+} from '../store/store';
 
 export default function RequalificationPage() {
   // todo: implement logic
-  const [requeterIdNumber, setRequeterIdNumber] = useState(null);
+  const [requesterIdNumber, setRequesterIdNumber] = useState(null);
+  const [requester, setRequester] = useState(null);
   const [anonNumber, setAnonNumber] = useState(null);
   const [calification, setCalification] = useState(null);
+  const [calificationDumb, setCalificationDumb] = useState(null);
   const [focused, setFocused] = useState(false);
 
   const { activeCourse } = UseActiveCourse();
 
-  useEffect(() => {
-    console.log('requeterIdNumber', requeterIdNumber);
-  }, [requeterIdNumber]);
+  const [errors, setErrors] = useState({
+    requesterIdNumber: '',
+    calification: '',
+  });
+
+  const validateRequalification = () => {
+    const newErrors = {};
+
+    if (!calification) {
+      newErrors.calification = 'Calificación requerida';
+    } else if (isNaN(Number(calification)) || calification < 0 || calification > 100) {
+      newErrors.calification = 'La calificación debe estar entre 0 y 100.';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const validateRequesterIdNumber = () => {
+    const newErrors = {};
+
+    if (!requesterIdNumber) {
+      newErrors.requesterIdNumber = 'No. Identidad requerido';
+    } else if (requesterIdNumber?.length !== 11) {
+      newErrors.requesterIdNumber = 'El carnet de identidad debe tener 11 dígitos.';
+    }
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
+  };
 
   const findRequester = () => {
-    getRequesterInRoomById(requeterIdNumber, activeCourse.cod_curso)
-      .then((response) => {
-        if (response.status === 200) {
-          const requester = response.data;
-          console.log('el solicitante', requester);
-          getActByRequesterId(requester.cod_solicitante)
-            .then((response) => {
-              if (response.status === 200) {
-                const act = response.data;
-                console.log('el acta', act);
-                getAssignmentByRequesterId(requester.cod_solicitante)
-                  .then((response) => {
-                    if (response.status === 200) {
-                      const assignment = response.data;
-                      console.log('la asignacion', assignment);
+    if (validateRequesterIdNumber()) {
+      getRequesterInRoomById(requesterIdNumber, activeCourse.cod_curso)
+        .then((response) => {
+          if (response.status === 200) {
+            const requester = response.data;
+            setRequester(requester);
+            console.log('el solicitante', requester);
+            getActByRequesterId(requester.cod_solicitante)
+              .then((response) => {
+                if (response.status === 200) {
+                  const act = response.data;
+                  console.log('el acta', act);
+                  getAssignmentByRequesterId(requester.cod_solicitante)
+                    .then((response) => {
+                      if (response.status === 200) {
+                        const assignment = response.data;
+                        console.log('la asignacion', assignment);
 
-                      setAnonNumber(act.cod_anonimato);
-                      setCalification(assignment.calificacion);
-                    }
-                  })
-                  .catch((error) => {
-                    console.log('Error al buscar la solicitud del solicitante', error);
-                  });
-              }
-            })
-            .catch((error) => {
-              console.log('Error al buscar el acta del solicitante', error);
-            });
+                        setAnonNumber(act.cod_anonimato);
+                        setCalification(assignment.calificacion);
+                        setCalificationDumb(assignment.calificacion);
+                      }
+                    })
+                    .catch((error) => {
+                      console.log('Error al buscar la solicitud del solicitante', error);
+                    });
+                }
+              })
+              .catch((error) => {
+                console.log('Error al buscar el acta del solicitante', error);
+              });
+          }
+        })
+        .catch((error) => {
+          console.log('Error al buscar el solicitante', error);
+        });
+    }
+  };
+
+  const handleAccept = () => {
+    if (validateRequalification()) {
+      const requalification = {
+        cod_curso: activeCourse.cod_curso,
+        cod_solicitante: requester.cod_solicitante,
+        recalificacion: Number(calification),
+      };
+      console.log('la recalificacion', requalification);
+      insertRequalification(requalification).then((response) => {
+        if (response.status === 200) {
+          setMessage('success', '¡Recalificación insertada con éxito!');
         }
-      })
-      .catch((error) => {
-        console.log('Error al buscar el solicitante', error);
       });
-    return null;
+    } else {
+      setMessage('error', '¡Nota on es válida!');
+    }
+  };
+
+  const handleCancel = () => {
+    const confrimed = window.confirm('Está a punto de perder los cambios no guardados! ¿Desea continuar?');
+
+    if (confrimed) {
+      setCalification(calificationDumb);
+    }
+  };
+
+  const handleRequesterIdInput = (event) => {
+    // Allow only numbers
+    const inputValue = event.target.value.replace(/[^0-9]/g, '');
+    event.target.value = inputValue;
+  };
+
+  const handleRequalificationInput = (event) => {
+    // Allow only floating point numbers
+    const inputValue = event.target.value.replace(/[^.0-9]/g, '');
+    event.target.value = inputValue;
   };
 
   return (
@@ -68,13 +146,17 @@ export default function RequalificationPage() {
           <Grid item xs />
           <Grid item xs={3}>
             <TextField
-              type="number"
+              type="text"
               label="Carnet de identidad"
               variant="outlined"
-              value={requeterIdNumber}
+              value={requesterIdNumber}
               onChange={(event) => {
-                setRequeterIdNumber(event.target.value);
+                setRequesterIdNumber(event.target.value);
               }}
+              onInput={handleRequesterIdInput}
+              inputProps={{ maxLength: 11 }}
+              error={!!errors.requesterIdNumber}
+              helperText={errors.requesterIdNumber}
               required
             />
           </Grid>
@@ -108,11 +190,14 @@ export default function RequalificationPage() {
               variant="outlined"
               value={calification}
               onChange={(event) => setCalification(event.target.value)}
+              onInput={handleRequalificationInput}
               required
               InputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
               InputLabelProps={{
                 shrink: !!calification || focused,
               }}
+              error={!!errors.calification}
+              helperText={errors.calification}
               onFocus={() => setFocused(true)}
               onBlur={() => setFocused(false)}
             />
@@ -122,12 +207,12 @@ export default function RequalificationPage() {
           <Grid container spacing={2} sx={{ pt: '15px', pb: '20px', pl: '8px' }}>
             <Grid item xs />
             <Grid item xs={3}>
-              <Button variant="contained" sx={{ width: '100%' }} onClick={() => {}}>
+              <Button variant="contained" sx={{ width: '100%' }} onClick={handleAccept}>
                 Aceptar
               </Button>
             </Grid>
             <Grid item xs={3}>
-              <Button variant="contained" sx={{ width: '100%' }} onClick={() => {}}>
+              <Button variant="contained" sx={{ width: '100%' }} onClick={handleCancel}>
                 Cancelar
               </Button>
             </Grid>
