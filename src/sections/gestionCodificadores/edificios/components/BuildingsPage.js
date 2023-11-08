@@ -198,7 +198,7 @@ export default function BuildingsPage() {
           deleteBuilding(selectedItem)
             .then((response) => {
               if (response.status === 200) {
-                setMessage('success', 'Edificio eliminado con éxito');
+                setMessage('success', '¡Edificio eliminado con éxito!');
                 setOpenInRowMenu(false);
                 setSelected([]);
                 setRefresh(refresh + 1);
@@ -206,6 +206,7 @@ export default function BuildingsPage() {
             })
             .catch((error) => {
               console.log('Error al eliminar el edificio', error);
+              setMessage('error', '¡Ha ocurrido un error!');
             });
         }
       }

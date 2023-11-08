@@ -259,7 +259,7 @@ export default function RequestsPage(solicitantesConfirmados) {
           deleteRequester(selectedItem)
             .then((response) => {
               if (response.status === 200) {
-                setMessage('success', 'Solicitante eliminado con éxito');
+                setMessage('success', '¡Solicitante eliminado con éxito!');
                 setOpenInRowMenu(false);
                 setSelected([]);
                 setRefresh(refresh + 1);
@@ -267,7 +267,7 @@ export default function RequestsPage(solicitantesConfirmados) {
             })
             .catch((error) => {
               console.log('Error al eliminar el solicitante', error);
-              setMessage('error', 'Error al eliminar el solicitante');
+              setMessage('error', '¡Ha ocurrido un error!');
             });
         }
       }

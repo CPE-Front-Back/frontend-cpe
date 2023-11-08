@@ -217,7 +217,7 @@ export default function ClassroomsPage() {
           deleteClassroom(selectedItem)
             .then((response) => {
               if (response.status === 200) {
-                setMessage('success', 'Aula eliminada con éxito');
+                setMessage('success', '¡Aula eliminada con éxito!');
                 setOpenInRowMenu(false);
                 setSelected([]);
                 setRefresh(refresh + 1);
@@ -225,6 +225,7 @@ export default function ClassroomsPage() {
             })
             .catch((error) => {
               console.log('Error al eliminar el aula', error);
+              setMessage('error', '¡Ha ocurrido un error!');
             });
         }
       }

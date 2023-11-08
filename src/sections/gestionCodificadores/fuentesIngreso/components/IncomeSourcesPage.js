@@ -166,14 +166,14 @@ export default function IncomeSourcesPage() {
       const selectedItem = filteredIncomeSources.find((incomeSource) => incomeSource.cod_fuente === selected[0]);
       if (selectedItem) {
         const confirmed = window.confirm(
-          `Está seguro que desea eliminar la fuente de ingreso: ${selectedItem.nomb_fuente}`
+          `Está seguro que desea eliminar la fuente de ingreso: ${selectedItem.nomb_fuente} ?`
         );
 
         if (confirmed) {
           deleteIncomeSource(selectedItem)
             .then((response) => {
               if (response.status === 200) {
-                setMessage('success', 'Fuente de ingreso eliminada con éxito');
+                setMessage('success', '¡Fuente de ingreso eliminada con éxito!');
                 setOpenInRowMenu(false);
                 setSelected([]);
                 setRefresh(refresh + 1);
@@ -181,6 +181,7 @@ export default function IncomeSourcesPage() {
             })
             .catch((error) => {
               console.log('Error al eliminar la fuente de ingreso', error);
+              setMessage('error', '¡Ha ocurrido un error!');
             });
         }
       }

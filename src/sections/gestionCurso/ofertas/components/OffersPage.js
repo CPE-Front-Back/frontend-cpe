@@ -203,7 +203,7 @@ export default function OffersPage() {
           deleteOffer(selectedItem)
             .then((response) => {
               if (response.status === 200) {
-                setMessage('success', 'Oferta eliminada con éxito');
+                setMessage('success', '¡Oferta eliminada con éxito!');
                 setOpenInRowMenu(false);
                 setSelected([]);
                 setRefresh(refresh + 1);
@@ -211,6 +211,7 @@ export default function OffersPage() {
             })
             .catch((error) => {
               console.log('Error al eliminar la oferta', error);
+              setMessage('error', '¡Ha ocurrido un error!');
             });
         }
       }

@@ -178,13 +178,15 @@ export default function CapacitiesPage() {
     if (selected.length === 1) {
       const selectedItem = filteredCapacities.find((capacity) => capacity.cod_capacidad === selected[0]);
       if (selectedItem) {
-        const confirmed = window.confirm(`Está seguro que desea eliminar la capacidad: ${selectedItem.cod_capacidad}`);
+        const confirmed = window.confirm(
+          `Está seguro que desea eliminar la capacidad: ${selectedItem.cod_capacidad} ?`
+        );
 
         if (confirmed) {
           deleteCapacity(selectedItem)
             .then((response) => {
               if (response.status === 200) {
-                setMessage('success', 'Capacidad eliminada con éxito');
+                setMessage('success', '¡Capacidad eliminada con éxito!');
                 setOpenInRowMenu(false);
                 setSelected([]);
                 setRefresh(refresh + 1);
@@ -192,6 +194,7 @@ export default function CapacitiesPage() {
             })
             .catch((error) => {
               console.log('Error al eliminar la capacidad', error);
+              setMessage('error', '¡Ha ocurrido un error!');
             });
         }
       }

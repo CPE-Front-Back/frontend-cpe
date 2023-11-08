@@ -176,7 +176,7 @@ export default function CareersPage() {
           deleteCareer(selectedItem)
             .then((response) => {
               if (response.status === 200) {
-                setMessage('success', 'Carrera eliminada con éxito');
+                setMessage('success', '¡Carrera eliminada con éxito!');
                 setOpenInRowMenu(false);
                 setSelected([]);
                 setRefresh(refresh + 1);
@@ -184,6 +184,7 @@ export default function CareersPage() {
             })
             .catch((error) => {
               console.log('Error al eliminar la carrera', error);
+              setMessage('error', '¡Ha ocurrido un error!');
             });
         }
       }

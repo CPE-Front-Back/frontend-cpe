@@ -165,13 +165,13 @@ export default function FacultiesPage() {
     if (selected.length === 1) {
       const selectedItem = filteredFaculties.find((faculty) => faculty.cod_facultad === selected[0]);
       if (selectedItem) {
-        const confirmed = window.confirm(`Está seguro que desea eliminar la facultad: ${selectedItem.nomb_facultad}`);
+        const confirmed = window.confirm(`Está seguro que desea eliminar la facultad: ${selectedItem.nomb_facultad} ?`);
 
         if (confirmed) {
           deleteFaculty(selectedItem)
             .then((response) => {
               if (response.status === 200) {
-                setMessage('success', 'Facultad eliminada con éxito');
+                setMessage('success', '¡Facultad eliminada con éxito!');
                 setOpenInRowMenu(false);
                 setSelected([]);
                 setRefresh(refresh + 1);
@@ -179,6 +179,7 @@ export default function FacultiesPage() {
             })
             .catch((error) => {
               console.log('Error al eliminar la facultad', error);
+              setMessage('error', '¡Ha ocurrido un error!');
             });
         }
       }
