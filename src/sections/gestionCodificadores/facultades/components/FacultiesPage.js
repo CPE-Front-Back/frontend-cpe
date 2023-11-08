@@ -22,12 +22,12 @@ import { filter } from 'lodash';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import Iconify from '../../../../components/iconify';
+import setMessage from '../../../../components/messages/messages';
 import Scrollbar from '../../../../components/scrollbar';
 import FacultadesForm from './FacultadesForm';
 import FacultadesListHead from './FacultadesListHead';
 import FacultadesListToolbar from './FacultadesListToolbar';
-import { getFaculties } from '../store/store';
-import { UseActiveCourse } from '../../../gestionCurso/curso/context/ActiveCourseContext';
+import { deleteFaculty, getFaculties } from '../store/store';
 
 const TABLE_HEAD = [{ id: 'nomb_facultad', label: 'Facultad', alignRight: false }, { id: '' }];
 
@@ -79,7 +79,7 @@ export default function FacultiesPage() {
 
   const [filteredFaculties, setFilteredFaculties] = useState([]);
   const [isNotFound, setIsNotFound] = useState(false);
-  const [emptyRows, setEmptyRows] = useState(0);
+  const [rowsNumber, setRowsNumber] = useState(0);
 
   useEffect(() => {
     getFaculties()
@@ -161,13 +161,37 @@ export default function FacultiesPage() {
     }
   };
 
+  const handleDeleteClick = () => {
+    if (selected.length === 1) {
+      const selectedItem = filteredFaculties.find((faculty) => faculty.cod_facultad === selected[0]);
+      if (selectedItem) {
+        const confirmed = window.confirm(`Está seguro que desea eliminar la facultad: ${selectedItem.nomb_facultad}`);
+
+        if (confirmed) {
+          deleteFaculty(selectedItem)
+            .then((response) => {
+              if (response.status === 200) {
+                setMessage('success', 'Facultad eliminada con éxito');
+                setOpenInRowMenu(false);
+                setSelected([]);
+                setRefresh(refresh + 1);
+              }
+            })
+            .catch((error) => {
+              console.log('Error al eliminar la facultad', error);
+            });
+        }
+      }
+    }
+  };
+
   const handleRowClick = (codFaculty) => {
     const newSelected = [codFaculty];
     setSelected(newSelected);
   };
 
   useEffect(() => {
-    setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - FACULTADESlIST.length) : 0);
+    setRowsNumber(FACULTADESlIST.length);
     setFilteredFaculties(applySortFilter(FACULTADESlIST, getComparator(order, orderBy), filterValue));
     setIsNotFound(!filteredFaculties.length && !!filterValue);
   }, [FACULTADESlIST, filterValue, order, orderBy]);
@@ -259,9 +283,11 @@ export default function FacultiesPage() {
                         </TableRow>
                       );
                     })}
-                    {emptyRows > 0 && (
-                      <TableRow style={{ height: 53 * emptyRows }}>
-                        <TableCell colSpan={6} />
+                    {rowsNumber === 0 && (
+                      <TableRow style={{ height: 53 * rowsNumber }}>
+                        <TableCell colSpan={6} sx={{ textAlign: 'center' }}>
+                          Nada que mostrar
+                        </TableCell>
                       </TableRow>
                     )}
                   </TableBody>
@@ -328,7 +354,7 @@ export default function FacultiesPage() {
           <span style={{ marginLeft: 15 }}>Editar</span>
         </MenuItem>
 
-        <MenuItem sx={{ color: 'error.main' }}>
+        <MenuItem onClick={handleDeleteClick} sx={{ color: 'error.main' }}>
           <Icon size={1} path={mdiDelete} />
           <span style={{ marginLeft: 15 }}>Eliminar</span>
         </MenuItem>

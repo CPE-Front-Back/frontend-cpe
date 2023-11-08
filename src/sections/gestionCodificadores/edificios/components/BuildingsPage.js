@@ -24,7 +24,6 @@ import { Helmet } from 'react-helmet-async';
 import Iconify from '../../../../components/iconify';
 import setMessage from '../../../../components/messages/messages';
 import Scrollbar from '../../../../components/scrollbar';
-import { deleteClassroom } from '../../aulas/store/store';
 import BuildingsForm from './BuildingsForm';
 import BuildingsListHead from './BuildingsListHead';
 import BuildingsListToolbar from './BuildingsListToolbar';

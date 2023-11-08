@@ -39,3 +39,13 @@ export const updateFaculty = async (Faculty) => {
     throw error;
   }
 };
+
+export const deleteFaculty = async (faculty) => {
+  try {
+    const response = await instance.delete(`facultad/${faculty.cod_facultad}`);
+    return response;
+  } catch (error) {
+    console.log('Error en deleteFaculty', error);
+    throw error;
+  }
+};
