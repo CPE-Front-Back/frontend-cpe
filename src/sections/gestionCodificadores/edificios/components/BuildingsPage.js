@@ -22,11 +22,13 @@ import { filter } from 'lodash';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import Iconify from '../../../../components/iconify';
+import setMessage from '../../../../components/messages/messages';
 import Scrollbar from '../../../../components/scrollbar';
+import { deleteClassroom } from '../../aulas/store/store';
 import BuildingsForm from './BuildingsForm';
 import BuildingsListHead from './BuildingsListHead';
 import BuildingsListToolbar from './BuildingsListToolbar';
-import { getBuildings } from '../store/store';
+import { deleteBuilding, getBuildings } from '../store/store';
 import { getFaculties } from '../../facultades/store/store';
 
 const TABLE_HEAD = [
@@ -85,7 +87,7 @@ export default function BuildingsPage() {
 
   const [filteredBuildings, setFilteredBuildings] = useState([]);
   const [isNotFound, setIsNotFound] = useState(false);
-  const [emptyRows, setEmptyRows] = useState(0);
+  const [rowsNumber, setRowsNumber] = useState(0);
 
   useEffect(() => {
     getFaculties()
@@ -187,13 +189,37 @@ export default function BuildingsPage() {
     }
   };
 
+  const handleDeleteClick = () => {
+    if (selected.length === 1) {
+      const selectedItem = filteredBuildings.find((building) => building.cod_edif === selected[0]);
+      if (selectedItem) {
+        const confirmed = window.confirm(`Está seguro que desea eliminar el edificio: ${selectedItem.nomb_edif}`);
+
+        if (confirmed) {
+          deleteBuilding(selectedItem)
+            .then((response) => {
+              if (response.status === 200) {
+                setMessage('success', 'Edificio eliminado con éxito');
+                setOpenInRowMenu(false);
+                setSelected([]);
+                setRefresh(refresh + 1);
+              }
+            })
+            .catch((error) => {
+              console.log('Error al eliminar el edificio', error);
+            });
+        }
+      }
+    }
+  };
+
   const handleRowClick = (codEdif) => {
     const newSelected = [codEdif];
     setSelected(newSelected);
   };
 
   useEffect(() => {
-    setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - BUILDINGSLIST.length) : 0);
+    setRowsNumber(BUILDINGSLIST.length);
     setFilteredBuildings(applySortFilter(BUILDINGSLIST, getComparator(order, orderBy), filterValue));
     setIsNotFound(!filteredBuildings.length && !!filterValue);
   }, [BUILDINGSLIST, filterValue, order, orderBy]);
@@ -287,9 +313,11 @@ export default function BuildingsPage() {
                         </TableRow>
                       );
                     })}
-                    {emptyRows > 0 && (
-                      <TableRow style={{ height: 53 * emptyRows }}>
-                        <TableCell colSpan={6} />
+                    {rowsNumber === 0 && (
+                      <TableRow style={{ height: 53 * rowsNumber }}>
+                        <TableCell colSpan={6} sx={{ textAlign: 'center' }}>
+                          Nada que mostrar
+                        </TableCell>
                       </TableRow>
                     )}
                   </TableBody>
@@ -356,7 +384,7 @@ export default function BuildingsPage() {
           <span style={{ marginLeft: 15 }}>Editar</span>
         </MenuItem>
 
-        <MenuItem sx={{ color: 'error.main' }}>
+        <MenuItem onClick={handleDeleteClick} sx={{ color: 'error.main' }}>
           <Icon size={1} path={mdiDelete} />
           <span style={{ marginLeft: 15 }}>Eliminar</span>
         </MenuItem>

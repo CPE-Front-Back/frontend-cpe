@@ -49,3 +49,13 @@ export const updateBuilding = async (building) => {
     throw error;
   }
 };
+
+export const deleteBuilding = async (building) => {
+  try {
+    const response = await instance.delete(`edificio/${building.cod_edif}`);
+    return response;
+  } catch (error) {
+    console.log('Error en deleteBuilding', error);
+    throw error;
+  }
+};
