@@ -22,12 +22,12 @@ import { filter } from 'lodash';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import Iconify from '../../../../components/iconify';
+import setMessage from '../../../../components/messages/messages';
 import Scrollbar from '../../../../components/scrollbar';
 import IncomeSourcesForm from './IncomeSourcesForm';
 import IncomeSourcesListHead from './IncomeSourcesListHead';
 import IncomeSourcesListToolbar from './IncomeSourcesListToolbar';
-import { getIncomeSources } from '../store/store';
-import { UseActiveCourse } from '../../../gestionCurso/curso/context/ActiveCourseContext';
+import { deleteIncomeSource, getIncomeSources } from '../store/store';
 
 const TABLE_HEAD = [{ id: 'nomb_fuente', label: 'Fuente de ingreso', alignRight: false }, { id: '' }];
 
@@ -79,7 +79,7 @@ export default function IncomeSourcesPage() {
 
   const [filteredIncomeSources, setFilteredIncomeSources] = useState([]);
   const [isNotFound, setIsNotFound] = useState(false);
-  const [emptyRows, setEmptyRows] = useState(0);
+  const [rowsNumber, setRowsNumber] = useState(0);
 
   useEffect(() => {
     getIncomeSources()
@@ -161,13 +161,39 @@ export default function IncomeSourcesPage() {
     }
   };
 
+  const handleDeleteClick = () => {
+    if (selected.length === 1) {
+      const selectedItem = filteredIncomeSources.find((incomeSource) => incomeSource.cod_fuente === selected[0]);
+      if (selectedItem) {
+        const confirmed = window.confirm(
+          `Está seguro que desea eliminar la fuente de ingreso: ${selectedItem.nomb_fuente}`
+        );
+
+        if (confirmed) {
+          deleteIncomeSource(selectedItem)
+            .then((response) => {
+              if (response.status === 200) {
+                setMessage('success', 'Fuente de ingreso eliminada con éxito');
+                setOpenInRowMenu(false);
+                setSelected([]);
+                setRefresh(refresh + 1);
+              }
+            })
+            .catch((error) => {
+              console.log('Error al eliminar la fuente de ingreso', error);
+            });
+        }
+      }
+    }
+  };
+
   const handleRowClick = (incomeSourceCode) => {
     const newSelected = [incomeSourceCode];
     setSelected(newSelected);
   };
 
   useEffect(() => {
-    setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - INCOMESOURCESlIST.length) : 0);
+    setRowsNumber(INCOMESOURCESlIST.length);
     setFilteredIncomeSources(applySortFilter(INCOMESOURCESlIST, getComparator(order, orderBy), filterValue));
     setIsNotFound(!filteredIncomeSources.length && !!filterValue);
   }, [INCOMESOURCESlIST, filterValue, order, orderBy]);
@@ -259,9 +285,11 @@ export default function IncomeSourcesPage() {
                         </TableRow>
                       );
                     })}
-                    {emptyRows > 0 && (
-                      <TableRow style={{ height: 53 * emptyRows }}>
-                        <TableCell colSpan={6} />
+                    {rowsNumber === 0 && (
+                      <TableRow style={{ height: 53 * rowsNumber }}>
+                        <TableCell colSpan={6} sx={{ textAlign: 'center' }}>
+                          Nada que mostrar
+                        </TableCell>
                       </TableRow>
                     )}
                   </TableBody>
@@ -328,7 +356,7 @@ export default function IncomeSourcesPage() {
           <span style={{ marginLeft: 15 }}>Editar</span>
         </MenuItem>
 
-        <MenuItem sx={{ color: 'error.main' }}>
+        <MenuItem onClick={handleDeleteClick} sx={{ color: 'error.main' }}>
           <Icon size={1} path={mdiDelete} />
           <span style={{ marginLeft: 15 }}>Eliminar</span>
         </MenuItem>

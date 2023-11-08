@@ -39,3 +39,13 @@ export const updateIncomeSource = async (incomeSource) => {
     throw error;
   }
 };
+
+export const deleteIncomeSource = async (incomeSource) => {
+  try {
+    const response = await instance.delete(`fuenteIngreso/${incomeSource.cod_fuente}`);
+    return response;
+  } catch (error) {
+    console.log('Error en deleteIncomeSource', error);
+    throw error;
+  }
+};
