@@ -45,7 +45,7 @@ export const deleteClassroom = async (classroom) => {
     const response = await instance.delete(`aula/${classroom.cod_aula}`);
     return response;
   } catch (error) {
-    console.log('Errpor en deleteClassroom', error);
+    console.log('Error en deleteClassroom', error);
     throw error;
   }
 };

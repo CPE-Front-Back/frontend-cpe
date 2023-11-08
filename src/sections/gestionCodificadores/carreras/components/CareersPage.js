@@ -22,12 +22,12 @@ import { filter } from 'lodash';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import Iconify from '../../../../components/iconify';
+import setMessage from '../../../../components/messages/messages';
 import Scrollbar from '../../../../components/scrollbar';
 import CareersForm from './CareersForm';
 import CareersListHead from './CareersListHead';
 import CareersListToolbar from './CareersListToolbar';
-import { getCarreras } from '../store/store';
-import { UseActiveCourse } from '../../../gestionCurso/curso/context/ActiveCourseContext';
+import { deleteCareer, getCarreras } from '../store/store';
 
 const TABLE_HEAD = [
   { id: 'cod_carrera', label: 'Código', alignRight: false },
@@ -84,7 +84,7 @@ export default function CareersPage() {
 
   const [filteredCareers, setFilteredCareers] = useState([]);
   const [isNotFound, setIsNotFound] = useState(false);
-  const [emptyRows, setEmptyRows] = useState(0);
+  const [rowsNumber, setRowsNumber] = useState(0);
 
   useEffect(() => {
     getCarreras()
@@ -166,13 +166,37 @@ export default function CareersPage() {
     }
   };
 
+  const handleDeleteClick = () => {
+    if (selected.length === 1) {
+      const selectedItem = filteredCareers.find((career) => career.cod_carrera === selected[0]);
+      if (selectedItem) {
+        const confirmed = window.confirm(`Está seguro que desea eliminar la carrera: ${selectedItem.nomb_carrera}`);
+
+        if (confirmed) {
+          deleteCareer(selectedItem)
+            .then((response) => {
+              if (response.status === 200) {
+                setMessage('success', 'Carrera eliminada con éxito');
+                setOpenInRowMenu(false);
+                setSelected([]);
+                setRefresh(refresh + 1);
+              }
+            })
+            .catch((error) => {
+              console.log('Error al eliminar la carrera', error);
+            });
+        }
+      }
+    }
+  };
+
   const handleRowClick = (codCarrera) => {
     const newSelected = [codCarrera];
     setSelected(newSelected);
   };
 
   useEffect(() => {
-    setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - CARRERASLIST.length) : 0);
+    setRowsNumber(CARRERASLIST.length);
     setFilteredCareers(applySortFilter(CARRERASLIST, getComparator(order, orderBy), filterValue));
     setIsNotFound(!filteredCareers.length && !!filterValue);
   }, [CARRERASLIST, filterValue, order, orderBy]);
@@ -266,9 +290,11 @@ export default function CareersPage() {
                         </TableRow>
                       );
                     })}
-                    {emptyRows > 0 && (
-                      <TableRow style={{ height: 53 * emptyRows }}>
-                        <TableCell colSpan={6} />
+                    {rowsNumber === 0 && (
+                      <TableRow style={{ height: 53 * rowsNumber }}>
+                        <TableCell colSpan={6} sx={{ textAlign: 'center' }}>
+                          Nada que mostrar
+                        </TableCell>
                       </TableRow>
                     )}
                   </TableBody>
@@ -335,7 +361,7 @@ export default function CareersPage() {
           <span style={{ marginLeft: 15 }}>Editar</span>
         </MenuItem>
 
-        <MenuItem sx={{ color: 'error.main' }}>
+        <MenuItem onClick={handleDeleteClick} sx={{ color: 'error.main' }}>
           <Icon size={1} path={mdiDelete} />
           <span style={{ marginLeft: 15 }}>Eliminar</span>
         </MenuItem>

@@ -29,3 +29,13 @@ export const updateCarrera = async (carrera) => {
     throw error;
   }
 };
+
+export const deleteCareer = async (career) => {
+  try {
+    const response = await instance.delete(`carrera/${career.cod_carrera}`);
+    return response;
+  } catch (error) {
+    console.log('Error en deleteCareer', error);
+    throw error;
+  }
+};
