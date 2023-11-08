@@ -212,9 +212,9 @@ export default function QualificationPage() {
 
   const handleCancel = () => {
     // todo: use confirm dialog instead
-    const confrimed = window.confirm('Está a punto de perder los cambios no guardados! ¿Desea continuar?');
+    const confirmed = window.confirm('Está a punto de perder los cambios no guardados! ¿Desea continuar?');
 
-    if (confrimed) {
+    if (confirmed) {
       setRequestersList(requesterListDump);
     }
   };

@@ -39,3 +39,13 @@ export const updateClassroom = async (classroom) => {
     throw error;
   }
 };
+
+export const deleteClassroom = async (classroom) => {
+  try {
+    const response = await instance.delete(`aula/${classroom.cod_aula}`);
+    return response;
+  } catch (error) {
+    console.log('Errpor en deleteClassroom', error);
+    throw error;
+  }
+};

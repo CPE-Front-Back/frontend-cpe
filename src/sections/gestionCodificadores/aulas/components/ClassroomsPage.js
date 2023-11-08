@@ -22,11 +22,12 @@ import { filter } from 'lodash';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import Iconify from '../../../../components/iconify';
+import setMessage from '../../../../components/messages/messages';
 import Scrollbar from '../../../../components/scrollbar';
 import ClassroomsForm from './ClassroomsForm';
 import ClassroomsListHead from './ClassroomsListHead';
 import ClassroomsListToolbar from './ClassroomsListToolbar';
-import { getClassrooms } from '../store/store';
+import { deleteClassroom, getClassrooms } from '../store/store';
 import { getBuildings } from '../../edificios/store/store';
 import { getFaculties } from '../../facultades/store/store';
 
@@ -88,7 +89,7 @@ export default function ClassroomsPage() {
 
   const [filteredClassrooms, setFilteredClassrooms] = useState([]);
   const [isNotFound, setIsNotFound] = useState(false);
-  const [emptyRows, setEmptyRows] = useState(0);
+  const [rowsNumber, setRowsNumber] = useState(0);
 
   useEffect(() => {
     getFaculties()
@@ -206,13 +207,37 @@ export default function ClassroomsPage() {
     }
   };
 
+  const handleDeleteClick = () => {
+    if (selected.length === 1) {
+      const selectedItem = filteredClassrooms.find((classroom) => classroom.cod_aula === selected[0]);
+      if (selectedItem) {
+        const confirmed = window.confirm(`Está seguro que desea eliminar el aula: ${selectedItem.nomb_aula}`);
+
+        if (confirmed) {
+          deleteClassroom(selectedItem)
+            .then((response) => {
+              if (response.status === 200) {
+                setMessage('success', 'Aula eliminada con éxito');
+                setOpenInRowMenu(false);
+                setSelected([]);
+                setRefresh(refresh + 1);
+              }
+            })
+            .catch((error) => {
+              console.log('Error al eliminar el aula', error);
+            });
+        }
+      }
+    }
+  };
+
   const handleRowClick = (classroomCode) => {
     const newSelected = [classroomCode];
     setSelected(newSelected);
   };
 
   useEffect(() => {
-    setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - CLASSROOMSLIST.length) : 0);
+    setRowsNumber(CLASSROOMSLIST.length);
     setFilteredClassrooms(applySortFilter(CLASSROOMSLIST, getComparator(order, orderBy), filterValue));
     setIsNotFound(!filteredClassrooms.length && !!filterValue);
   }, [CLASSROOMSLIST, filterValue, order, orderBy]);
@@ -308,9 +333,11 @@ export default function ClassroomsPage() {
                         </TableRow>
                       );
                     })}
-                    {emptyRows > 0 && (
-                      <TableRow style={{ height: 53 * emptyRows }}>
-                        <TableCell colSpan={6} />
+                    {rowsNumber === 0 && (
+                      <TableRow style={{ height: 53 * rowsNumber }}>
+                        <TableCell colSpan={6} sx={{ textAlign: 'center' }}>
+                          Nada que mostrar
+                        </TableCell>
                       </TableRow>
                     )}
                   </TableBody>
@@ -377,7 +404,7 @@ export default function ClassroomsPage() {
           <span style={{ marginLeft: 15 }}>Editar</span>
         </MenuItem>
 
-        <MenuItem sx={{ color: 'error.main' }}>
+        <MenuItem onClick={handleDeleteClick} sx={{ color: 'error.main' }}>
           <Icon size={1} path={mdiDelete} />
           <span style={{ marginLeft: 15 }}>Eliminar</span>
         </MenuItem>
