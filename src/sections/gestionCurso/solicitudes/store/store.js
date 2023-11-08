@@ -29,3 +29,13 @@ export const eliminarSolicitudesBySolicitante = async (codSolicitante) => {
     throw error;
   }
 };
+
+export const deleteRequester = async (requester) => {
+  try {
+    const response = await instance.delete(`solicitante/${requester.cod_solicitante}`);
+    return response;
+  } catch (error) {
+    console.log('Error en deleteRequester', error);
+    throw error;
+  }
+};

@@ -23,14 +23,16 @@ import { useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import PropTypes from 'prop-types';
 import Iconify from '../../../../components/iconify';
+import setMessage from '../../../../components/messages/messages';
 import Scrollbar from '../../../../components/scrollbar';
+import { deleteClassroom } from '../../../gestionCodificadores/aulas/store/store';
 import { getCarreras } from '../../../gestionCodificadores/carreras/store/store';
 import { UseActiveCourse } from '../../curso/context/ActiveCourseContext';
 import { getAllOfertasByCurso } from '../../ofertas/store/store';
 import RequestsFormDialog from './RequestsFormDialog';
 import RequestsListHead from './RequestsListHead';
 import RequestsListToolbar from './RequestsListToolbar';
-import { getSolicitantesByCurso, getSolicitudesByCurso } from '../store/store';
+import { deleteRequester, getSolicitantesByCurso, getSolicitudesByCurso } from '../store/store';
 
 const TABLE_HEAD = [
   { id: 'num_id', label: 'No. Identidad', alignRight: false },
@@ -245,12 +247,39 @@ export default function RequestsPage(solicitantesConfirmados) {
     }
   };
 
+  const handleDeleteClick = () => {
+    if (selected.length === 1) {
+      const selectedItem = filteredSolicitudes.find((requester) => requester.cod_solicitante === selected[0]);
+      if (selectedItem) {
+        const confirmed = window.confirm(
+          `Está seguro que desea eliminar el solicitante: ${selectedItem.nomb_solicitante}`
+        );
+
+        if (confirmed) {
+          deleteRequester(selectedItem)
+            .then((response) => {
+              if (response.status === 200) {
+                setMessage('success', 'Solicitante eliminado con éxito');
+                setOpenInRowMenu(false);
+                setSelected([]);
+                setRefresh(refresh + 1);
+              }
+            })
+            .catch((error) => {
+              console.log('Error al eliminar el solicitante', error);
+              setMessage('error', 'Error al eliminar el solicitante');
+            });
+        }
+      }
+    }
+  };
+
   const handleRowClick = (codSol) => {
     const newSelected = [codSol];
     setSelected(newSelected);
   };
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - SOLICITANTESSLIST.length) : 0;
+  const rowsNumber = SOLICITANTESSLIST.length;
 
   const filteredSolicitudes = applySortFilter(SOLICITANTESSLIST, getComparator(order, orderBy), filterValue);
 
@@ -370,9 +399,11 @@ export default function RequestsPage(solicitantesConfirmados) {
                         </TableRow>
                       );
                     })}
-                    {emptyRows > 0 && (
-                      <TableRow style={{ height: 53 * emptyRows }}>
-                        <TableCell colSpan={6} />
+                    {rowsNumber === 0 && (
+                      <TableRow style={{ height: 53 * rowsNumber }}>
+                        <TableCell colSpan={10} sx={{ textAlign: 'center' }}>
+                          Nada que mostrar
+                        </TableCell>
                       </TableRow>
                     )}
                   </TableBody>
@@ -435,10 +466,12 @@ export default function RequestsPage(solicitantesConfirmados) {
       >
         <MenuItem onClick={handleConfirmClick}>
           <Icon size={1} path={mdiPencilOutline} />
-          <span style={{ marginLeft: 15 }}>Editar</span>
+          <span style={{ marginLeft: 15 }}>
+            {solicitantesConfirmados.solicitantesConfirmados ? 'Editar' : 'Confirmar'}
+          </span>
         </MenuItem>
 
-        <MenuItem sx={{ color: 'error.main' }}>
+        <MenuItem onClick={handleDeleteClick} sx={{ color: 'error.main' }}>
           <Icon size={1} path={mdiDelete} />
           <span style={{ marginLeft: 15 }}>Eliminar</span>
         </MenuItem>
