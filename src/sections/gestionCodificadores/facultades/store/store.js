@@ -42,7 +42,7 @@ export const updateFaculty = async (Faculty) => {
 
 export const deleteFaculty = async (faculty) => {
   try {
-    const response = await instance.delete(`facultad/${faculty.cod_facultad}`);
+    const response = await instance.delete(`facultad/${faculty.nomb_facultad}`);
     return response;
   } catch (error) {
     console.log('Error en deleteFaculty', error);
