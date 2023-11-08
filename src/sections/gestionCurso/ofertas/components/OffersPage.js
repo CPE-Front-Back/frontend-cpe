@@ -1,4 +1,4 @@
-import { mdiDelete, mdiDotsVertical, mdiPencilOutline, mdiStoreEditOutline } from '@mdi/js';
+import { mdiDelete, mdiDotsVertical, mdiPencilOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import {
   Button,
@@ -21,10 +21,11 @@ import {
 import { filter } from 'lodash';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
+import setMessage from '../../../../components/messages/messages';
 import { getCarreras } from '../../../gestionCodificadores/carreras/store/store';
 import { UseActiveCourse } from '../../curso/context/ActiveCourseContext';
 
-import { getAllOfertasByCurso, updateOferta } from '../store/store';
+import { deleteOffer, getAllOfertasByCurso } from '../store/store';
 
 import Iconify from '../../../../components/iconify';
 import Scrollbar from '../../../../components/scrollbar';
@@ -88,7 +89,7 @@ export default function OffersPage() {
 
   const [filteredOffers, setFilteredOffers] = useState([]);
   const [isNotFound, setIsNotFound] = useState(false);
-  const [emptyRows, setEmptyRows] = useState(0);
+  const [rowsNumber, setRowsNumber] = useState(0);
 
   const { activeCourse } = UseActiveCourse();
 
@@ -112,11 +113,10 @@ export default function OffersPage() {
             const relatedCarrera = CARRERASLIST.find((carrera) => carrera.cod_carrera === oferta.cod_carrera);
             return {
               ...oferta,
-              nomb_carrera: relatedCarrera ? relatedCarrera.nomb_carrera : 'Unknown', // Replace 'Unknown' with a default name
+              nomb_carrera: relatedCarrera ? relatedCarrera.nomb_carrera : 'Cargando', // Replace 'Unknown' with a default name
             };
           });
           setOFERTASLIST(updatedOfertasList);
-          setEmptyRows(-1);
           console.log('Cargar las ofertas', refresh);
         }
       })
@@ -193,13 +193,37 @@ export default function OffersPage() {
     }
   };
 
+  const handleDeleteClick = () => {
+    if (selected.length === 1) {
+      const selectedItem = filteredOffers.find((offer) => offer.cod_oferta === selected[0]);
+      if (selectedItem) {
+        const confirmed = window.confirm(`Está seguro que desea eliminar la oferta: ${selectedItem.cod_oferta}`);
+
+        if (confirmed) {
+          deleteOffer(selectedItem)
+            .then((response) => {
+              if (response.status === 200) {
+                setMessage('success', 'Oferta eliminada con éxito');
+                setOpenInRowMenu(false);
+                setSelected([]);
+                setRefresh(refresh + 1);
+              }
+            })
+            .catch((error) => {
+              console.log('Error al eliminar la oferta', error);
+            });
+        }
+      }
+    }
+  };
+
   const handleRowClick = (codCarrera) => {
     const newSelected = [codCarrera];
     setSelected(newSelected);
   };
 
   useEffect(() => {
-    // setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - OFERTASLIST.length) : 0);
+    setRowsNumber(OFERTASLIST.length);
     setFilteredOffers(applySortFilter(OFERTASLIST, getComparator(order, orderBy), filterValue));
     setIsNotFound(!filteredOffers.length && !!filterValue);
   }, [OFERTASLIST, filterValue, order, orderBy]);
@@ -227,16 +251,7 @@ export default function OffersPage() {
             <Typography variant="h4" gutterBottom>
               Ofertas
             </Typography>
-            {/* <Button
-              variant="contained"
-              style={{ textTransform: 'none' }}
-              startIcon={<Iconify icon="eva:plus-fill" />}
-              onClick={() => {
-                setRefresh(refresh + 1);
-              }}
-            >
-              Refresh
-            </Button> */}
+
             <Button
               variant="contained"
               style={{ textTransform: 'none' }}
@@ -303,9 +318,11 @@ export default function OffersPage() {
                         </TableRow>
                       );
                     })}
-                    {emptyRows === 0 && (
-                      <TableRow style={{ height: 53 * emptyRows }}>
-                        <TableCell colSpan={6}>Nada que mostrar</TableCell>
+                    {rowsNumber === 0 && (
+                      <TableRow style={{ height: 53 * rowsNumber }}>
+                        <TableCell colSpan={6} sx={{ textAlign: 'center' }}>
+                          Nada que mostrar
+                        </TableCell>
                       </TableRow>
                     )}
                   </TableBody>
@@ -372,7 +389,7 @@ export default function OffersPage() {
           <span style={{ marginLeft: 15 }}>Editar</span>
         </MenuItem>
 
-        <MenuItem sx={{ color: 'error.main' }}>
+        <MenuItem onClick={handleDeleteClick} sx={{ color: 'error.main' }}>
           <Icon size={1} path={mdiDelete} />
           <span style={{ marginLeft: 15 }}>Eliminar</span>
         </MenuItem>

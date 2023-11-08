@@ -29,3 +29,13 @@ export const insertarOferta = async (oferta) => {
     throw error;
   }
 };
+
+export const deleteOffer = async (offer) => {
+  try {
+    const response = await instance.delete(`oferta/${offer.cod_oferta}`);
+    return response;
+  } catch (error) {
+    console.log('Error en deleteOffer', error);
+    throw error;
+  }
+};
