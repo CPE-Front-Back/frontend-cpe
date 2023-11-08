@@ -22,11 +22,12 @@ import { filter } from 'lodash';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import Iconify from '../../../../components/iconify';
+import setMessage from '../../../../components/messages/messages';
 import Scrollbar from '../../../../components/scrollbar';
 import CapacitiesForm from './CapacitiesForm';
 import CapacitiesListHead from './CapacitiesListHead';
 import CapacitiesListToolbar from './CapacitiesListToolbar';
-import { getCapacities } from '../store/store';
+import { deleteCapacity, getCapacities } from '../store/store';
 import { UseActiveCourse } from '../../curso/context/ActiveCourseContext';
 
 const TABLE_HEAD = [
@@ -91,7 +92,7 @@ export default function CapacitiesPage() {
 
   const [filteredCapacities, setFilteredCapacities] = useState([]);
   const [isNotFound, setIsNotFound] = useState(false);
-  const [emptyRows, setEmptyRows] = useState(0);
+  const [rowsNumbers, setRowsNumbers] = useState(0);
 
   useEffect(() => {
     getCapacities(activeCourse.cod_curso)
@@ -173,13 +174,37 @@ export default function CapacitiesPage() {
     }
   };
 
+  const handleDeleteClick = () => {
+    if (selected.length === 1) {
+      const selectedItem = filteredCapacities.find((capacity) => capacity.cod_capacidad === selected[0]);
+      if (selectedItem) {
+        const confirmed = window.confirm(`Está seguro que desea eliminar la capacidad: ${selectedItem.cod_capacidad}`);
+
+        if (confirmed) {
+          deleteCapacity(selectedItem)
+            .then((response) => {
+              if (response.status === 200) {
+                setMessage('success', 'Capacidad eliminada con éxito');
+                setOpenInRowMenu(false);
+                setSelected([]);
+                setRefresh(refresh + 1);
+              }
+            })
+            .catch((error) => {
+              console.log('Error al eliminar la capacidad', error);
+            });
+        }
+      }
+    }
+  };
+
   const handleRowClick = (capacityCode) => {
     const newSelected = [capacityCode];
     setSelected(newSelected);
   };
 
   useEffect(() => {
-    setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - CAPACITIESLIST.length) : 0);
+    setRowsNumbers(CAPACITIESLIST.length);
     setFilteredCapacities(applySortFilter(CAPACITIESLIST, getComparator(order, orderBy), filterValue));
     setIsNotFound(!filteredCapacities.length && !!filterValue);
   }, [CAPACITIESLIST, filterValue, order, orderBy]);
@@ -288,9 +313,11 @@ export default function CapacitiesPage() {
                         </TableRow>
                       );
                     })}
-                    {emptyRows > 0 && (
-                      <TableRow style={{ height: 53 * emptyRows }}>
-                        <TableCell colSpan={6} />
+                    {rowsNumbers === 0 && (
+                      <TableRow style={{ height: 53 * rowsNumbers }}>
+                        <TableCell colSpan={6} sx={{ textAlign: 'center' }}>
+                          Nada que mostrar
+                        </TableCell>
                       </TableRow>
                     )}
                   </TableBody>
@@ -357,7 +384,7 @@ export default function CapacitiesPage() {
           <span style={{ marginLeft: 15 }}>Editar</span>
         </MenuItem>
 
-        <MenuItem sx={{ color: 'error.main' }}>
+        <MenuItem onClick={handleDeleteClick} sx={{ color: 'error.main' }}>
           <Icon size={1} path={mdiDelete} />
           <span style={{ marginLeft: 15 }}>Eliminar</span>
         </MenuItem>

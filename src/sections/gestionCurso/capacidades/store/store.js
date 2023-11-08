@@ -29,3 +29,13 @@ export const updateCapacity = async (capacity) => {
     throw error;
   }
 };
+
+export const deleteCapacity = async (capacity) => {
+  try {
+    const response = await instance.delete(`capacidad/${capacity.cod_capacidad}`);
+    return response;
+  } catch (error) {
+    console.log('Error en deleteCapacity', error);
+    throw error;
+  }
+};
