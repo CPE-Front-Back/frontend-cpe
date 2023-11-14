@@ -162,43 +162,73 @@ export default function navConfig() {
       showSubItems: false,
       subItems: [
         {
-          title: 'Reporte 1',
-          path: 'd',
+          title: 'Reporte Provincias',
+          path: '/dashboard/pdfPage1',
           icon: <Icon size={1} path={mdiTextBoxMultipleOutline} />,
         },
         {
           title: 'Reporte 2',
-          path: 'd',
+          path: '/dashboard/pdfPage2',
           icon: <Icon size={1} path={mdiTextBoxMultipleOutline} />,
         },
         {
           title: 'Reporte 3',
-          path: 'd',
+          path: '/dashboard/pdfPage3',
           icon: <Icon size={1} path={mdiTextBoxMultipleOutline} />,
         },
         {
           title: 'Reporte 4',
-          path: 'd',
+          path: '/dashboard/pdfPage4',
           icon: <Icon size={1} path={mdiTextBoxMultipleOutline} />,
         },
         {
           title: 'Reporte 5',
-          path: 'd',
+          path: '/dashboard/pdfPage5',
           icon: <Icon size={1} path={mdiTextBoxMultipleOutline} />,
         },
         {
           title: 'Reporte 6',
-          path: 'd',
+          path: '/dashboard/pdfPage6',
           icon: <Icon size={1} path={mdiTextBoxMultipleOutline} />,
         },
         {
           title: 'Reporte 7',
-          path: 'd',
+          path: '/dashboard/pdfPage7',
           icon: <Icon size={1} path={mdiTextBoxMultipleOutline} />,
         },
         {
           title: 'Reporte 8',
-          path: 'd',
+          path: '/dashboard/pdfPage8',
+          icon: <Icon size={1} path={mdiTextBoxMultipleOutline} />,
+        },
+        {
+          title: 'Reporte 9',
+          path: '/dashboard/pdfPage9',
+          icon: <Icon size={1} path={mdiTextBoxMultipleOutline} />,
+        },
+        {
+          title: 'Reporte 10',
+          path: '/dashboard/pdfPage10',
+          icon: <Icon size={1} path={mdiTextBoxMultipleOutline} />,
+        },
+        {
+          title: 'Reporte 11',
+          path: '/dashboard/pdfPage11',
+          icon: <Icon size={1} path={mdiTextBoxMultipleOutline} />,
+        },
+        {
+          title: 'Reporte 12',
+          path: '/dashboard/pdfPage12',
+          icon: <Icon size={1} path={mdiTextBoxMultipleOutline} />,
+        },
+        {
+          title: 'Reporte 13',
+          path: '/dashboard/pdfPage13',
+          icon: <Icon size={1} path={mdiTextBoxMultipleOutline} />,
+        },
+        {
+          title: 'Reporte 14',
+          path: '/dashboard/pdfPage14',
           icon: <Icon size={1} path={mdiTextBoxMultipleOutline} />,
         },
       ],
