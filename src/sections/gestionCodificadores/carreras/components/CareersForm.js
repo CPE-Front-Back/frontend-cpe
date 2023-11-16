@@ -66,10 +66,11 @@ export default function CareersForm({ editMode, formData, onSubmit }) {
         flexGrow={{ flexGrow: 1 }}
         sx={{ backgroundColor: 'white', marginTop: '80px', pr: '100px', pl: '100px', pb: '20px', pt: '20px' }}
       >
-        <Typography variant="h4" sx={{ pb: '10px' }}>
+        <Typography variant="h4" gutterBottom>
           {editMode ? 'Editar Carrera' : 'Registrar Carrera'}
         </Typography>
-        <Grid container spacing={2}>
+
+        <Grid container spacing={2} sx={{ pt: 5 }}>
           <Grid item xs>
             <TextField
               type="number"

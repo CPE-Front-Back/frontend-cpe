@@ -103,7 +103,7 @@ export default function CoursePage() {
 
   return (
     <>
-      <Container sx={{ backgroundColor: 'white', pt: '50px' }}>
+      <Container sx={{ pt: '50px' }}>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
             Cursos
@@ -117,42 +117,43 @@ export default function CoursePage() {
             Generar nuevo Curso
           </Button>
         </Stack>
-
-        <Grid container sx={{ pt: '10px' }}>
-          <Grid item xs />
-          <Grid item xs={3}>
-            <Typography variant="h5">{`Curso activo: ${activeCourse.nomb_curso}`}</Typography>
+        <Container sx={{ backgroundColor: 'white' }}>
+          <Grid container sx={{ pt: '10px' }}>
+            <Grid item xs />
+            <Grid item xs={10} sx={{ textAlign: 'center' }}>
+              <Typography variant="h5">{`Curso activo: ${activeCourse.nomb_curso}`}</Typography>
+            </Grid>
+            <Grid item xs />
           </Grid>
-          <Grid item xs />
-        </Grid>
 
-        <Grid container sx={{ pt: '30px' }}>
-          <Grid item xs />
-          <Grid item xs={3}>
-            <Autocomplete
-              id="ComboCursos"
-              options={cursosFiltrados}
-              getOptionLabel={(option) => option.nomb_curso}
-              value={selectedCurso}
-              onChange={(event, newValue) => {
-                setSelectedCurso(newValue);
-              }}
-              renderInput={(params) => <TextField {...params} label="Cursos disponibles" />}
-              noOptionsText={'No hay opciones'}
-            />
+          <Grid container sx={{ pt: '30px' }}>
+            <Grid item xs />
+            <Grid item xs={3}>
+              <Autocomplete
+                id="ComboCursos"
+                options={cursosFiltrados}
+                getOptionLabel={(option) => option.nomb_curso}
+                value={selectedCurso}
+                onChange={(event, newValue) => {
+                  setSelectedCurso(newValue);
+                }}
+                renderInput={(params) => <TextField {...params} label="Cursos disponibles" />}
+                noOptionsText={'No hay opciones'}
+              />
+            </Grid>
+            <Grid item xs />
           </Grid>
-          <Grid item xs />
-        </Grid>
 
-        <Grid container sx={{ pt: '20px', pb: '20px' }}>
-          <Grid item xs />
-          <Grid item xs={3}>
-            <Button variant="contained" sx={{ width: '100%' }} onClick={handleActivarCursoClick}>
-              Activar curso
-            </Button>
+          <Grid container sx={{ pt: '20px', pb: '20px' }}>
+            <Grid item xs />
+            <Grid item xs={3}>
+              <Button variant="contained" sx={{ width: '100%' }} onClick={handleActivarCursoClick}>
+                Activar curso
+              </Button>
+            </Grid>
+            <Grid item xs />
           </Grid>
-          <Grid item xs />
-        </Grid>
+        </Container>
       </Container>
     </>
   );

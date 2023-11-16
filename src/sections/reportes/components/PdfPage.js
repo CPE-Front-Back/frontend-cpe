@@ -291,8 +291,10 @@ export default function PdfPage({ pdfName }) {
 
           <Grid container sx={{ pt: '10px' }}>
             <Grid item xs />
-            <Grid item xs={3}>
-              <Typography variant="h5">{pdfNameValue}</Typography>
+            <Grid item xs={10}>
+              <Typography variant="h5" sx={{ textAlign: 'center' }}>
+                {pdfNameValue}
+              </Typography>
             </Grid>
             <Grid item xs />
           </Grid>

@@ -64,12 +64,13 @@ export default function IncomeSourcesForm({ editMode, formData, onSubmit }) {
         flexGrow={{ flexGrow: 1 }}
         sx={{ backgroundColor: 'white', marginTop: '80px', pr: '100px', pl: '100px', pb: '20px', pt: '20px' }}
       >
-        <Typography variant="h4" sx={{ pb: '10px' }}>
+        <Typography variant="h4" gutterBottom>
           {editMode ? 'Editar Fuente de ingreso' : 'Registrar Fuente de ingreso'}
         </Typography>
 
-        <Grid container spacing={2}>
-          <Grid item xs>
+        <Grid container spacing={2} sx={{ pt: 5 }}>
+          <Grid item xs />
+          <Grid item xs={3.5} sx={{ ml: '-30px' }}>
             <TextField
               type="text"
               label="Nombre"
@@ -79,6 +80,7 @@ export default function IncomeSourcesForm({ editMode, formData, onSubmit }) {
               required
             />
           </Grid>
+          <Grid item xs />
         </Grid>
 
         <Grid container spacing={1} sx={{ pt: 5 }}>
@@ -88,11 +90,12 @@ export default function IncomeSourcesForm({ editMode, formData, onSubmit }) {
               {editMode ? 'Modificar' : 'Registrar'}
             </Button>
           </Grid>
-          <Grid item xs>
+          <Grid item xs={2}>
             <Button type="submit" variant="contained" color="primary" onClick={handleBack}>
               Cancelar
             </Button>
           </Grid>
+          <Grid item xs />
         </Grid>
       </Box>
     </>

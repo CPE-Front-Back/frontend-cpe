@@ -61,7 +61,7 @@ function NavItem({ item, onSubmenuItemClicked }) {
           {isExpanded ? <Icon size={1} path={mdiChevronDown} /> : <Icon size={1} path={mdiChevronUp} />}
         </StyledNavItem>
         {isExpanded && (
-          <Box sx={{ pl: '30px' }}>
+          <Box sx={{ pl: '20px' }}>
             <List>
               {subItems.map((subItem) => (
                 <NavItem key={subItem.title} item={subItem} onSubmenuItemClicked={onSubmenuItemClicked} />

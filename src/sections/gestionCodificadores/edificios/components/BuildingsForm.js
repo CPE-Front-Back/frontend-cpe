@@ -1,4 +1,4 @@
-import { Autocomplete, Box, Button, Grid, TextField } from '@mui/material';
+import { Autocomplete, Box, Button, Grid, TextField, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import setMessage from '../../../../components/messages/messages';
@@ -79,7 +79,11 @@ export default function BuildingsForm({ editMode, formData, onSubmit }) {
         flexGrow={{ flexGrow: 1 }}
         sx={{ backgroundColor: 'white', marginTop: '80px', pr: '100px', pl: '100px', pb: '20px', pt: '20px' }}
       >
-        <Grid container spacing={2}>
+        <Typography variant="h4" gutterBottom>
+          {editMode ? 'Editar Edificio' : 'Registrar Edificio'}
+        </Typography>
+
+        <Grid container spacing={2} sx={{ pt: 5 }}>
           <Grid item xs sx={{ minWidth: '400px' }}>
             <Autocomplete
               id="FacultyCombo"

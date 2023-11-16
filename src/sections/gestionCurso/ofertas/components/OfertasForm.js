@@ -134,6 +134,7 @@ export default function OfertasForm({ editMode, formData, onSubmit }) {
         <Typography variant="h4" gutterBottom>
           {editMode ? 'Editar Oferta' : 'Registrar Oferta'}
         </Typography>
+
         <Grid container spacing={2} sx={{ pt: 5 }}>
           <Grid item xs sx={{ minWidth: '400px' }}>
             {/* <Typography variant="body1">Carrera: {nomb_carrera}</Typography> */}
