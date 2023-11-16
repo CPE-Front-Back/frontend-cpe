@@ -31,7 +31,6 @@ export default function DashboardLogedInPage() {
         <Grid container>
           <Grid item xs />
           <Grid item xs={9}>
-            <Button onClick={() => setMessage('success', 'mensaje de prueba')}>Show Message</Button>
             <CourseStatisticsViewer title={`Curso: ${activeCourse.nomb_curso}`} />
           </Grid>
           <Grid item xs />

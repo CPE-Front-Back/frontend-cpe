@@ -2,9 +2,6 @@ import { LoadingButton } from '@mui/lab';
 import { Autocomplete, Grid, Stack, TextField, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import solicitudes from '../../../_mock/solicitud';
-import SelectAutoWidth from '../../../components/ComboBox/ComboBoxAutoWidth';
 import setMessage from '../../../components/messages/messages';
 import useResponsive from '../../../hooks/useResponsive';
 

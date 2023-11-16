@@ -3,7 +3,7 @@ import { Navigate, useRoutes } from 'react-router-dom';
 import DashboardLayout from './layouts/dashboard';
 import SimpleLayout from './layouts/simple';
 //
-import BlogPage from './sections/@dashboard/blog/components/BlogPage';
+
 import BuildingsPage from './sections/gestionCodificadores/edificios/components/BuildingsPage';
 import CapacitiesPage from './sections/gestionCurso/capacidades/components/CapacitiesPage';
 import CareersPage from './sections/gestionCodificadores/carreras/components/CareersPage';
@@ -15,10 +15,8 @@ import OffersPage from './sections/gestionCurso/ofertas/components/OffersPage';
 import PdfPage from './sections/reportes/components/PdfPage';
 import RequesterPage from './sections/solicitante/components/RequesterPage';
 import RequestsPage from './sections/gestionCurso/solicitudes/components/RequestsPage';
-import UserPage from './sections/@dashboard/user/components/UserPage';
 import LoginPage from './sections/auth/login/LoginPage';
 import Page404 from './layouts/404/Page404';
-import ProductsPage from './sections/@dashboard/products/components/ProductsPage';
 import DashboardLogedInPage from './sections/@dashboard/app/components/DashboardLogedInPage';
 import QualificationPage from './sections/procesamiento/calificacion/components/QualificationPage';
 import RequalificationPage from './sections/procesamiento/recalificacion/components/RequalificationPage';
@@ -61,9 +59,6 @@ export default function Router() {
         { path: 'pdfPage13', element: <PdfPage pdfName="Resumen de asignaciones en 1era opción por carrera" /> },
         { path: 'pdfPage14', element: <PdfPage pdfName="Resumen final de asignaciones por carreras" /> },
         { path: 'app', element: <DashboardLogedInPage /> },
-        { path: 'user', element: <UserPage /> },
-        { path: 'products', element: <ProductsPage /> },
-        { path: 'blog', element: <BlogPage /> },
       ],
     },
     {
