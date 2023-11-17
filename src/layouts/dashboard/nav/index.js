@@ -1,3 +1,5 @@
+import { mdiAccountCircleOutline, mdiFileDocumentOutline, mdiInformationSlabCircleOutline } from '@mdi/js';
+import { Icon } from '@mdi/react';
 import PropTypes from 'prop-types';
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
@@ -12,8 +14,10 @@ import useResponsive from '../../../hooks/useResponsive';
 import Logo from '../../../components/logo';
 import Scrollbar from '../../../components/scrollbar';
 import NavSection from '../../../components/nav-section';
+import { UseAuthContext } from '../../../sections/auth/context/AuthProvider';
 //
 import navConfig from './config';
+import { asignar1raVuelta } from '../../../sections/procesamiento/store/store';
 
 // ----------------------------------------------------------------------
 
@@ -36,7 +40,7 @@ Nav.propTypes = {
 
 export default function Nav({ openNav, onCloseNav }) {
   const { pathname } = useLocation();
-
+  const { auth } = UseAuthContext();
   const isDesktop = useResponsive('up', 'lg');
 
   useEffect(() => {
@@ -46,6 +50,19 @@ export default function Nav({ openNav, onCloseNav }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
+  const handleSubmenuItemClicked = (title) => {
+    if (title === 'Asignar 1ra vuelta') {
+      console.log(`Submenu item clicked: ${title}`);
+      asignar1raVuelta(5)
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => {
+          console.log('Error al asignar Primera Vuelta', error);
+        });
+    }
+  };
+
   const renderContent = (
     <Scrollbar
       sx={{
@@ -53,44 +70,38 @@ export default function Nav({ openNav, onCloseNav }) {
         '& .simplebar-content': { height: 1, display: 'flex', flexDirection: 'column' },
       }}
     >
-      <Box sx={{ px: 2.5, py: 3, display: 'inline-flex' }}>
+      <Box sx={{ px: 2.5, py: 3, pl: '105px', display: 'inline-flex' }}>
         <Logo />
       </Box>
 
       <Box sx={{ mb: 5, mx: 2.5 }}>
         <Link underline="none">
           <StyledAccount>
-            <Avatar src={account.photoURL} alt="photoURL" />
+            <Icon size={2.5} path={mdiAccountCircleOutline} />
 
             <Box sx={{ ml: 2 }}>
               <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
-                {account.displayName}
+                {auth.name}
               </Typography>
 
               <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                {account.role} no sale el rol
+                {auth.rol}
               </Typography>
             </Box>
           </StyledAccount>
         </Link>
       </Box>
 
-      <NavSection data={navConfig} />
+      <NavSection data={navConfig()} onSubmenuItemClicked={handleSubmenuItemClicked} />
 
       <Box sx={{ flexGrow: 1 }} />
 
       <Box sx={{ px: 2.5, pb: 3, mt: 10 }}>
-        <Stack alignItems="center" spacing={3} sx={{ pt: 5, borderRadius: 2, position: 'relative' }}>
-          <Box
-            component="img"
-            src="/assets/illustrations/illustration_avatar.png"
-            sx={{ width: 100, position: 'absolute', top: -50 }}
-          />
-          
-          <Typography variant="h3" sx={{ color: 'text.secondary' }}>
+        <Stack alignItems="center" spacing={0.5} sx={{ pt: 5, borderRadius: 2, position: 'relative' }}>
+          <Icon size={4} path={mdiInformationSlabCircleOutline} />
+          <Typography variant="h6" textAlign={'center'} sx={{ color: 'text.secondary' }}>
             Sección de ayuda
           </Typography>
-          
         </Stack>
       </Box>
     </Scrollbar>
@@ -112,7 +123,7 @@ export default function Nav({ openNav, onCloseNav }) {
             sx: {
               width: NAV_WIDTH,
               bgcolor: 'background.default',
-              borderRightStyle: 'dashed',
+              borderRightStyle: 'double',
             },
           }}
         >
