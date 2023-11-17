@@ -35,19 +35,18 @@ NavItem.propTypes = {
 };
 
 function NavItem({ item, onSubmenuItemClicked }) {
-  const { title, path, icon, info, showSubItems, subItems, isDisabled } = item;
+  const { title, path, icon, info, haveAccess, showSubItems, subItems, isDisabled } = item;
   const [isExpanded, setIsExpanded] = useState(showSubItems);
 
-  const handleToggleShowSubItems = () => {
+  const ToggleShowSubItems = () => {
     setIsExpanded(!isExpanded);
-    console.log(isDisabled);
   };
 
-  if (subItems) {
+  if (subItems && haveAccess) {
     return (
       <div>
         <StyledNavItem
-          onClick={handleToggleShowSubItems}
+          onClick={ToggleShowSubItems}
           sx={{
             '&.active': {
               color: 'text.primary',
@@ -74,24 +73,28 @@ function NavItem({ item, onSubmenuItemClicked }) {
   }
 
   return (
-    <StyledNavItem
-      component={path ? RouterLink : ''}
-      to={path}
-      sx={{
-        '&.active': {
-          color: 'text.primary',
-          bgcolor: 'action.selected',
-          fontWeight: 'fontWeightBold',
-        },
-      }}
-      onClick={() => onSubmenuItemClicked(title)}
-      disabled={isDisabled}
-    >
-      <StyledNavItemIcon>{icon && icon}</StyledNavItemIcon>
+    <>
+      {haveAccess && (
+        <StyledNavItem
+          component={path ? RouterLink : ''}
+          to={path}
+          sx={{
+            '&.active': {
+              color: 'text.primary',
+              bgcolor: 'action.selected',
+              fontWeight: 'fontWeightBold',
+            },
+          }}
+          onClick={() => onSubmenuItemClicked(title)}
+          disabled={isDisabled}
+        >
+          <StyledNavItemIcon>{icon && icon}</StyledNavItemIcon>
 
-      <ListItemText disableTypography primary={title} />
+          <ListItemText disableTypography primary={title} />
 
-      {info && info}
-    </StyledNavItem>
+          {info && info}
+        </StyledNavItem>
+      )}
+    </>
   );
 }

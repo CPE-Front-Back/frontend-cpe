@@ -228,7 +228,7 @@ export default function QualificationPage() {
   return (
     <>
       <Helmet>
-        <title> Calificaciones | CPE </title>
+        <title> Calificaciones | SAPCE </title>
       </Helmet>
 
       <Typography variant="h4" gutterBottom>

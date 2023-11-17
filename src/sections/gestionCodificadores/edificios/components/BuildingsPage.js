@@ -227,7 +227,7 @@ export default function BuildingsPage() {
   return (
     <>
       <Helmet>
-        <title> Edificios | CPE </title>
+        <title> Edificios | SAPCE </title>
       </Helmet>
 
       {isFormVisible ? (

@@ -136,7 +136,7 @@ export default function RequalificationPage() {
     <>
       <Container sx={{ pt: '50px' }}>
         <Helmet>
-          <title> Recalificaciones | CPE </title>
+          <title> Recalificaciones | SAPCE </title>
         </Helmet>
         <Typography variant="h4" gutterBottom>
           Insertar recalificación

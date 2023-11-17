@@ -202,7 +202,7 @@ export default function IncomeSourcesPage() {
   return (
     <>
       <Helmet>
-        <title> Fuentes de ingreso | CPE </title>
+        <title> Fuentes de ingreso | SAPCE </title>
       </Helmet>
 
       {isFormVisible ? (

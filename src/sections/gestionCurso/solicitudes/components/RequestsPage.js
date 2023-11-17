@@ -288,7 +288,7 @@ export default function RequestsPage(solicitantesConfirmados) {
   return (
     <>
       <Helmet>
-        <title> Solicitudes | CPE </title>
+        <title> Solicitudes | SAPCE </title>
       </Helmet>
 
       {isFormDialogVisible ? (

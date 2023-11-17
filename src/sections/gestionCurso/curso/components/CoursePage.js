@@ -1,6 +1,7 @@
 import { LoadingButton } from '@mui/lab';
 import { Autocomplete, Button, Container, Grid, Stack, TextField, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import Iconify from '../../../../components/iconify';
 import setMessage from '../../../../components/messages/messages';
 import { UseActiveCourse } from '../context/ActiveCourseContext';
@@ -103,6 +104,10 @@ export default function CoursePage() {
 
   return (
     <>
+      <Helmet>
+        <title> Cursos | SAPCE </title>
+      </Helmet>
+
       <Container sx={{ pt: '50px' }}>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>

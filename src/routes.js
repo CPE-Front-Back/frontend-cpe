@@ -1,4 +1,4 @@
-import { Navigate, useRoutes } from 'react-router-dom';
+import { Navigate, useLocation, useRoutes } from 'react-router-dom';
 // layouts
 import DashboardLayout from './layouts/dashboard';
 import SimpleLayout from './layouts/simple';
@@ -15,7 +15,7 @@ import OffersPage from './sections/gestionCurso/ofertas/components/OffersPage';
 import PdfPage from './sections/reportes/components/PdfPage';
 import RequesterPage from './sections/solicitante/components/RequesterPage';
 import RequestsPage from './sections/gestionCurso/solicitudes/components/RequestsPage';
-import LoginPage from './sections/auth/login/LoginPage';
+import LoginPage from './sections/auth/components/LoginPage';
 import Page404 from './layouts/404/Page404';
 import DashboardLogedInPage from './sections/@dashboard/app/components/DashboardLogedInPage';
 import QualificationPage from './sections/procesamiento/calificacion/components/QualificationPage';

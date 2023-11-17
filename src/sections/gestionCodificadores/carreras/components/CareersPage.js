@@ -205,7 +205,7 @@ export default function CareersPage() {
   return (
     <>
       <Helmet>
-        <title> Carreras | CPE </title>
+        <title> Carreras | SAPCE </title>
       </Helmet>
 
       {isFormVisible ? (

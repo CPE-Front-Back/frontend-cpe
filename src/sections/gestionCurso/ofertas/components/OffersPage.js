@@ -232,7 +232,7 @@ export default function OffersPage() {
   return (
     <>
       <Helmet>
-        <title> Ofertas | CPE </title>
+        <title> Ofertas | SAPCE </title>
       </Helmet>
 
       {isFormVisible ? (

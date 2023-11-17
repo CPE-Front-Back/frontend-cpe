@@ -215,7 +215,7 @@ export default function CapacitiesPage() {
   return (
     <>
       <Helmet>
-        <title> Capacidades | CPE </title>
+        <title> Capacidades | SAPCE </title>
       </Helmet>
 
       {isFormVisible ? (

@@ -11,6 +11,7 @@ import {
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { Helmet } from 'react-helmet-async';
 import Iconify from '../../../components/iconify';
 import { UseActiveCourse } from '../../gestionCurso/curso/context/ActiveCourseContext';
 import { getCursos } from '../../gestionCurso/curso/store/store';
@@ -275,6 +276,10 @@ export default function PdfPage({ pdfName }) {
 
   return (
     <>
+      <Helmet>
+        <title> Reportes | SAPCE </title>
+      </Helmet>
+
       {loading && (
         <Backdrop sx={{ bgcolor: 'white' }} open={loading}>
           <CircularProgress color="primary" />

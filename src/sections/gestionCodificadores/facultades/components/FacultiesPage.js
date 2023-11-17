@@ -200,7 +200,7 @@ export default function FacultiesPage() {
   return (
     <>
       <Helmet>
-        <title> Facultades | CPE </title>
+        <title> Facultades | SAPCE </title>
       </Helmet>
 
       {isFormVisible ? (

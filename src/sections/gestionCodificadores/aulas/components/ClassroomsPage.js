@@ -246,7 +246,7 @@ export default function ClassroomsPage() {
   return (
     <>
       <Helmet>
-        <title> Aulas | CPE </title>
+        <title> Aulas | SAPCE </title>
       </Helmet>
 
       {isFormVisible ? (
