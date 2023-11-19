@@ -1,8 +1,8 @@
-import instance from '../../../components/api/api';
+import { axiosInstance } from '../../../components/api/api';
 
 export const asignar1raVuelta = async (codCurso) => {
   try {
-    const response = await instance.get(`procesamiento/asignarPrimeraVuelta/${codCurso}`);
+    const response = await axiosInstance.get(`procesamiento/asignarPrimeraVuelta/${codCurso}`);
     return response;
   } catch (error) {
     console.log('Error en asignar1raVuelta', error);
@@ -12,7 +12,7 @@ export const asignar1raVuelta = async (codCurso) => {
 
 export const asignar2daVuelta = async (codCurso) => {
   try {
-    const response = await instance.get(`procesamiento/asignarSegundaVuelta/${codCurso}`);
+    const response = await axiosInstance.get(`procesamiento/asignarSegundaVuelta/${codCurso}`);
     return response;
   } catch (error) {
     console.log('Error en asignar2daVuelta', error);
@@ -22,7 +22,7 @@ export const asignar2daVuelta = async (codCurso) => {
 
 export const asignarAulas = async (codCurso) => {
   try {
-    const response = await instance.get(`procesamiento/asignarAulas/${codCurso}`);
+    const response = await axiosInstance.get(`procesamiento/asignarAulas/${codCurso}`);
     return response;
   } catch (error) {
     console.log('Error en asignarAulas', error);
@@ -32,7 +32,7 @@ export const asignarAulas = async (codCurso) => {
 
 export const asignarActas = async (codCurso) => {
   try {
-    const response = await instance.get(`procesamiento/asignarActas/${codCurso}`);
+    const response = await axiosInstance.get(`procesamiento/asignarActas/${codCurso}`);
     return response;
   } catch (error) {
     console.log('Error en asignarActas', error);
@@ -42,7 +42,7 @@ export const asignarActas = async (codCurso) => {
 
 export const isPrimVueltaAsig = async (codCurso) => {
   try {
-    const response = await instance.get(`carreraAsigPrimVuelta/cursoAsignado/${codCurso}`);
+    const response = await axiosInstance.get(`carreraAsigPrimVuelta/cursoAsignado/${codCurso}`);
     return response;
   } catch (error) {
     console.log('Error en isPrimVueltaAsig', error);
@@ -52,7 +52,7 @@ export const isPrimVueltaAsig = async (codCurso) => {
 
 export const cantAsigCourse = async (codCurso) => {
   try {
-    const response = await instance.get(`asignacion/curso/${codCurso}`);
+    const response = await axiosInstance.get(`asignacion/curso/${codCurso}`);
     return response;
   } catch (error) {
     console.log('Error en cantAsigCourse');
@@ -62,7 +62,7 @@ export const cantAsigCourse = async (codCurso) => {
 
 export const getAnonimatosCourse = async (codCurso) => {
   try {
-    const response = await instance.get(`actaAnonimato/curso/${codCurso}`);
+    const response = await axiosInstance.get(`actaAnonimato/curso/${codCurso}`);
     return response;
   } catch (error) {
     console.log('Error en getAnonimatosCourse');
@@ -72,7 +72,7 @@ export const getAnonimatosCourse = async (codCurso) => {
 
 export const verifyCanCalify = async (codCurso) => {
   try {
-    const response = await instance.get(`procesamiento/verificarPuedeCalificar/${codCurso}`);
+    const response = await axiosInstance.get(`procesamiento/verificarPuedeCalificar/${codCurso}`);
     return response;
   } catch (error) {
     console.log('Error en verifyCanCalify');
@@ -82,7 +82,7 @@ export const verifyCanCalify = async (codCurso) => {
 
 export const verifyCanRecalify = async (codCurso) => {
   try {
-    const response = await instance.get(`procesamiento/verificarPuedeRecalificar/${codCurso}`);
+    const response = await axiosInstance.get(`procesamiento/verificarPuedeRecalificar/${codCurso}`);
     return response;
   } catch (error) {
     console.log('Error en verifyCanRecalify');

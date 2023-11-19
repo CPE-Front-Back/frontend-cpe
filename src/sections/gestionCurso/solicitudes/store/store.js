@@ -1,8 +1,10 @@
-import instance from '../../../../components/api/api';
+import { axiosInstance } from '../../../../components/api/api';
 
 export const getSolicitantesByCurso = async (codCurso, confirmado) => {
   try {
-    const response = await instance.get(`solicitante/hechoSolicitudesEnCurso/${codCurso}/confirmado/${confirmado}`);
+    const response = await axiosInstance.get(
+      `solicitante/hechoSolicitudesEnCurso/${codCurso}/confirmado/${confirmado}`
+    );
     return response;
   } catch (error) {
     console.log('Error en getSolicitantesByCurso', error);
@@ -12,7 +14,7 @@ export const getSolicitantesByCurso = async (codCurso, confirmado) => {
 
 export const getSolicitudesByCurso = async (codCurso) => {
   try {
-    const response = await instance.get(`solicitud/curso/${codCurso}`);
+    const response = await axiosInstance.get(`solicitud/curso/${codCurso}`);
     return response;
   } catch (error) {
     console.log('Error en getSolicitudesByCurso', error);
@@ -22,7 +24,7 @@ export const getSolicitudesByCurso = async (codCurso) => {
 
 export const eliminarSolicitudesBySolicitante = async (codSolicitante) => {
   try {
-    const response = await instance.delete(`solicitud/solicitante/${codSolicitante}`);
+    const response = await axiosInstance.delete(`solicitud/solicitante/${codSolicitante}`);
     return response;
   } catch (error) {
     console.log('Error en eliminarSolicitudesBySolicitante', error);
@@ -32,7 +34,7 @@ export const eliminarSolicitudesBySolicitante = async (codSolicitante) => {
 
 export const deleteRequester = async (requester) => {
   try {
-    const response = await instance.delete(`solicitante/${requester.cod_solicitante}`);
+    const response = await axiosInstance.delete(`solicitante/${requester.cod_solicitante}`);
     return response;
   } catch (error) {
     console.log('Error en deleteRequester', error);

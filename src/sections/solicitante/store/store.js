@@ -1,9 +1,9 @@
-import instance from '../../../components/api/api';
+import { axiosInstance } from '../../../components/api/api';
 
 export const sendSolicitantePersonalData = async (solicitante) => {
   console.log(solicitante);
   try {
-    const response = await instance.post(`solicitante/`, solicitante);
+    const response = await axiosInstance.post(`solicitante/`, solicitante);
     return response;
   } catch (error) {
     console.log('Error en sendSolicitantePersonalData', error);
@@ -14,7 +14,7 @@ export const sendSolicitantePersonalData = async (solicitante) => {
 export const updateSolicitantePersonalData = async (solicitante) => {
   console.log(solicitante);
   try {
-    const response = await instance.put(`solicitante/`, solicitante);
+    const response = await axiosInstance.put(`solicitante/`, solicitante);
     return response;
   } catch (error) {
     console.log('Error en sendSolicitantePersonalData', error);
@@ -24,7 +24,7 @@ export const updateSolicitantePersonalData = async (solicitante) => {
 
 export const getSolicitanteById = async (numId) => {
   try {
-    const response = await instance.get(`solicitante/${numId}`);
+    const response = await axiosInstance.get(`solicitante/${numId}`);
     return response;
   } catch (error) {
     console.log('Error en getSolicitanteById', error);
@@ -58,7 +58,7 @@ export const insertarSolicitudes = async (solicitudes, codSol) => {
 
   try {
     const promiseArray = updatedSolicitudes.map(async (solicitud) => {
-      const response = await instance.post(`solicitud/`, solicitud);
+      const response = await axiosInstance.post(`solicitud/`, solicitud);
       if (response.status !== 200) {
         insertadas = false;
       }

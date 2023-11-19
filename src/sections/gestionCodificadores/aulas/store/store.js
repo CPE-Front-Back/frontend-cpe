@@ -1,8 +1,8 @@
-import instance from '../../../../components/api/api';
+import { axiosInstance } from '../../../../components/api/api';
 
 export const getClassrooms = async () => {
   try {
-    const response = await instance.get(`aula/`);
+    const response = await axiosInstance.get(`aula/`);
     return response;
   } catch (error) {
     console.log('Error en getClassrooms', error);
@@ -12,7 +12,7 @@ export const getClassrooms = async () => {
 
 export const getClassroomsByBuilding = async (buildingCode) => {
   try {
-    const response = await instance.get(`aula/edificio/${buildingCode}`);
+    const response = await axiosInstance.get(`aula/edificio/${buildingCode}`);
     return response;
   } catch (error) {
     console.log('Error en getClassroomsByBuilding', error);
@@ -22,7 +22,7 @@ export const getClassroomsByBuilding = async (buildingCode) => {
 
 export const insertClassroom = async (classroom) => {
   try {
-    const response = await instance.post(`aula/`, classroom);
+    const response = await axiosInstance.post(`aula/`, classroom);
     return response;
   } catch (error) {
     console.log('Error en insertClassroom', error);
@@ -32,7 +32,7 @@ export const insertClassroom = async (classroom) => {
 
 export const updateClassroom = async (classroom) => {
   try {
-    const response = await instance.put(`aula/`, classroom);
+    const response = await axiosInstance.put(`aula/`, classroom);
     return response;
   } catch (error) {
     console.log('Error en updateClassroom', error);
@@ -42,7 +42,7 @@ export const updateClassroom = async (classroom) => {
 
 export const deleteClassroom = async (classroom) => {
   try {
-    const response = await instance.delete(`aula/${classroom.cod_aula}`);
+    const response = await axiosInstance.delete(`aula/${classroom.cod_aula}`);
     return response;
   } catch (error) {
     console.log('Error en deleteClassroom', error);

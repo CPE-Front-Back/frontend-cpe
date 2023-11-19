@@ -1,8 +1,8 @@
-import instance from '../../../../components/api/api';
+import { axiosInstance } from '../../../../components/api/api';
 
 export const getFaculties = async () => {
   try {
-    const response = await instance.get(`facultad/`);
+    const response = await axiosInstance.get(`facultad/`);
     return response;
   } catch (error) {
     console.log('Error en getFaculties', error);
@@ -12,7 +12,7 @@ export const getFaculties = async () => {
 
 export const getFacultiesById = async (facultyCode) => {
   try {
-    const response = await instance.get(`facultad/${facultyCode}`);
+    const response = await axiosInstance.get(`facultad/${facultyCode}`);
     return response;
   } catch (error) {
     console.log('Error en getFacultiesById', error);
@@ -22,7 +22,7 @@ export const getFacultiesById = async (facultyCode) => {
 
 export const insertFaculty = async (faculty) => {
   try {
-    const response = await instance.post(`facultad/`, faculty);
+    const response = await axiosInstance.post(`facultad/`, faculty);
     return response;
   } catch (error) {
     console.log('Error en insertFaculty', error);
@@ -32,7 +32,7 @@ export const insertFaculty = async (faculty) => {
 
 export const updateFaculty = async (Faculty) => {
   try {
-    const response = await instance.put(`facultad/`, Faculty);
+    const response = await axiosInstance.put(`facultad/`, Faculty);
     return response;
   } catch (error) {
     console.log('Error en updateFaculty', error);
@@ -42,7 +42,7 @@ export const updateFaculty = async (Faculty) => {
 
 export const deleteFaculty = async (faculty) => {
   try {
-    const response = await instance.delete(`facultad/${faculty.nomb_facultad}`);
+    const response = await axiosInstance.delete(`facultad/${faculty.nomb_facultad}`);
     return response;
   } catch (error) {
     console.log('Error en deleteFaculty', error);

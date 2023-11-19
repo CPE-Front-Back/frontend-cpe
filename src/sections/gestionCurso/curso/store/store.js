@@ -1,8 +1,8 @@
-import instance from '../../../../components/api/api';
+import { axiosInstance } from '../../../../components/api/api';
 
 export const getCursos = async () => {
   try {
-    const response = await instance.get(`curso/`);
+    const response = await axiosInstance.get(`curso/`);
     return response;
   } catch (error) {
     console.log('Error en getCursos', error);
@@ -12,7 +12,7 @@ export const getCursos = async () => {
 
 export const getActiveCourse = async () => {
   try {
-    const response = await instance.get(`curso/activo/`);
+    const response = await axiosInstance.get(`curso/activo/`);
     return response;
   } catch (error) {
     console.log('Error en getActiveCourse', error);
@@ -22,7 +22,7 @@ export const getActiveCourse = async () => {
 
 export const insertarCurso = async (curso) => {
   try {
-    const response = await instance.post(`curso/`, curso);
+    const response = await axiosInstance.post(`curso/`, curso);
     return response;
   } catch (error) {
     console.log('Error en insertarCurso', error);
@@ -31,7 +31,7 @@ export const insertarCurso = async (curso) => {
 };
 export const desactivarCursos = async () => {
   try {
-    const response = await instance.get(`curso/desactivar/`);
+    const response = await axiosInstance.get(`curso/desactivar/`);
     return response;
   } catch (error) {
     console.log('Error en desactivarCursos', error);
@@ -46,7 +46,7 @@ export const activarCurso = async (curso) => {
 
   console.log('updatedCurso:', updatedCurso);
   try {
-    const response = await instance.put(`curso/`, updatedCurso);
+    const response = await axiosInstance.put(`curso/`, updatedCurso);
     return response;
   } catch (error) {
     console.log('Error en activarCurso', error);

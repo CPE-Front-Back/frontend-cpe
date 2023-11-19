@@ -1,9 +1,9 @@
-import instance from '../../../components/api/api';
+import { axiosInstance } from '../../../components/api/api';
 
 export const getProvinciasReport = async () => {
   try {
     const format = 'pdf';
-    const response = await instance.get(`report/provincias/${format}`, {
+    const response = await axiosInstance.get(`report/provincias/${format}`, {
       responseType: 'arraybuffer',
     });
     return response;
@@ -16,7 +16,7 @@ export const getProvinciasReport = async () => {
 export const getActasAnonimatoReport = async (nomb_curso) => {
   try {
     const format = 'pdf';
-    const response = await instance.get(`report/actasAnonimato/nomb_curso/${nomb_curso}/format/${format}`, {
+    const response = await axiosInstance.get(`report/actasAnonimato/nomb_curso/${nomb_curso}/format/${format}`, {
       responseType: 'arraybuffer',
     });
     return response;
@@ -29,7 +29,7 @@ export const getActasAnonimatoReport = async (nomb_curso) => {
 export const getActasComparecenciaReport = async (nomb_curso) => {
   try {
     const format = 'pdf';
-    const response = await instance.get(`report/actasComparecencia/nomb_curso/${nomb_curso}/format/${format}`, {
+    const response = await axiosInstance.get(`report/actasComparecencia/nomb_curso/${nomb_curso}/format/${format}`, {
       responseType: 'arraybuffer',
     });
     return response;
@@ -42,7 +42,7 @@ export const getActasComparecenciaReport = async (nomb_curso) => {
 export const getActasNotasReport = async (nomb_curso) => {
   try {
     const format = 'pdf';
-    const response = await instance.get(`report/actasNotas/nomb_curso/${nomb_curso}/format/${format}`, {
+    const response = await axiosInstance.get(`report/actasNotas/nomb_curso/${nomb_curso}/format/${format}`, {
       responseType: 'arraybuffer',
     });
     return response;
@@ -55,7 +55,7 @@ export const getActasNotasReport = async (nomb_curso) => {
 export const getActasReclamacionReport = async (nomb_curso) => {
   try {
     const format = 'pdf';
-    const response = await instance.get(`report/actasReclamacion/nomb_curso/${nomb_curso}/format/${format}`, {
+    const response = await axiosInstance.get(`report/actasReclamacion/nomb_curso/${nomb_curso}/format/${format}`, {
       responseType: 'arraybuffer',
     });
     return response;
@@ -68,7 +68,7 @@ export const getActasReclamacionReport = async (nomb_curso) => {
 export const getListadoAsignaciones1raVueltaCarreraReport = async (nomb_curso) => {
   try {
     const format = 'pdf';
-    const response = await instance.get(
+    const response = await axiosInstance.get(
       `report/listadoAsignaciones1raVueltaCarrera/nomb_curso/${nomb_curso}/format/${format}`,
       {
         responseType: 'arraybuffer',
@@ -84,7 +84,7 @@ export const getListadoAsignaciones1raVueltaCarreraReport = async (nomb_curso) =
 export const getListadoAsignaciones1raVueltaEstudianteReport = async (nomb_curso) => {
   try {
     const format = 'pdf';
-    const response = await instance.get(
+    const response = await axiosInstance.get(
       `report/listadoAsignaciones1raVueltaEstudiante/nomb_curso/${nomb_curso}/format/${format}`,
       {
         responseType: 'arraybuffer',
@@ -100,7 +100,7 @@ export const getListadoAsignaciones1raVueltaEstudianteReport = async (nomb_curso
 export const getListadoAsignacionesFinalCarreraReport = async (nomb_curso) => {
   try {
     const format = 'pdf';
-    const response = await instance.get(
+    const response = await axiosInstance.get(
       `report/listadoAsignacionesFinalCarrera/nomb_curso/${nomb_curso}/format/${format}`,
       {
         responseType: 'arraybuffer',
@@ -116,7 +116,7 @@ export const getListadoAsignacionesFinalCarreraReport = async (nomb_curso) => {
 export const getListadoAsignacionesFinalEstudianteReport = async (nomb_curso) => {
   try {
     const format = 'pdf';
-    const response = await instance.get(
+    const response = await axiosInstance.get(
       `report/listadoAsignacionesFinalEstudiante/nomb_curso/${nomb_curso}/format/${format}`,
       {
         responseType: 'arraybuffer',
@@ -132,7 +132,7 @@ export const getListadoAsignacionesFinalEstudianteReport = async (nomb_curso) =>
 export const getListadoNotasReport = async (nomb_curso) => {
   try {
     const format = 'pdf';
-    const response = await instance.get(`report/listadoNotas/nomb_curso/${nomb_curso}/format/${format}`, {
+    const response = await axiosInstance.get(`report/listadoNotas/nomb_curso/${nomb_curso}/format/${format}`, {
       responseType: 'arraybuffer',
     });
     return response;
@@ -145,9 +145,12 @@ export const getListadoNotasReport = async (nomb_curso) => {
 export const getListadoRecalificacionesReport = async (nomb_curso) => {
   try {
     const format = 'pdf';
-    const response = await instance.get(`report/listadoRecalificaciones/nomb_curso/${nomb_curso}/format/${format}`, {
-      responseType: 'arraybuffer',
-    });
+    const response = await axiosInstance.get(
+      `report/listadoRecalificaciones/nomb_curso/${nomb_curso}/format/${format}`,
+      {
+        responseType: 'arraybuffer',
+      }
+    );
     return response;
   } catch (error) {
     console.log('Error en getListadoRecalificacionesReport', error);
@@ -158,9 +161,12 @@ export const getListadoRecalificacionesReport = async (nomb_curso) => {
 export const getListadoUbicacionEstudianteReport = async (nomb_curso) => {
   try {
     const format = 'pdf';
-    const response = await instance.get(`report/listadoUbicacionEstudiante/nomb_curso/${nomb_curso}/format/${format}`, {
-      responseType: 'arraybuffer',
-    });
+    const response = await axiosInstance.get(
+      `report/listadoUbicacionEstudiante/nomb_curso/${nomb_curso}/format/${format}`,
+      {
+        responseType: 'arraybuffer',
+      }
+    );
     return response;
   } catch (error) {
     console.log('Error en getListadoUbicacionEstudianteReport', error);
@@ -171,7 +177,7 @@ export const getListadoUbicacionEstudianteReport = async (nomb_curso) => {
 export const getResumenAsignaciones1raOpcCarreraReport = async (nomb_curso) => {
   try {
     const format = 'pdf';
-    const response = await instance.get(
+    const response = await axiosInstance.get(
       `report/resumenAsignaciones1raOpcCarrera/nomb_curso/${nomb_curso}/format/${format}`,
       {
         responseType: 'arraybuffer',
@@ -187,7 +193,7 @@ export const getResumenAsignaciones1raOpcCarreraReport = async (nomb_curso) => {
 export const getResumenFinalAsignacionesCarreraReport = async (nomb_curso) => {
   try {
     const format = 'pdf';
-    const response = await instance.get(
+    const response = await axiosInstance.get(
       `report/resumenFinalAsignacionesCarrera/nomb_curso/${nomb_curso}/format/${format}`,
       {
         responseType: 'arraybuffer',
@@ -203,7 +209,7 @@ export const getResumenFinalAsignacionesCarreraReport = async (nomb_curso) => {
 export const getResumenSolicitudes1raOpcCarreraReport = async (nomb_curso) => {
   try {
     const format = 'pdf';
-    const response = await instance.get(
+    const response = await axiosInstance.get(
       `report/resumenSolicitudes1raOpcCarrera/nomb_curso/${nomb_curso}/format/${format}`,
       {
         responseType: 'arraybuffer',

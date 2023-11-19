@@ -1,19 +1,19 @@
-import instance from '../../../../components/api/api';
+import { axiosInstance } from '../../../../components/api/api';
 
 export const getComparecenciasCurso = async (codCurso) => {
   try {
-    const response = await instance.get(`actaComparecencia/curso/${codCurso}`);
+    const response = await axiosInstance.get(`actaComparecencia/curso/${codCurso}`);
     console.log('comparecencias:', response.data);
     return response;
   } catch (error) {
-    console.log('Error en getClassrooms', error);
+    console.log('Error en getComparecenciasCurso', error);
     throw error;
   }
 };
 
 export const getActasNotas = async (codCurso, codActaComp) => {
   try {
-    const response = await instance.get(`acta/curso/${codCurso}/comparecencia/${codActaComp}`);
+    const response = await axiosInstance.get(`acta/curso/${codCurso}/comparecencia/${codActaComp}`);
     return response;
   } catch (error) {
     console.log('Error en getActasNotas', error);
@@ -23,7 +23,7 @@ export const getActasNotas = async (codCurso, codActaComp) => {
 
 export const getAsignaciones = async (codCurso, codActaComp) => {
   try {
-    const response = await instance.get(`asignacion/curso/${codCurso}/actaComparecencia/${codActaComp}`);
+    const response = await axiosInstance.get(`asignacion/curso/${codCurso}/actaComparecencia/${codActaComp}`);
     return response;
   } catch (error) {
     console.log('Error en getAsignaciones', error);
@@ -33,7 +33,7 @@ export const getAsignaciones = async (codCurso, codActaComp) => {
 
 export const getRequesterAct = async (noAnonymity) => {
   try {
-    const response = await instance.get(`acta/cod_anonimato/${noAnonymity}`);
+    const response = await axiosInstance.get(`acta/cod_anonimato/${noAnonymity}`);
     return response;
   } catch (error) {
     console.log('Error en getRequesterAct', error);
@@ -43,7 +43,7 @@ export const getRequesterAct = async (noAnonymity) => {
 
 export const getRequesterAssignment = async (codActa) => {
   try {
-    const response = await instance.get(`asignacion/acta/${codActa}`);
+    const response = await axiosInstance.get(`asignacion/acta/${codActa}`);
     return response;
   } catch (error) {
     console.log('Error en getRequesterAssignment', error);
@@ -53,10 +53,10 @@ export const getRequesterAssignment = async (codActa) => {
 
 export const updateQualification = async (assignment) => {
   try {
-    const response = await instance.put(`asignacion/`, assignment);
+    const response = await axiosInstance.put(`asignacion/`, assignment);
     return response;
   } catch (error) {
-    console.log('Error en getAsignaciones', error);
+    console.log('Error en updateQualification', error);
     throw error;
   }
 };

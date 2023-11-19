@@ -1,8 +1,8 @@
-import instance from '../../../../components/api/api';
+import { axiosInstance } from '../../../../components/api/api';
 
 export const getCapacities = async (curso) => {
   try {
-    const response = await instance.get(`capacidad/curso/${curso}`);
+    const response = await axiosInstance.get(`capacidad/curso/${curso}`);
     return response;
   } catch (error) {
     console.log('Error en getCapacities', error);
@@ -12,7 +12,7 @@ export const getCapacities = async (curso) => {
 
 export const insertCapacity = async (capacity) => {
   try {
-    const response = await instance.post(`capacidad/`, capacity);
+    const response = await axiosInstance.post(`capacidad/`, capacity);
     return response;
   } catch (error) {
     console.log('Error en insertCapacity', error);
@@ -22,7 +22,7 @@ export const insertCapacity = async (capacity) => {
 
 export const updateCapacity = async (capacity) => {
   try {
-    const response = await instance.put(`capacidad/`, capacity);
+    const response = await axiosInstance.put(`capacidad/`, capacity);
     return response;
   } catch (error) {
     console.log('Error en updateCapacity', error);
@@ -32,7 +32,7 @@ export const updateCapacity = async (capacity) => {
 
 export const deleteCapacity = async (capacity) => {
   try {
-    const response = await instance.delete(`capacidad/${capacity.cod_capacidad}`);
+    const response = await axiosInstance.delete(`capacidad/${capacity.cod_capacidad}`);
     return response;
   } catch (error) {
     console.log('Error en deleteCapacity', error);

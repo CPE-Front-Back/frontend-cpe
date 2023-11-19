@@ -1,15 +1,42 @@
 import axios from 'axios';
-import { UseAuthContext } from '../../sections/auth/context/AuthProvider';
 
-const instance = axios.create({
+export const axiosForAuth = axios.create({
   baseURL: 'http://localhost:8085/api/v1/', // api Url
   timeout: 10000, // Set a timeout for requests
 });
 
-// const { auth } = UseAuthContext();
+export const axiosInstance = axios.create({
+  baseURL: 'http://localhost:8085/api/v1/', // api Url
+  timeout: 10000, // Set a timeout for requests
+  headers: { 'Content-Type': 'application/json' },
+});
+axiosInstance.interceptors.request.use(
+  (config) => {
+    if (!config.headers.Authorization && sessionStorage.getItem('accessToken') !== null) {
+      const accessToken = sessionStorage.getItem('accessToken');
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const prevRequest = error?.config;
+    if (error?.response?.status === 403 && !prevRequest?.sent && sessionStorage.getItem('accessToken') !== null) {
+      prevRequest.sent = true;
+      const accessToken = sessionStorage.getItem('accessToken');
+      prevRequest.headers.Authorization = `Bearer ${accessToken}`;
+      return axiosInstance(prevRequest);
+    }
+    return Promise.reject(error);
+  }
+);
 
 // Add an interceptor to include the Bearer token in the headers
-/* instance.interceptors.request.use(
+/* axiosInstance.interceptors.request.use(
   (config) => {
     const token =
       'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJlc3RoZXIiLCJpYXQiOjE2OTE5MDUxOTgsImV4cCI6MzM4MzgxMDk5Nn0.sCtHcRGNsGLvjqMyrZP3uHcd5v4pzujWWxG2xwbsHKaGz9_pbjJmZ_Gg5W610462e4B-dlAIKBPP3k8O6Eg5WA'; // Replace with your actual token
@@ -22,5 +49,3 @@ const instance = axios.create({
     return Promise.reject(error);
   }
 ); */
-
-export default instance;
