@@ -108,7 +108,7 @@ export default function RequalificationPage() {
         }
       });
     } else {
-      setMessage('error', '¡Nota on es válida!');
+      setMessage('error', '¡Nota no es válida!');
     }
   };
 
