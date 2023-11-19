@@ -1,4 +1,5 @@
 import { Autocomplete, Box, Button, Grid, TextField, Typography } from '@mui/material';
+import { isNaN } from 'lodash';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import setMessage from '../../../../components/messages/messages';
@@ -25,6 +26,15 @@ export default function CapacitiesForm({ editMode, formData, onSubmit }) {
   const [faculties, setFaculties] = useState([]);
   const [buildings, setBuildings] = useState([]);
   const [classrooms, setClassrooms] = useState([]);
+
+  const [errors, setErrors] = useState({
+    facluty: '',
+    building: '',
+    classroom: '',
+    capacity: '',
+    priority: '',
+  });
+
   const priorities = [
     { prioridad: '1' },
     { prioridad: '2' },
@@ -87,55 +97,91 @@ export default function CapacitiesForm({ editMode, formData, onSubmit }) {
     }
   }, [selectedBuilding]);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const updatedData = {
-      cod_capacidad: formData.cod_capacidad,
-      cod_aula: selectedClassroom.cod_aula,
-      cod_curso: editMode ? formData.cod_curso : activeCourse.cod_curso,
-      capacidad: Number(capacityInput),
-      prioridad: Number(selectedPriority.prioridad),
-      eliminada: false,
-      nomb_aula: '',
-      nomb_edificio: '',
-      nomb_facultad: '',
-    };
+  const validateData = () => {
+    const newErrors = {};
 
-    if (editMode) {
-      updateCapacity(updatedData)
-        .then((response) => {
-          if (response.status === 200) {
-            console.log(response.data);
-            setMessage('success', '¡Capacidad actualizada con éxito!');
-          }
-        })
-        .catch((error) => {
-          console.log('Error al actualizar la capacidad: ', error);
-          setMessage('error', '¡Ha ocurrido un error!');
-        });
-    } else {
-      insertCapacity(updatedData)
-        .then((response) => {
-          if (response.status === 200) {
-            console.log(response.data);
-            setMessage('success', '¡Capacidad registrada con éxito!');
-          }
-        })
-        .catch((error) => {
-          console.log('Error al insertar la capacidad: ', error);
-          setMessage('error', '¡Ha ocurrido un error!');
-        });
+    if (!selectedFaculty) {
+      newErrors.faculty = 'Facultad requerida';
+    }
+    if (!selectedBuilding) {
+      newErrors.building = 'Edificio requerido';
+    }
+    if (!selectedClassroom) {
+      newErrors.classroom = 'Aula requerida';
+    }
+    if (!selectedPriority) {
+      newErrors.priority = 'Prioridad requerida';
+    }
+    if (!capacityInput) {
+      newErrors.capacity = 'Capacidad requerida';
+    } else if (isNaN(Number(capacityInput)) || capacityInput < 0 || capacityInput > 30) {
+      newErrors.capacity = 'La capacidad debe estar entre 0 y 30.';
     }
 
-    setTimeout(() => {
-      onSubmit();
-    }, 500);
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
   };
 
-  const handleBack = (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
+    if (validateData()) {
+      const updatedData = {
+        cod_capacidad: formData.cod_capacidad,
+        cod_aula: selectedClassroom.cod_aula,
+        cod_curso: editMode ? formData.cod_curso : activeCourse.cod_curso,
+        capacidad: Number(capacityInput),
+        prioridad: Number(selectedPriority.prioridad),
+        eliminada: false,
+        nomb_aula: '',
+        nomb_edificio: '',
+        nomb_facultad: '',
+      };
 
-    onSubmit();
+      if (editMode) {
+        updateCapacity(updatedData)
+          .then((response) => {
+            if (response.status === 200) {
+              console.log(response.data);
+              setMessage('success', '¡Capacidad actualizada con éxito!');
+            }
+          })
+          .catch((error) => {
+            console.log('Error al actualizar la capacidad: ', error);
+            setMessage('error', '¡Ha ocurrido un error!');
+          });
+      } else {
+        insertCapacity(updatedData)
+          .then((response) => {
+            if (response.status === 200) {
+              console.log(response.data);
+              setMessage('success', '¡Capacidad registrada con éxito!');
+            }
+          })
+          .catch((error) => {
+            console.log('Error al insertar la capacidad: ', error);
+            setMessage('error', '¡Ha ocurrido un error!');
+          });
+      }
+
+      setTimeout(() => {
+        onSubmit();
+      }, 500);
+    }
+  };
+
+  const handleCancel = () => {
+    const confrimed = window.confirm('Está a punto de perder los cambios no guardados! ¿Desea continuar?');
+
+    if (confrimed) {
+      onSubmit();
+    }
+  };
+
+  const handleCapacityInput = (event) => {
+    // Allow only numbers
+    const inputValue = event.target.value.replace(/[^0-9]/g, '');
+    event.target.value = inputValue;
   };
 
   return (
@@ -160,7 +206,15 @@ export default function CapacitiesForm({ editMode, formData, onSubmit }) {
                 setSelectedBuilding(null);
               }}
               disabled={editMode}
-              renderInput={(params) => <TextField {...params} label="Facultades disponibles" />}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Facultades disponibles"
+                  error={!!errors.faculty}
+                  helperText={errors.faculty}
+                  required
+                />
+              )}
             />
           </Grid>
           <Grid item xs sx={{ minWidth: '200px' }}>
@@ -173,7 +227,15 @@ export default function CapacitiesForm({ editMode, formData, onSubmit }) {
                 setSelectedBuilding(newValue);
               }}
               disabled={editMode}
-              renderInput={(params) => <TextField {...params} label="Edificios disponibles" />}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Edificios disponibles"
+                  error={!!errors.building}
+                  helperText={errors.building}
+                  required
+                />
+              )}
               noOptionsText={'Seleccione una facultad'}
             />
           </Grid>
@@ -187,7 +249,15 @@ export default function CapacitiesForm({ editMode, formData, onSubmit }) {
                 setSelectedClassroom(newValue);
               }}
               disabled={editMode}
-              renderInput={(params) => <TextField {...params} label="Aulas disponibles" />}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Aulas disponibles"
+                  error={!!errors.classroom}
+                  helperText={errors.classroom}
+                  required
+                />
+              )}
               noOptionsText={'Seleccione un edificio'}
             />
           </Grid>
@@ -197,12 +267,15 @@ export default function CapacitiesForm({ editMode, formData, onSubmit }) {
           <Grid item xs />
           <Grid item xs sx={{ minWidth: '200px' }}>
             <TextField
-              type="number"
+              type={'text'}
               label="Capacidad aula"
               variant="outlined"
               value={capacityInput}
               onChange={(event) => setCapacityInput(event.target.value)}
+              onInput={handleCapacityInput}
               required
+              error={!!errors.capacity}
+              helperText={errors.capacity}
             />
           </Grid>
           <Grid item xs sx={{ minWidth: '200px' }}>
@@ -214,7 +287,15 @@ export default function CapacitiesForm({ editMode, formData, onSubmit }) {
               onChange={(event, newValue) => {
                 setSelectedPriority(newValue);
               }}
-              renderInput={(params) => <TextField {...params} label="Prioridades disponibles" />}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Prioridades disponibles"
+                  error={!!errors.priority}
+                  helperText={errors.priority}
+                  required
+                />
+              )}
             />
           </Grid>
           <Grid item xs />
@@ -227,11 +308,12 @@ export default function CapacitiesForm({ editMode, formData, onSubmit }) {
               {editMode ? 'Modificar' : 'Registrar'}
             </Button>
           </Grid>
-          <Grid item xs>
-            <Button type="submit" variant="contained" color="primary" onClick={handleBack}>
+          <Grid item xs={2}>
+            <Button type="submit" variant="contained" color="primary" onClick={handleCancel}>
               Cancelar
             </Button>
           </Grid>
+          <Grid item xs />
         </Grid>
       </Box>
     </>

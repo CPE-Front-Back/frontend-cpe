@@ -1,4 +1,5 @@
 import { Autocomplete, Box, Button, Grid, TextField, Typography } from '@mui/material';
+import { isNaN } from 'lodash';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import setMessage from '../../../../components/messages/messages';
@@ -14,31 +15,36 @@ OfertasForm.propTypes = {
 };
 export default function OfertasForm({ editMode, formData, onSubmit }) {
   const { cod_oferta, cod_carrera, nomb_carrera, cod_curso, cant_ofertas, eliminada } = formData;
-  const [numberInput, setNumberInput] = useState(cant_ofertas);
+  const [amountInput, setAmountInput] = useState(cant_ofertas);
   const { activeCourse } = UseActiveCourse();
 
-  const [ofertasActuales, setOfertasActuales] = useState([]);
-  const [carreras, setCarreras] = useState([]);
-  const [carrerasFiltradas, setCarrerasFiltradas] = useState([]);
-  const [selectedCarrera, setSelectedCarrera] = useState(formData.nomb_carrera ? formData : null);
+  const [currentOffers, setCurrentOffers] = useState([]);
+  const [careers, setCareers] = useState([]);
+  const [filteredCareers, setFilteredCareers] = useState([]);
+  const [selectedCareer, setSelectedCareer] = useState(formData.nomb_carrera ? formData : null);
+
+  const [errors, setErrors] = useState({
+    career: '',
+    amount: '',
+  });
 
   useEffect(() => {
     // filtrar las carreras disponibles a insertar
-    const listaFiltrada = carreras.filter(
+    const listaFiltrada = careers.filter(
       (carrera) =>
-        !Object.values(ofertasActuales).some(
+        !Object.values(currentOffers).some(
           (ofertaActual) => ofertaActual && ofertaActual.nomb_carrera === carrera.nomb_carrera
         )
     );
 
-    setCarrerasFiltradas(listaFiltrada);
-  }, [ofertasActuales]);
+    setFilteredCareers(listaFiltrada);
+  }, [currentOffers]);
 
   useEffect(() => {
     getCarreras()
       .then((response) => {
         if (response.status === 200) {
-          setCarreras(response.data);
+          setCareers(response.data);
         }
       })
       .catch((error) => {
@@ -51,78 +57,105 @@ export default function OfertasForm({ editMode, formData, onSubmit }) {
       .then((response) => {
         if (response.status === 200) {
           const updatedOfertasList = response.data.map((oferta) => {
-            const relatedCarrera = carreras.find((carrera) => carrera.cod_carrera === oferta.cod_carrera);
+            const relatedCarrera = careers.find((carrera) => carrera.cod_carrera === oferta.cod_carrera);
             return {
               ...oferta,
               nomb_carrera: relatedCarrera ? relatedCarrera.nomb_carrera : 'Unknown', // Replace 'Unknown' with a default name
             };
           });
-          setOfertasActuales(updatedOfertasList);
+          setCurrentOffers(updatedOfertasList);
         }
       })
       .catch((error) => {
         console.log('Error al cargar ofertas: ', error);
       });
-  }, [carreras]);
+  }, [careers]);
+
+  const validateData = () => {
+    const newErrors = {};
+
+    if (!selectedCareer) {
+      newErrors.career = 'Carrera requerida';
+    }
+    if (!amountInput) {
+      newErrors.amount = 'Cantidad de plazas requerida';
+    } else if (isNaN(Number(amountInput)) || amountInput < 0 || amountInput > 200) {
+      newErrors.amount = 'La cantidad debe estar entre 0 y 200.';
+    }
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    if (editMode) {
-      const updatedData = {
-        cod_oferta: formData.cod_oferta,
-        cod_carrera: formData.cod_carrera,
-        nomb_carrera: formData.nomb_carrera,
-        cod_curso: formData.cod_curso,
-        cant_ofertas: Number(numberInput),
-        eliminada: formData.eliminada,
-      };
+    if (validateData()) {
+      if (editMode) {
+        const updatedData = {
+          cod_oferta: formData.cod_oferta,
+          cod_carrera: formData.cod_carrera,
+          nomb_carrera: formData.nomb_carrera,
+          cod_curso: formData.cod_curso,
+          cant_ofertas: Number(amountInput),
+          eliminada: formData.eliminada,
+        };
 
-      updateOferta(updatedData)
-        .then((response) => {
-          if (response.status === 200) {
-            console.log(response.data);
-            setMessage('success', '¡Oferta actualizada con éxito!');
-          }
-        })
-        .catch((error) => {
-          console.log('Error al actualizar la oferta: ', error);
-          setMessage('error', '¡Ha ocurrido un error!');
-        });
-    } else {
-      const updatedData = {
-        cod_oferta: -1,
-        cod_carrera: selectedCarrera.cod_carrera,
-        nomb_carrera: selectedCarrera.nomb_carrera,
-        cod_curso: activeCourse.cod_curso,
-        cant_ofertas: Number(numberInput),
-        eliminada: false,
-      };
+        updateOferta(updatedData)
+          .then((response) => {
+            if (response.status === 200) {
+              console.log(response.data);
+              setMessage('success', '¡Oferta actualizada con éxito!');
+            }
+          })
+          .catch((error) => {
+            console.log('Error al actualizar la oferta: ', error);
+            setMessage('error', '¡Ha ocurrido un error!');
+          });
+      } else {
+        const updatedData = {
+          cod_oferta: -1,
+          cod_carrera: selectedCareer.cod_carrera,
+          nomb_carrera: selectedCareer.nomb_carrera,
+          cod_curso: activeCourse.cod_curso,
+          cant_ofertas: Number(amountInput),
+          eliminada: false,
+        };
 
-      insertarOferta(updatedData)
-        .then((response) => {
-          if (response.status === 200) {
-            console.log(response.data);
-            setMessage('success', '¡Oferta registrada con éxito!');
-          }
-        })
-        .catch((error) => {
-          console.log('Error al registrar la oferta: ', error);
-          setMessage('error', '¡Ha ocurrido un error!');
-        });
+        insertarOferta(updatedData)
+          .then((response) => {
+            if (response.status === 200) {
+              console.log(response.data);
+              setMessage('success', '¡Oferta registrada con éxito!');
+            }
+          })
+          .catch((error) => {
+            console.log('Error al registrar la oferta: ', error);
+            setMessage('error', '¡Ha ocurrido un error!');
+          });
 
-      // console.log('la oferta a insertar: ', updatedData);
+        // console.log('la oferta a insertar: ', updatedData);
+      }
+
+      setTimeout(() => {
+        onSubmit();
+      }, 500);
     }
-
-    setTimeout(() => {
-      onSubmit();
-    }, 500);
   };
 
-  const handleBack = (event) => {
-    event.preventDefault();
+  const handleCancel = (event) => {
+    const confrimed = window.confirm('Está a punto de perder los cambios no guardados! ¿Desea continuar?');
 
-    onSubmit();
+    if (confrimed) {
+      onSubmit();
+    }
+  };
+
+  const handleAmountInput = (event) => {
+    // Allow only numbers
+    const inputValue = event.target.value.replace(/[^0-9]/g, '');
+    event.target.value = inputValue;
   };
 
   return (
@@ -136,33 +169,44 @@ export default function OfertasForm({ editMode, formData, onSubmit }) {
         </Typography>
 
         <Grid container spacing={2} sx={{ pt: 5 }}>
+          <Grid item xs />
           <Grid item xs sx={{ minWidth: '400px' }}>
             {/* <Typography variant="body1">Carrera: {nomb_carrera}</Typography> */}
             <Autocomplete
               id="ComboOfertas"
-              options={carrerasFiltradas}
+              options={filteredCareers}
               getOptionLabel={(option) => option.nomb_carrera}
-              value={selectedCarrera}
+              value={selectedCareer}
               onChange={(event, newValue) => {
-                setSelectedCarrera(newValue);
+                setSelectedCareer(newValue);
               }}
               readOnly={editMode}
-              renderInput={(params) => <TextField {...params} label="Carreras disponibles" />}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Carreras disponibles"
+                  error={!!errors.career}
+                  helperText={errors.career}
+                  required
+                />
+              )}
             />
           </Grid>
 
-          <Grid item xs />
-
-          <Grid item xs>
+          <Grid item xs={3}>
             <TextField
-              type="number"
+              type={'text'}
               label="Cantidad de plazas"
               variant="outlined"
-              value={numberInput}
-              onChange={(event) => setNumberInput(event.target.value)}
+              value={amountInput}
+              onInput={handleAmountInput}
+              onChange={(event) => setAmountInput(event.target.value)}
               required
+              error={!!errors.amount}
+              helperText={errors.amount}
             />
           </Grid>
+          <Grid item xs />
         </Grid>
 
         <Grid container spacing={1} sx={{ pt: 5 }}>
@@ -172,11 +216,12 @@ export default function OfertasForm({ editMode, formData, onSubmit }) {
               {editMode ? 'Modificar' : 'Registrar'}
             </Button>
           </Grid>
-          <Grid item xs>
-            <Button type="submit" variant="contained" color="primary" onClick={handleBack}>
+          <Grid item xs={2}>
+            <Button type="submit" variant="contained" color="primary" onClick={handleCancel}>
               Cancelar
             </Button>
           </Grid>
+          <Grid item xs />
         </Grid>
       </Box>
     </>

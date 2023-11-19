@@ -383,7 +383,7 @@ export default function RequestsFormDialog({ open, handleCloseClick, editMode, D
 
   const handleNameInput = (event) => {
     // allow only one blank space and letters
-    const inputValue = event.target.value.replace(/[^a-z][\s]/g, '');
+    const inputValue = event.target.value.replace(/[^a-zA-Z\s]/g, '');
     event.target.value = inputValue;
   };
 
@@ -533,7 +533,7 @@ export default function RequestsFormDialog({ open, handleCloseClick, editMode, D
             <Grid item xs={12} sm={6} md={3}>
               <TextField
                 name="nomb_solicitante"
-                type="text"
+                type={'text'}
                 value={formData.nomb_solicitante}
                 label="Nombres"
                 onChange={handleNameInputChange}

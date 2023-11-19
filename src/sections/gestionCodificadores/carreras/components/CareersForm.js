@@ -12,52 +12,89 @@ OfertasForm.propTypes = {
 };
 export default function CareersForm({ editMode, formData, onSubmit }) {
   const { cod_carrera, nomb_carrera } = formData;
-  const [codCarreraInput, setCodCarreraInput] = useState(cod_carrera);
-  const [nombCarreraInput, setNombCarreraInput] = useState(nomb_carrera);
+  const [careerCodeInput, setCareerCodeInput] = useState(cod_carrera);
+  const [careerNameInput, setCareerNameInput] = useState(nomb_carrera);
+
+  const [errors, setErrors] = useState({
+    carrerCode: '',
+    careerName: '',
+  });
+
+  const validateData = () => {
+    const newErrors = {};
+
+    if (!careerCodeInput) {
+      newErrors.carrerCode = 'Código requerido';
+    }
+    if (!careerNameInput) {
+      newErrors.careerName = 'Nombre requerido';
+    }
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    const updatedData = {
-      cod_carrera: codCarreraInput,
-      nomb_carrera: nombCarreraInput,
-      eliminada: false,
-    };
+    if (validateData()) {
+      const updatedData = {
+        cod_carrera: careerCodeInput,
+        nomb_carrera: careerNameInput,
+        eliminada: false,
+      };
 
-    if (editMode) {
-      updateCarrera(updatedData)
-        .then((response) => {
-          if (response.status === 200) {
-            console.log(response.data);
-            setMessage('success', '¡Carrera actualizada con éxito!');
-          }
-        })
-        .catch((error) => {
-          console.log('Error al registrar la carrera: ', error);
-          setMessage('error', '¡Ha ocurrido un error!');
-        });
-    } else {
-      insertCarrera(updatedData)
-        .then((response) => {
-          if (response.status === 200) {
-            console.log(response.data);
-            setMessage('success', '¡Carrera registrada con éxito!');
-          }
-        })
-        .catch((error) => {
-          console.log('Error al modificar la carrera: ', error);
-          setMessage('error', '¡Ha ocurrido un error!');
-        });
+      if (editMode) {
+        updateCarrera(updatedData)
+          .then((response) => {
+            if (response.status === 200) {
+              console.log(response.data);
+              setMessage('success', '¡Carrera actualizada con éxito!');
+            }
+          })
+          .catch((error) => {
+            console.log('Error al registrar la carrera: ', error);
+            setMessage('error', '¡Ha ocurrido un error!');
+          });
+      } else {
+        insertCarrera(updatedData)
+          .then((response) => {
+            if (response.status === 200) {
+              console.log(response.data);
+              setMessage('success', '¡Carrera registrada con éxito!');
+            }
+          })
+          .catch((error) => {
+            console.log('Error al modificar la carrera: ', error);
+            setMessage('error', '¡Ha ocurrido un error!');
+          });
+      }
+
+      setTimeout(() => {
+        onSubmit();
+      }, 500);
     }
-    onSubmit();
   };
 
-  const handleBack = (event) => {
-    event.preventDefault();
+  const handleCancel = () => {
+    const confrimed = window.confirm('Está a punto de perder los cambios no guardados! ¿Desea continuar?');
 
-    setTimeout(() => {
+    if (confrimed) {
       onSubmit();
-    }, 500);
+    }
+  };
+
+  const handleNameInput = (event) => {
+    // allow only one blank space and letters
+    const inputValue = event.target.value.replace(/[^a-zA-Z\s]/g, '');
+    event.target.value = inputValue;
+  };
+
+  const handleCodeInput = (event) => {
+    // Allow only numbers and the plus (+) symbol
+    const inputValue = event.target.value.replace(/[^0-9]/g, '');
+    event.target.value = inputValue;
   };
 
   return (
@@ -71,29 +108,38 @@ export default function CareersForm({ editMode, formData, onSubmit }) {
         </Typography>
 
         <Grid container spacing={2} sx={{ pt: 5 }}>
-          <Grid item xs>
-            <TextField
-              type="number"
-              label="Codigo"
-              variant="outlined"
-              value={codCarreraInput}
-              onChange={(event) => setCodCarreraInput(event.target.value)}
-              required
-            />
-          </Grid>
-
           <Grid item xs />
 
           <Grid item xs>
             <TextField
-              type="text"
-              label="Nombre"
+              type={'text'}
+              label="Codigo"
               variant="outlined"
-              value={nombCarreraInput}
-              onChange={(event) => setNombCarreraInput(event.target.value)}
+              value={careerCodeInput}
+              onInput={handleCodeInput}
+              onChange={(event) => setCareerCodeInput(event.target.value)}
               required
+              error={!!errors.carrerCode}
+              helperText={errors.carrerCode}
             />
           </Grid>
+
+          <Grid item xs>
+            <TextField
+              type={'text'}
+              label="Nombre"
+              variant="outlined"
+              value={careerNameInput}
+              onInput={handleNameInput}
+              onChange={(event) => setCareerNameInput(event.target.value)}
+              required
+              error={!!errors.careerName}
+              helperText={errors.careerName}
+              inputProps={{ maxLength: 45 }}
+            />
+          </Grid>
+
+          <Grid item xs />
         </Grid>
 
         <Grid container spacing={1} sx={{ pt: 5 }}>
@@ -103,11 +149,12 @@ export default function CareersForm({ editMode, formData, onSubmit }) {
               {editMode ? 'Modificar' : 'Registrar'}
             </Button>
           </Grid>
-          <Grid item xs>
-            <Button type="submit" variant="contained" color="primary" onClick={handleBack}>
+          <Grid item xs={2}>
+            <Button type="submit" variant="contained" color="primary" onClick={handleCancel}>
               Cancelar
             </Button>
           </Grid>
+          <Grid item xs />
         </Grid>
       </Box>
     </>

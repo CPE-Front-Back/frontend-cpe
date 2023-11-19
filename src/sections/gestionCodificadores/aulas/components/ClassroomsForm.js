@@ -1,6 +1,7 @@
 import { Autocomplete, Box, Button, Grid, TextField, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
+import { isNaN } from 'lodash';
 import setMessage from '../../../../components/messages/messages';
 import { getBuildingById, getBuildings, getBuildingsByFaclulty } from '../../edificios/store/store';
 import { getFaculties } from '../../facultades/store/store';
@@ -19,6 +20,12 @@ export default function ClassroomsForm({ editMode, formData, onSubmit }) {
 
   const [faculties, setFaculties] = useState([]);
   const [buildings, setBuildings] = useState([]);
+
+  const [errors, setErrors] = useState({
+    facluty: '',
+    building: '',
+    classroomName: '',
+  });
 
   useEffect(() => {
     getFaculties()
@@ -79,50 +86,79 @@ export default function ClassroomsForm({ editMode, formData, onSubmit }) {
       });
   }, []); */
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const updatedData = {
-      cod_aula: formData.cod_aula,
-      nomb_aula: classroomNameInput,
-      cod_edif: selectedBuilding.cod_edif,
-      eliminada: false,
-    };
+  const validateData = () => {
+    const newErrors = {};
 
-    if (editMode) {
-      updateClassroom(updatedData)
-        .then((response) => {
-          if (response.status === 200) {
-            console.log(response.data);
-            setMessage('success', '¡Aula actualizada con éxito!');
-          }
-        })
-        .catch((error) => {
-          console.log('Error al actualizar el aula: ', error);
-          setMessage('error', '¡Ha ocurrido un error!');
-        });
-    } else {
-      insertClassroom(updatedData)
-        .then((response) => {
-          if (response.status === 200) {
-            console.log(response.data);
-            setMessage('success', '¡Aula registrada con éxito!');
-          }
-        })
-        .catch((error) => {
-          console.log('Error al registrar el aula: ', error);
-          setMessage('error', '¡Ha ocurrido un error!');
-        });
+    if (!selectedFaculty) {
+      newErrors.faculty = 'Facultad requerida';
+    }
+    if (!selectedBuilding) {
+      newErrors.building = 'Edificio requerido';
+    }
+    if (!classroomNameInput) {
+      newErrors.classroomName = 'Nombre requerido';
     }
 
-    setTimeout(() => {
-      onSubmit();
-    }, 500);
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
   };
 
-  const handleBack = (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
 
-    onSubmit();
+    if (validateData()) {
+      const updatedData = {
+        cod_aula: formData.cod_aula,
+        nomb_aula: classroomNameInput,
+        cod_edif: selectedBuilding.cod_edif,
+        eliminada: false,
+      };
+
+      if (editMode) {
+        updateClassroom(updatedData)
+          .then((response) => {
+            if (response.status === 200) {
+              console.log(response.data);
+              setMessage('success', '¡Aula actualizada con éxito!');
+            }
+          })
+          .catch((error) => {
+            console.log('Error al actualizar el aula: ', error);
+            setMessage('error', '¡Ha ocurrido un error!');
+          });
+      } else {
+        insertClassroom(updatedData)
+          .then((response) => {
+            if (response.status === 200) {
+              console.log(response.data);
+              setMessage('success', '¡Aula registrada con éxito!');
+            }
+          })
+          .catch((error) => {
+            console.log('Error al registrar el aula: ', error);
+            setMessage('error', '¡Ha ocurrido un error!');
+          });
+      }
+
+      setTimeout(() => {
+        onSubmit();
+      }, 500);
+    }
+  };
+
+  const handleCancel = () => {
+    const confrimed = window.confirm('Está a punto de perder los cambios no guardados! ¿Desea continuar?');
+
+    if (confrimed) {
+      onSubmit();
+    }
+  };
+
+  const handleClassroomNameInput = (event) => {
+    // Allow only numbers
+    const inputValue = event.target.value.replace(/[^0-9]/g, '');
+    event.target.value = inputValue;
   };
 
   return (
@@ -146,7 +182,15 @@ export default function ClassroomsForm({ editMode, formData, onSubmit }) {
                 setSelectedFaculty(newValue);
                 setSelectedBuilding(null);
               }}
-              renderInput={(params) => <TextField {...params} label="Facultades disponibles" />}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Facultades disponibles"
+                  error={!!errors.faculty}
+                  helperText={errors.faculty}
+                  required
+                />
+              )}
             />
           </Grid>
           <Grid item xs sx={{ minWidth: '200px' }}>
@@ -158,17 +202,29 @@ export default function ClassroomsForm({ editMode, formData, onSubmit }) {
               onChange={(event, newValue) => {
                 setSelectedBuilding(newValue);
               }}
-              renderInput={(params) => <TextField {...params} label="Edificios disponibles" />}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Edificios disponibles"
+                  error={!!errors.building}
+                  helperText={errors.building}
+                  required
+                />
+              )}
             />
           </Grid>
           <Grid item xs>
             <TextField
-              type="text"
+              type={'text'}
               label="Nombre Aula"
               variant="outlined"
               value={classroomNameInput}
+              onInput={handleClassroomNameInput}
               onChange={(event) => setClassroomNameInput(event.target.value)}
               required
+              inputProps={{ maxLength: 10 }}
+              error={!!errors.classroomName}
+              helperText={errors.classroomName}
             />
           </Grid>
         </Grid>
@@ -180,11 +236,12 @@ export default function ClassroomsForm({ editMode, formData, onSubmit }) {
               {editMode ? 'Modificar' : 'Registrar'}
             </Button>
           </Grid>
-          <Grid item xs>
-            <Button type="submit" variant="contained" color="primary" onClick={handleBack}>
+          <Grid item xs={2}>
+            <Button type="submit" variant="contained" color="primary" onClick={handleCancel}>
               Cancelar
             </Button>
           </Grid>
+          <Grid item xs />
         </Grid>
       </Box>
     </>

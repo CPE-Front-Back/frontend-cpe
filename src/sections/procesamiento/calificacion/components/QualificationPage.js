@@ -4,8 +4,6 @@ import {
   Card,
   Container,
   Grid,
-  IconButton,
-  Stack,
   Table,
   TableBody,
   TableCell,
@@ -17,8 +15,6 @@ import {
 import { isNaN } from 'lodash';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Await } from 'react-router-dom';
-import Iconify from '../../../../components/iconify';
 import setMessage from '../../../../components/messages/messages';
 import Scrollbar from '../../../../components/scrollbar';
 import { UseActiveCourse } from '../../../gestionCurso/curso/context/ActiveCourseContext';
@@ -199,7 +195,6 @@ export default function QualificationPage() {
           });
       });
     } else {
-      console.log('errores en las notas');
       setMessage('error', '¡Existen notas con valores incorrectos!');
     }
   };

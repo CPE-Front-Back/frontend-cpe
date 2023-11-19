@@ -13,49 +13,76 @@ export default function IncomeSourcesForm({ editMode, formData, onSubmit }) {
   const { cod_fuente, nomb_fuente, eliminada } = formData;
   const [IncomeSourceNameInput, setIncomeSourceNameInput] = useState(nomb_fuente);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const updatedData = {
-      cod_fuente: formData.cod_fuente,
-      nomb_fuente: IncomeSourceNameInput,
-      eliminada: false,
-    };
+  const [errors, setErrors] = useState({
+    incomeSourceName: '',
+  });
 
-    if (editMode) {
-      updateIncomeSource(updatedData)
-        .then((response) => {
-          if (response.status === 200) {
-            console.log(response.data);
-            setMessage('success', '¡Fuente de ingreso actualizada con éxito!');
-          }
-        })
-        .catch((error) => {
-          console.log('Error al modificar la fuente de ingreso: ', error);
-          setMessage('error', '¡Ha ocurrido un error!');
-        });
-    } else {
-      insertIncomeSource(updatedData)
-        .then((response) => {
-          if (response.status === 200) {
-            console.log(response.data);
-            setMessage('success', '¡Fuente de ingreso registrada con éxito!');
-          }
-        })
-        .catch((error) => {
-          console.log('Error al registrar la fuente de ingreso: ', error);
-          setMessage('error', '¡Ha ocurrido un error!');
-        });
+  const validateData = () => {
+    const newErrors = {};
+
+    if (!IncomeSourceNameInput) {
+      newErrors.incomeSourceName = 'Nombre requerido';
     }
 
-    setTimeout(() => {
-      onSubmit();
-    }, 500);
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
   };
 
-  const handleBack = (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
 
-    onSubmit();
+    if (validateData()) {
+      const updatedData = {
+        cod_fuente: formData.cod_fuente,
+        nomb_fuente: IncomeSourceNameInput,
+        eliminada: false,
+      };
+
+      if (editMode) {
+        updateIncomeSource(updatedData)
+          .then((response) => {
+            if (response.status === 200) {
+              console.log(response.data);
+              setMessage('success', '¡Fuente de ingreso actualizada con éxito!');
+            }
+          })
+          .catch((error) => {
+            console.log('Error al modificar la fuente de ingreso: ', error);
+            setMessage('error', '¡Ha ocurrido un error!');
+          });
+      } else {
+        insertIncomeSource(updatedData)
+          .then((response) => {
+            if (response.status === 200) {
+              console.log(response.data);
+              setMessage('success', '¡Fuente de ingreso registrada con éxito!');
+            }
+          })
+          .catch((error) => {
+            console.log('Error al registrar la fuente de ingreso: ', error);
+            setMessage('error', '¡Ha ocurrido un error!');
+          });
+      }
+
+      setTimeout(() => {
+        onSubmit();
+      }, 500);
+    }
+  };
+
+  const handleCancel = () => {
+    const confrimed = window.confirm('Está a punto de perder los cambios no guardados! ¿Desea continuar?');
+
+    if (confrimed) {
+      onSubmit();
+    }
+  };
+
+  const handleNameInput = (event) => {
+    // allow only letters
+    const inputValue = event.target.value.replace(/[^a-zA-Z]/g, '');
+    event.target.value = inputValue;
   };
 
   return (
@@ -76,7 +103,11 @@ export default function IncomeSourcesForm({ editMode, formData, onSubmit }) {
               label="Nombre"
               variant="outlined"
               value={IncomeSourceNameInput}
+              onInput={handleNameInput}
               onChange={(event) => setIncomeSourceNameInput(event.target.value)}
+              error={!!errors.incomeSourceName}
+              helperText={errors.incomeSourceName}
+              inputProps={{ maxLength: 30 }}
               required
             />
           </Grid>
@@ -91,7 +122,7 @@ export default function IncomeSourcesForm({ editMode, formData, onSubmit }) {
             </Button>
           </Grid>
           <Grid item xs={2}>
-            <Button type="submit" variant="contained" color="primary" onClick={handleBack}>
+            <Button type="submit" variant="contained" color="primary" onClick={handleCancel}>
               Cancelar
             </Button>
           </Grid>

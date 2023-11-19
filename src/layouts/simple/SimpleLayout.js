@@ -40,45 +40,6 @@ export default function SimpleLayout() {
   const navigate = useNavigate();
 
   return (
-    /* <>
-      <StyledHeader>
-        <StyledToolbar>
-          <Stack
-            direction="row"
-            sx={{ flexGrow: 1 }}
-            spacing={{
-              xs: 0.5,
-              sm: 1,
-            }}
-          >
-            <Logo />
-
-            <Stack direction="row" spacing={10} sx={{ flexGrow: 1 }}>
-              <Typography variant="h4" sx={{ mb: 5, paddingTop: '12px' }}>
-                Bienvenido
-              </Typography>
-
-              <Box sx={{ flexGrow: 1 }} />
-
-              <LoadingButton
-                size="large"
-                type="submit"
-                variant="contained"
-                onClick={() => {
-                  navigate('/login', { replace: true });
-                }}
-                sx={{ textTransform: 'none' }}
-              >
-                Iniciar sesión
-              </LoadingButton>
-            </Stack>
-          </Stack>
-        </StyledToolbar>
-      </StyledHeader>
-
-      <Outlet />
-    </> */
-
     <>
       <StyledHeader>
         <StyledToolbar>

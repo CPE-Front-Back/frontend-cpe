@@ -90,6 +90,11 @@ export default function LoginForm() {
           }}
           error={!!errors.password}
           required
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              handleLogin();
+            }
+          }}
         />
       </Stack>
 
@@ -106,6 +111,11 @@ export default function LoginForm() {
         variant="contained"
         onClick={handleLogin}
         sx={{ textTransform: 'none' }}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            handleLogin();
+          }
+        }}
       >
         Iniciar sesión
       </LoadingButton>
