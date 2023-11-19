@@ -2,6 +2,7 @@ import { Navigate, useLocation, useRoutes } from 'react-router-dom';
 // layouts
 import DashboardLayout from './layouts/dashboard';
 import SimpleLayout from './layouts/simple';
+import HelpPage from './sections/ayuda/components/HelpPage';
 //
 
 import BuildingsPage from './sections/gestionCodificadores/edificios/components/BuildingsPage';
@@ -44,7 +45,7 @@ export default function Router() {
         { path: 'solicitudesSinConfirmar', element: <RequestsPage solicitantesConfirmados={false} /> },
         { path: 'qualifications', element: <QualificationPage /> },
         { path: 'requalifications', element: <RequalificationPage /> },
-        { path: 'pdfPage1', element: <PdfPage pdfName="Resumen solicitudes 1ra opción por Carrera" /> },
+        { path: 'pdfPage1', element: <PdfPage pdfName="Resumen de solicitudes 1ra opción por carrera" /> },
         { path: 'pdfPage2', element: <PdfPage pdfName="Listado de asignaciones en 1era vuelta por carrera" /> },
         { path: 'pdfPage3', element: <PdfPage pdfName="Listado de asignaciones en 1era vuelta por estudiante" /> },
         { path: 'pdfPage4', element: <PdfPage pdfName="Listado de ubicación de estudiantes" /> },
@@ -58,7 +59,9 @@ export default function Router() {
         { path: 'pdfPage12', element: <PdfPage pdfName="Listado de asignaciones final por estudiante" /> },
         { path: 'pdfPage13', element: <PdfPage pdfName="Resumen de asignaciones en 1era opción por carrera" /> },
         { path: 'pdfPage14', element: <PdfPage pdfName="Resumen final de asignaciones por carreras" /> },
+        { path: 'pdfPage15', element: <PdfPage pdfName="Listado de solicitantes" /> },
         { path: 'app', element: <DashboardLogedInPage /> },
+        { path: 'help', element: <HelpPage /> },
       ],
     },
     {

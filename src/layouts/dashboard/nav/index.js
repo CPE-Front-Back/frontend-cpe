@@ -1,13 +1,11 @@
-import { mdiAccountCircleOutline, mdiFileDocumentOutline, mdiInformationSlabCircleOutline } from '@mdi/js';
+import { mdiAccountCircleOutline, mdiInformationSlabCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import PropTypes from 'prop-types';
 import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 // @mui
 import { styled, alpha } from '@mui/material/styles';
-import { Box, Link, Button, Drawer, Typography, Avatar, Stack } from '@mui/material';
-// mock
-import account from '../../../_mock/account';
+import { Box, Link, Drawer, Typography, Stack } from '@mui/material';
 // hooks
 import useResponsive from '../../../hooks/useResponsive';
 // components
@@ -42,6 +40,7 @@ export default function Nav({ openNav, onCloseNav }) {
   const { pathname } = useLocation();
   const { auth } = UseAuthContext();
   const isDesktop = useResponsive('up', 'lg');
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (openNav) {
@@ -96,8 +95,13 @@ export default function Nav({ openNav, onCloseNav }) {
 
       <Box sx={{ flexGrow: 1 }} />
 
-      <Box sx={{ px: 2.5, pb: 3, mt: 10 }}>
-        <Stack alignItems="center" spacing={0.5} sx={{ pt: 5, borderRadius: 2, position: 'relative' }}>
+      <Box
+        sx={{ pb: 2, mt: 5 }}
+        onClick={() => {
+          navigate('/dashboard/help', { replace: true });
+        }}
+      >
+        <Stack alignItems="center" spacing={0.5} sx={{ pt: 1, borderRadius: 2, position: 'relative' }}>
           <Icon size={4} path={mdiInformationSlabCircleOutline} />
           <Typography variant="h6" textAlign={'center'} sx={{ color: 'text.secondary' }}>
             Sección de ayuda

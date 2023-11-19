@@ -221,3 +221,16 @@ export const getResumenSolicitudes1raOpcCarreraReport = async (nomb_curso) => {
     throw error;
   }
 };
+
+export const getListadoSolicitantesReport = async (nomb_curso) => {
+  try {
+    const format = 'pdf';
+    const response = await axiosInstance.get(`report/solicitantesCurso/nomb_curso/${nomb_curso}/format/${format}`, {
+      responseType: 'arraybuffer',
+    });
+    return response;
+  } catch (error) {
+    console.log('Error en getListadoSolicitantesReport', error);
+    throw error;
+  }
+};

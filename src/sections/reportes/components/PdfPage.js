@@ -26,6 +26,7 @@ import {
   getListadoAsignacionesFinalEstudianteReport,
   getListadoNotasReport,
   getListadoRecalificacionesReport,
+  getListadoSolicitantesReport,
   getListadoUbicacionEstudianteReport,
   getProvinciasReport,
   getResumenAsignaciones1raOpcCarreraReport,
@@ -256,6 +257,20 @@ export default function PdfPage({ pdfName }) {
         break;
       case 'Resumen final de asignaciones por carreras':
         getResumenFinalAsignacionesCarreraReport(selectedCourse.nomb_curso)
+          .then((response) => {
+            if (response.status === 200) {
+              const blob = new Blob([response.data], { type: 'application/pdf' });
+
+              setPdfData(blob);
+              setLoading(false);
+            }
+          })
+          .catch((error) => {
+            console.log('Error al cargar el reporte', error);
+          });
+        break;
+      case 'Listado de solicitantes':
+        getListadoSolicitantesReport(selectedCourse.nomb_curso)
           .then((response) => {
             if (response.status === 200) {
               const blob = new Blob([response.data], { type: 'application/pdf' });

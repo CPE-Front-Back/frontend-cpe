@@ -87,6 +87,12 @@ export default function navConfig() {
           haveAccess: auth.rol === 'Secretario General' || auth.rol === 'Matriculador' || auth.rol === 'Técnico',
           // isDisabled: canActRequests,
         },
+        {
+          title: 'Exportar solicitantes',
+          path: '/dashboard/pdfPage15',
+          icon: <Icon size={1} path={mdiTextBoxMultipleOutline} />,
+          haveAccess: auth.rol === 'Secretario General' || auth.rol === 'Técnico' || auth.rol === 'Matriculador',
+        },
       ],
     },
     {
@@ -183,7 +189,7 @@ export default function navConfig() {
       haveAccess: auth.rol === 'Secretario General' || auth.rol === 'Técnico',
       subItems: [
         {
-          title: 'Resumen solicitudes 1ra opción por Carrera',
+          title: 'Resumen de solicitudes 1ra opción por carrera',
           path: '/dashboard/pdfPage1',
           icon: <Icon size={1} path={mdiTextBoxMultipleOutline} />,
           haveAccess: auth.rol === 'Secretario General' || auth.rol === 'Técnico',
@@ -231,8 +237,8 @@ export default function navConfig() {
           haveAccess: auth.rol === 'Secretario General' || auth.rol === 'Técnico',
         },
         {
-          title: 'Listado de asignaciones final por carrera',
-          path: '/dashboard/pdfPage9',
+          title: 'Actas de reclamación',
+          path: '/dashboard/pdfPage11',
           icon: <Icon size={1} path={mdiTextBoxMultipleOutline} />,
           haveAccess: auth.rol === 'Secretario General' || auth.rol === 'Técnico',
         },
@@ -243,8 +249,8 @@ export default function navConfig() {
           haveAccess: auth.rol === 'Secretario General' || auth.rol === 'Técnico',
         },
         {
-          title: 'Actas de reclamación',
-          path: '/dashboard/pdfPage11',
+          title: 'Listado de asignaciones final por carrera',
+          path: '/dashboard/pdfPage9',
           icon: <Icon size={1} path={mdiTextBoxMultipleOutline} />,
           haveAccess: auth.rol === 'Secretario General' || auth.rol === 'Técnico',
         },
