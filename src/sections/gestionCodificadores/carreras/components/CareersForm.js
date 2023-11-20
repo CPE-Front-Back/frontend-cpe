@@ -3,10 +3,9 @@ import { useConfirm } from 'material-ui-confirm';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import setMessage from '../../../../components/messages/messages';
-import OfertasForm from '../../../gestionCurso/ofertas/components/OfertasForm';
 import { insertCarrera, updateCarrera } from '../store/store';
 
-OfertasForm.propTypes = {
+CareersForm.propTypes = {
   editMode: PropTypes.bool,
   formData: PropTypes.object,
   onSubmit: PropTypes.func,

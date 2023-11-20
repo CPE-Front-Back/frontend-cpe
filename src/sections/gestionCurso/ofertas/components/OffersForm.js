@@ -9,12 +9,12 @@ import { getCarreras } from '../../../gestionCodificadores/carreras/store/store'
 import { UseActiveCourse } from '../../curso/context/ActiveCourseContext';
 import { getAllOfertasByCurso, insertarOferta, updateOferta } from '../store/store';
 
-OfertasForm.propTypes = {
+OffersForm.propTypes = {
   editMode: PropTypes.bool,
   formData: PropTypes.object,
   onSubmit: PropTypes.func,
 };
-export default function OfertasForm({ editMode, formData, onSubmit }) {
+export default function OffersForm({ editMode, formData, onSubmit }) {
   const confirm = useConfirm();
 
   const { cod_oferta, cod_carrera, nomb_carrera, cod_curso, cant_ofertas, eliminada } = formData;

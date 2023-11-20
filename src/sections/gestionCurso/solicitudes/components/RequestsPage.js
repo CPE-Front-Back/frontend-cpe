@@ -27,7 +27,6 @@ import PropTypes from 'prop-types';
 import Iconify from '../../../../components/iconify';
 import setMessage from '../../../../components/messages/messages';
 import Scrollbar from '../../../../components/scrollbar';
-import { deleteClassroom } from '../../../gestionCodificadores/aulas/store/store';
 import { getCarreras } from '../../../gestionCodificadores/carreras/store/store';
 import { UseActiveCourse } from '../../curso/context/ActiveCourseContext';
 import { getAllOfertasByCurso } from '../../ofertas/store/store';
@@ -241,7 +240,7 @@ export default function RequestsPage(solicitantesConfirmados) {
 
   const handleConfirmClick = () => {
     if (selected.length === 1) {
-      const selectedItem = filteredSolicitudes.find((solicitud) => solicitud.cod_solicitante === selected[0]);
+      const selectedItem = filteredRequests.find((solicitud) => solicitud.cod_solicitante === selected[0]);
       if (selectedItem) {
         setIsFormDialogVisible(true);
         setEditMode(true);
@@ -253,7 +252,7 @@ export default function RequestsPage(solicitantesConfirmados) {
 
   const handleDeleteClick = () => {
     if (selected.length === 1) {
-      const selectedItem = filteredSolicitudes.find((requester) => requester.cod_solicitante === selected[0]);
+      const selectedItem = filteredRequests.find((requester) => requester.cod_solicitante === selected[0]);
       if (selectedItem) {
         confirm({
           content: (
@@ -282,6 +281,39 @@ export default function RequestsPage(solicitantesConfirmados) {
     }
   };
 
+  const handleMultipleDeleteClick = () => {
+    if (selected.length > 0) {
+      const selectedItems = filteredRequests.filter((request) => selected.includes(request.cod_solicitante));
+
+      confirm({
+        content: (
+          <Alert severity={'warning'}>{`¿Desea eliminar las ${selected.length} solicitudes seleccionadas?`}</Alert>
+        ),
+      })
+        .then(() => {
+          // Perform the deletion of multiple records
+          Promise.all(selectedItems.map((selectedItem) => deleteRequester(selectedItem)))
+            .then((responses) => {
+              const isSuccess = responses.every((response) => response.status === 200);
+
+              if (isSuccess) {
+                setMessage('success', `¡${selected.length} solicitudes eliminadas con éxito!`);
+                setOpenInRowMenu(false);
+                setSelected([]);
+                setRefresh(refresh + 1);
+              } else {
+                setMessage('warning', '¡Alguna solicitud no pudo ser eliminada!');
+              }
+            })
+            .catch((error) => {
+              console.log('Error al eliminar las solicitudes', error);
+              setMessage('error', '¡Ha ocurrido un error!');
+            });
+        })
+        .catch(() => {});
+    }
+  };
+
   const handleClose = () => {
     confirm({
       content: <Alert severity={'warning'}>¡Perderá los cambios no guardados! ¿Desea continuar?</Alert>,
@@ -302,9 +334,9 @@ export default function RequestsPage(solicitantesConfirmados) {
 
   const rowsNumber = SOLICITANTESSLIST.length;
 
-  const filteredSolicitudes = applySortFilter(SOLICITANTESSLIST, getComparator(order, orderBy), filterValue);
+  const filteredRequests = applySortFilter(SOLICITANTESSLIST, getComparator(order, orderBy), filterValue);
 
-  const isNotFound = !filteredSolicitudes.length && !!filterValue;
+  const isNotFound = !filteredRequests.length && !!filterValue;
 
   return (
     <>
@@ -346,6 +378,7 @@ export default function RequestsPage(solicitantesConfirmados) {
               numSelected={selected.length}
               filterValue={filterValue}
               onFilterValue={handleFilterByValue}
+              handleDelete={handleMultipleDeleteClick}
             />
 
             <Scrollbar>
@@ -361,7 +394,7 @@ export default function RequestsPage(solicitantesConfirmados) {
                     onSelectAllClick={handleSelectAllClick}
                   />
                   <TableBody>
-                    {filteredSolicitudes.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                    {filteredRequests.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                       const {
                         cod_solicitante,
                         num_id,

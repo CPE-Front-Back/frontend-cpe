@@ -2,6 +2,7 @@ import { IconButton, InputAdornment, OutlinedInput, Toolbar, Tooltip, Typography
 import { alpha, styled } from '@mui/material/styles';
 import PropTypes from 'prop-types';
 import Iconify from '../../../../components/iconify';
+import CapacitiesListToolbar from '../../capacidades/components/CapacitiesListToolbar';
 
 const StyledRoot = styled(Toolbar)(({ theme }) => ({
   height: 96,
@@ -27,13 +28,13 @@ const StyledSearch = styled(OutlinedInput)(({ theme }) => ({
 }));
 
 // ----------------------------------------------------------------------
-
-OfertasListToolbar.propTypes = {
+CapacitiesListToolbar.propTypes = {
   numSelected: PropTypes.number,
   filterValue: PropTypes.string,
   onFilterValue: PropTypes.func,
+  handleDelete: PropTypes.func,
 };
-export default function OfertasListToolbar({ numSelected, filterValue, onFilterValue }) {
+export default function OffersListToolbar({ numSelected, filterValue, onFilterValue, handleDelete }) {
   return (
     <StyledRoot
       sx={{
@@ -60,16 +61,10 @@ export default function OfertasListToolbar({ numSelected, filterValue, onFilterV
         />
       )}
 
-      {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton>
+      {numSelected > 0 && (
+        <Tooltip title="Eliminar">
+          <IconButton onClick={handleDelete}>
             <Iconify icon="eva:trash-2-fill" />
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <Tooltip title="Filter list">
-          <IconButton>
-            <Iconify icon="ic:round-filter-list" />
           </IconButton>
         </Tooltip>
       )}

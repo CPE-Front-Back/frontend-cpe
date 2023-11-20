@@ -204,6 +204,39 @@ export default function CapacitiesPage() {
     }
   };
 
+  const handleMultipleDeleteClick = () => {
+    if (selected.length > 0) {
+      const selectedItems = filteredCapacities.filter((capacity) => selected.includes(capacity.cod_capacidad));
+
+      confirm({
+        content: (
+          <Alert severity={'warning'}>{`¿Desea eliminar las ${selected.length} capacidades seleccionadas?`}</Alert>
+        ),
+      })
+        .then(() => {
+          // Perform the deletion of multiple records
+          Promise.all(selectedItems.map((selectedItem) => deleteCapacity(selectedItem)))
+            .then((responses) => {
+              const isSuccess = responses.every((response) => response.status === 200);
+
+              if (isSuccess) {
+                setMessage('success', `¡${selected.length} capacidades eliminadas con éxito!`);
+                setOpenInRowMenu(false);
+                setSelected([]);
+                setRefresh(refresh + 1);
+              } else {
+                setMessage('warning', '¡Alguna capacidad no pudo ser eliminada!');
+              }
+            })
+            .catch((error) => {
+              console.log('Error al eliminar las capacidades', error);
+              setMessage('error', '¡Ha ocurrido un error!');
+            });
+        })
+        .catch(() => {});
+    }
+  };
+
   const handleRowClick = (capacityCode) => {
     const newSelected = [capacityCode];
     setSelected(newSelected);
@@ -257,6 +290,7 @@ export default function CapacitiesPage() {
               numSelected={selected.length}
               filterValue={filterValue}
               onFilterValue={handleFilterByValue}
+              handleDelete={handleMultipleDeleteClick}
             />
 
             <Scrollbar>

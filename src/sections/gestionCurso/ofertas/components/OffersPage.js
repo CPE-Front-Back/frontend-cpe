@@ -31,9 +31,9 @@ import { deleteOffer, getAllOfertasByCurso } from '../store/store';
 
 import Iconify from '../../../../components/iconify';
 import Scrollbar from '../../../../components/scrollbar';
-import OfertasForm from './OfertasForm';
-import OfertasListHead from './OfertasListHead';
-import OfertasListToolbar from './OfertasListToolbar';
+import OffersForm from './OffersForm';
+import OffersListHead from './OffersListHead';
+import OffersListToolbar from './OffersListToolbar';
 
 const TABLE_HEAD = [
   { id: 'nomb_carrera', label: 'Carrera', alignRight: false },
@@ -223,6 +223,37 @@ export default function OffersPage() {
     }
   };
 
+  const handleMultipleDeleteClick = () => {
+    if (selected.length > 0) {
+      const selectedItems = filteredOffers.filter((offer) => selected.includes(offer.cod_carrera));
+
+      confirm({
+        content: <Alert severity={'warning'}>{`¿Desea eliminar las ${selected.length} ofertas seleccionadas?`}</Alert>,
+      })
+        .then(() => {
+          // Perform the deletion of multiple records
+          Promise.all(selectedItems.map((selectedItem) => deleteOffer(selectedItem)))
+            .then((responses) => {
+              const isSuccess = responses.every((response) => response.status === 200);
+
+              if (isSuccess) {
+                setMessage('success', `¡${selected.length} ofertas eliminadas con éxito!`);
+                setOpenInRowMenu(false);
+                setSelected([]);
+                setRefresh(refresh + 1);
+              } else {
+                setMessage('warning', '¡Alguna oferta no pudo ser eliminada!');
+              }
+            })
+            .catch((error) => {
+              console.log('Error al eliminar las ofertas', error);
+              setMessage('error', '¡Ha ocurrido un error!');
+            });
+        })
+        .catch(() => {});
+    }
+  };
+
   const handleRowClick = (careerCode) => {
     const newSelected = [careerCode];
     setSelected(newSelected);
@@ -241,7 +272,7 @@ export default function OffersPage() {
       </Helmet>
 
       {isFormVisible ? (
-        <OfertasForm
+        <OffersForm
           formData={formData}
           editMode={editMode}
           onSubmit={() => {
@@ -273,16 +304,17 @@ export default function OffersPage() {
           </Stack>
 
           <Card>
-            <OfertasListToolbar
+            <OffersListToolbar
               numSelected={selected.length}
               filterValue={filterValue}
               onFilterValue={handleFilterByValue}
+              handleDelete={handleMultipleDeleteClick}
             />
 
             <Scrollbar>
               <TableContainer>
                 <Table size="small">
-                  <OfertasListHead
+                  <OffersListHead
                     order={order}
                     orderBy={orderBy}
                     headLabel={TABLE_HEAD}

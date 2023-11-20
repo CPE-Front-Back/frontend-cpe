@@ -219,6 +219,39 @@ export default function BuildingsPage() {
     }
   };
 
+  const handleMultipleDeleteClick = () => {
+    if (selected.length > 0) {
+      const selectedItems = filteredBuildings.filter((building) => selected.includes(building.cod_edif));
+
+      confirm({
+        content: (
+          <Alert severity={'warning'}>{`¿Desea eliminar los ${selected.length} edificios seleccionados?`}</Alert>
+        ),
+      })
+        .then(() => {
+          // Perform the deletion of multiple records
+          Promise.all(selectedItems.map((selectedItem) => deleteBuilding(selectedItem)))
+            .then((responses) => {
+              const isSuccess = responses.every((response) => response.status === 200);
+
+              if (isSuccess) {
+                setMessage('success', `¡${selected.length} edificios eliminados con éxito!`);
+                setOpenInRowMenu(false);
+                setSelected([]);
+                setRefresh(refresh + 1);
+              } else {
+                setMessage('warning', '¡Algún edificio no pudo ser eliminado!');
+              }
+            })
+            .catch((error) => {
+              console.log('Error al eliminar los edificios', error);
+              setMessage('error', '¡Ha ocurrido un error!');
+            });
+        })
+        .catch(() => {});
+    }
+  };
+
   const handleRowClick = (codEdif) => {
     const newSelected = [codEdif];
     setSelected(newSelected);
@@ -272,6 +305,7 @@ export default function BuildingsPage() {
               numSelected={selected.length}
               filterValue={filterValue}
               onFilterValue={handleFilterByValue}
+              handleDelete={handleMultipleDeleteClick}
             />
 
             <Scrollbar>

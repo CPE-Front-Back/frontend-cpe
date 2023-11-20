@@ -194,6 +194,41 @@ export default function IncomeSourcesPage() {
     }
   };
 
+  const handleMultipleDeleteClick = () => {
+    if (selected.length > 0) {
+      const selectedItems = filteredIncomeSources.filter((incomeSource) => selected.includes(incomeSource.cod_fuente));
+
+      confirm({
+        content: (
+          <Alert
+            severity={'warning'}
+          >{`¿Desea eliminar las ${selected.length} fuentes de ingreso seleccionadas?`}</Alert>
+        ),
+      })
+        .then(() => {
+          // Perform the deletion of multiple records
+          Promise.all(selectedItems.map((selectedItem) => deleteIncomeSource(selectedItem)))
+            .then((responses) => {
+              const isSuccess = responses.every((response) => response.status === 200);
+
+              if (isSuccess) {
+                setMessage('success', `¡${selected.length} fuentes de ingreso eliminadas con éxito!`);
+                setOpenInRowMenu(false);
+                setSelected([]);
+                setRefresh(refresh + 1);
+              } else {
+                setMessage('warning', '¡Alguna fuente de ingreso no pudo ser eliminada!');
+              }
+            })
+            .catch((error) => {
+              console.log('Error al eliminar las fuentes de ingreso', error);
+              setMessage('error', '¡Ha ocurrido un error!');
+            });
+        })
+        .catch(() => {});
+    }
+  };
+
   const handleRowClick = (incomeSourceCode) => {
     const newSelected = [incomeSourceCode];
     setSelected(newSelected);
@@ -247,6 +282,7 @@ export default function IncomeSourcesPage() {
               numSelected={selected.length}
               filterValue={filterValue}
               onFilterValue={handleFilterByValue}
+              handleDelete={handleMultipleDeleteClick}
             />
 
             <Scrollbar>

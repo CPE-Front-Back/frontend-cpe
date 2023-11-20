@@ -237,6 +237,37 @@ export default function ClassroomsPage() {
     }
   };
 
+  const handleMultipleDeleteClick = () => {
+    if (selected.length > 0) {
+      const selectedItems = filteredClassrooms.filter((classroom) => selected.includes(classroom.cod_aula));
+
+      confirm({
+        content: <Alert severity={'warning'}>{`¿Desea eliminar las ${selected.length} aulas seleccionadas?`}</Alert>,
+      })
+        .then(() => {
+          // Perform the deletion of multiple records
+          Promise.all(selectedItems.map((selectedItem) => deleteClassroom(selectedItem)))
+            .then((responses) => {
+              const isSuccess = responses.every((response) => response.status === 200);
+
+              if (isSuccess) {
+                setMessage('success', `¡${selected.length} aulas eliminadas con éxito!`);
+                setOpenInRowMenu(false);
+                setSelected([]);
+                setRefresh(refresh + 1);
+              } else {
+                setMessage('warning', '¡Algún aula no pudo ser eliminada!');
+              }
+            })
+            .catch((error) => {
+              console.log('Error al eliminar las aulas', error);
+              setMessage('error', '¡Ha ocurrido un error!');
+            });
+        })
+        .catch(() => {});
+    }
+  };
+
   const handleRowClick = (classroomCode) => {
     const newSelected = [classroomCode];
     setSelected(newSelected);
@@ -290,6 +321,7 @@ export default function ClassroomsPage() {
               numSelected={selected.length}
               filterValue={filterValue}
               onFilterValue={handleFilterByValue}
+              handleDelete={handleMultipleDeleteClick}
             />
 
             <Scrollbar>
