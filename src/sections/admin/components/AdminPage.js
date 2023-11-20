@@ -1,6 +1,7 @@
 import { mdiDelete, mdiDotsVertical, mdiPencilOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import {
+  Alert,
   Button,
   Card,
   Checkbox,
@@ -19,15 +20,15 @@ import {
   Typography,
 } from '@mui/material';
 import { filter } from 'lodash';
+import { useConfirm } from 'material-ui-confirm';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import Iconify from '../../../components/iconify';
 import setMessage from '../../../components/messages/messages';
 import Scrollbar from '../../../components/scrollbar';
 import { UseAuthContext } from '../../auth/context/AuthProvider';
-import { UseActiveCourse } from '../../gestionCurso/curso/context/ActiveCourseContext';
-import { deleteOffer } from '../../gestionCurso/ofertas/store/store';
-import { getAllUsersExceptCurrent } from '../store/store';
+import { deleteCareer } from '../../gestionCodificadores/carreras/store/store';
+import { deleteUser, getAllUsersExceptCurrent } from '../store/store';
 import AdminForm from './AdminForm';
 import AdminListHead from './AdminListHead';
 import AdminListToolbar from './AdminListToolbar';
@@ -88,6 +89,7 @@ export default function AdminPage() {
   const [rowsNumber, setRowsNumber] = useState(0);
 
   const { auth } = UseAuthContext();
+  const confirm = useConfirm();
 
   useEffect(() => {
     getAllUsersExceptCurrent(auth.username)
@@ -175,24 +177,57 @@ export default function AdminPage() {
     if (selected.length === 1) {
       const selectedItem = filteredUsers.find((user) => user.cod_usuario === selected[0]);
       if (selectedItem) {
-        const confirmed = window.confirm(`Está seguro que desea eliminar el usuario: ${selectedItem.username}`);
+        confirm({
+          content: <Alert severity={'warning'}>{`¿Desea eliminar el usuario: ${selectedItem.username} ?`}</Alert>,
+        })
+          .then(() => {
+            deleteUser(selectedItem)
+              .then((response) => {
+                if (response.status === 200) {
+                  setMessage('success', '¡Usuario eliminado con éxito!');
+                  setOpenInRowMenu(false);
+                  setSelected([]);
+                  setRefresh(refresh + 1);
+                }
+              })
+              .catch((error) => {
+                console.log('Error al eliminar el usuario', error);
+                setMessage('error', '¡Ha ocurrido un error!');
+              });
+          })
+          .catch(() => {});
+      }
+    }
+  };
 
-        if (confirmed) {
-          deleteOffer(selectedItem)
-            .then((response) => {
-              if (response.status === 200) {
-                setMessage('success', '¡Usuario eliminado con éxito!');
+  const handleMultipleDeleteClick = () => {
+    if (selected.length > 0) {
+      const selectedItems = filteredUsers.filter((user) => selected.includes(user.cod_usuario));
+
+      confirm({
+        content: <Alert severity={'warning'}>{`¿Desea eliminar los ${selected.length} usuarios seleccionados?`}</Alert>,
+      })
+        .then(() => {
+          // Perform the deletion of multiple records
+          Promise.all(selectedItems.map((selectedItem) => deleteUser(selectedItem)))
+            .then((responses) => {
+              const isSuccess = responses.every((response) => response.status === 200);
+
+              if (isSuccess) {
+                setMessage('success', `¡${selected.length} usuarios eliminados con éxito!`);
                 setOpenInRowMenu(false);
                 setSelected([]);
                 setRefresh(refresh + 1);
+              } else {
+                setMessage('warning', '¡Algún usuario no pudo ser eliminado!');
               }
             })
             .catch((error) => {
-              console.log('Error al eliminar el usuario', error);
+              console.log('Error al eliminar los usuarios', error);
               setMessage('error', '¡Ha ocurrido un error!');
             });
-        }
-      }
+        })
+        .catch(() => {});
     }
   };
 
@@ -250,6 +285,7 @@ export default function AdminPage() {
               numSelected={selected.length}
               filterValue={filterValue}
               onFilterValue={handleFilterByValue}
+              handleDelete={handleMultipleDeleteClick}
             />
 
             <Scrollbar>
@@ -356,6 +392,7 @@ export default function AdminPage() {
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
         PaperProps={{
           sx: {
+            py: 1,
             px: 1,
             width: 140,
             '& .MuiMenuItem-root': {

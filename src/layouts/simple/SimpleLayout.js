@@ -56,7 +56,7 @@ export default function SimpleLayout() {
               </Grid>
               <Grid item xs>
                 <Typography variant="h4" sx={{ mb: 5, paddingTop: '12px' }}>
-                  Bienvenido
+                  Bienvenido al sistema de asignación de plazas de curso por encuentros en la cujae
                 </Typography>
               </Grid>
             </Grid>

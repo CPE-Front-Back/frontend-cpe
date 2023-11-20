@@ -9,7 +9,7 @@ import {
   getMunicipiosPorProvincia,
   getProvincias,
 } from '../../../utils/codificadores/codificadoresStore';
-import SolicitanteCarrerOptionsForm from './SolicitanteCarrerOptionsForm';
+import RequesterCarrerOptionsForm from './RequesterCarrerOptionsForm';
 
 const StyledRoot = styled('div')(({ theme }) => ({
   [theme.breakpoints.up('md')]: {
@@ -40,10 +40,10 @@ const Main = styled('div')(({ theme }) => ({
   },
 }));
 
-SolicitantePersonalDataForm.propTypes = {
+RequesterPersonalDataForm.propTypes = {
   togleFormVisibility: PropTypes.func,
 };
-export default function SolicitantePersonalDataForm({ togleFormVisibility }) {
+export default function RequesterPersonalDataForm({ togleFormVisibility }) {
   const [isCarrersFormVisible, setIsCarrersFormVisible] = useState(false);
   const [formData, setFormData] = useState({
     cod_solicitante: '',
@@ -427,7 +427,7 @@ export default function SolicitantePersonalDataForm({ togleFormVisibility }) {
                 </LoadingButton>
               </>
             ) : (
-              <SolicitanteCarrerOptionsForm
+              <RequesterCarrerOptionsForm
                 personalData={formData}
                 onVolver={() => {
                   confirm({

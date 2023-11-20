@@ -8,8 +8,7 @@ import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { AppWidgetSummary } from '../../home/app';
 import Header from './Header';
-import SolicitanteCarrerOptionsForm from './SolicitanteCarrerOptionsForm';
-import SolicitantePersonalDataForm from './SolicitantePersonalDataForm';
+import RequesterPersonalDataForm from './RequesterPersonalDataForm';
 import { UseActiveCourse } from '../../gestionCurso/curso/context/ActiveCourseContext';
 import { getResumenSolicitudes1raOpcCarreraReport } from '../../reportes/store/store';
 import ViewPdf from '../../reportes/components/ViewPdf';
@@ -215,7 +214,7 @@ export default function RequesterPage() {
                   </Grid>
                 </Grid>
               ) : (
-                <SolicitantePersonalDataForm togleFormVisibility={() => toggleFormView()} />
+                <RequesterPersonalDataForm togleFormVisibility={() => toggleFormView()} />
               )}
             </Container>
           )}

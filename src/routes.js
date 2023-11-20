@@ -22,8 +22,8 @@ import Page404 from './layouts/404/Page404';
 import HomePage from './sections/home/app/components/HomePage';
 import QualificationPage from './sections/procesamiento/calificacion/components/QualificationPage';
 import RequalificationPage from './sections/procesamiento/recalificacion/components/RequalificationPage';
-import SolicitanteCarrerOptionsForm from './sections/solicitante/components/SolicitanteCarrerOptionsForm';
-import SolicitantePersonalDataForm from './sections/solicitante/components/SolicitantePersonalDataForm';
+import RequesterCarrerOptionsForm from './sections/solicitante/components/RequesterCarrerOptionsForm';
+import RequesterPersonalDataForm from './sections/solicitante/components/RequesterPersonalDataForm';
 
 // ----------------------------------------------------------------------
 
@@ -72,8 +72,8 @@ export default function Router() {
       children: [
         { element: <Navigate to="/solicitante/solicitante-page" />, index: true },
         { path: 'solicitante-page', element: <RequesterPage /> },
-        { path: 'formulario-personal-data', element: <SolicitantePersonalDataForm /> },
-        { path: 'formulario-carreras', element: <SolicitanteCarrerOptionsForm /> },
+        { path: 'formulario-personal-data', element: <RequesterPersonalDataForm /> },
+        { path: 'formulario-carreras', element: <RequesterCarrerOptionsForm /> },
       ],
     },
     {

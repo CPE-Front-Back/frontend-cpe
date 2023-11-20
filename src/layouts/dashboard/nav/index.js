@@ -165,7 +165,7 @@ export default function Nav({ openNav, onCloseNav }) {
         }}
       >
         <Stack alignItems="center" spacing={0.5} sx={{ pt: 1, borderRadius: 2, position: 'relative' }}>
-          <Icon size={4} path={mdiInformationSlabCircleOutline} color="green" />
+          <Icon size={2} path={mdiInformationSlabCircleOutline} color="green" />
           <Typography variant="h6" textAlign={'center'} sx={{ color: (theme) => theme.palette.primary.main }}>
             Contenido de ayuda
           </Typography>

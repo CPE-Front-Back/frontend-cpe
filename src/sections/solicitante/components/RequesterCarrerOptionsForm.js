@@ -10,12 +10,12 @@ import { UseActiveCourse } from '../../gestionCurso/curso/context/ActiveCourseCo
 import { getAllOfertasByCurso } from '../../gestionCurso/ofertas/store/store';
 import { getSolicitanteById, insertarSolicitudes, sendSolicitantePersonalData } from '../store/store';
 
-SolicitanteCarrerOptionsForm.propTypes = {
+RequesterCarrerOptionsForm.propTypes = {
   personalData: PropTypes.object,
   onVolver: PropTypes.func,
   onEnviar: PropTypes.func,
 };
-export default function SolicitanteCarrerOptionsForm({ personalData, options, onVolver, onEnviar }) {
+export default function RequesterCarrerOptionsForm({ personalData, options, onVolver, onEnviar }) {
   const [ofertas, setOfertas] = useState([]);
   const [ofertasFiltradas, setOfertasFiltradas] = useState([]);
   const [selectedOptions, setSelectedOptions] = useState(null);

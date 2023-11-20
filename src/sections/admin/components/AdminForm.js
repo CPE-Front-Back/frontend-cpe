@@ -1,5 +1,16 @@
-import { Autocomplete, Box, Button, Grid, IconButton, InputAdornment, TextField, Typography } from '@mui/material';
+import {
+  Alert,
+  Autocomplete,
+  Box,
+  Button,
+  Grid,
+  IconButton,
+  InputAdornment,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { isNaN } from 'lodash';
+import { useConfirm } from 'material-ui-confirm';
 import { useEffect, useState } from 'react';
 import Iconify from '../../../components/iconify';
 import setMessage from '../../../components/messages/messages';
@@ -59,6 +70,8 @@ export default function AdminForm({ editMode, formData, onSubmit }) {
   const [showPwd, setShowPwd] = useState(false);
   const [rolesList, setRolesList] = useState([]);
   const [selectedRole, setSelectedRole] = useState(formData?.rol ? { ...formData, description: formData.rol } : null);
+
+  const confirm = useConfirm();
 
   const [errors, setErrors] = useState({
     name: '',
@@ -220,11 +233,13 @@ export default function AdminForm({ editMode, formData, onSubmit }) {
   };
 
   const handleCancel = () => {
-    const confrimed = window.confirm('Está a punto de perder los cambios no guardados! ¿Desea continuar?');
-
-    if (confrimed) {
-      onSubmit();
-    }
+    confirm({
+      content: <Alert severity={'warning'}>¡Perderá los cambios no guardados! ¿Desea continuar?</Alert>,
+    })
+      .then(() => {
+        onSubmit();
+      })
+      .catch(() => {});
   };
 
   const handleNameInput = (event) => {
