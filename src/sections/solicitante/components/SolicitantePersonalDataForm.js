@@ -1,6 +1,7 @@
 import { LoadingButton } from '@mui/lab';
-import { Autocomplete, Container, Grid, TextField, Typography } from '@mui/material';
+import { Alert, Autocomplete, Container, Grid, TextField, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { useConfirm } from 'material-ui-confirm';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import {
@@ -65,6 +66,8 @@ export default function SolicitantePersonalDataForm({ togleFormVisibility }) {
   // const [nomb_solicitante, setNomb_solicitante] = useState('');
   const [firstLastName, setFirstLastName] = useState('');
   const [secondLastName, setSecondLastName] = useState('');
+
+  const confirm = useConfirm();
 
   const [errors, setErrors] = useState({
     num_id: '',
@@ -238,7 +241,7 @@ export default function SolicitantePersonalDataForm({ togleFormVisibility }) {
 
   const handleLastNamesInput = (event) => {
     // allow only letters
-    const inputValue = event.target.value.replace(/[^a-z]/g, '');
+    const inputValue = event.target.value.replace(/[^a-zA-Z]/g, '');
     event.target.value = inputValue;
   };
 
@@ -427,11 +430,21 @@ export default function SolicitantePersonalDataForm({ togleFormVisibility }) {
               <SolicitanteCarrerOptionsForm
                 personalData={formData}
                 onVolver={() => {
-                  setIsCarrersFormVisible(!isCarrersFormVisible);
-                  setFormData({
-                    ...formData,
-                    apell_solicitante: ``,
-                  });
+                  confirm({
+                    content: (
+                      <Alert severity={'warning'}>
+                        ¡Perderá los cambios no guardados! ¿Desea volver a sus datos personales?
+                      </Alert>
+                    ),
+                  })
+                    .then(() => {
+                      setIsCarrersFormVisible(!isCarrersFormVisible);
+                      setFormData({
+                        ...formData,
+                        apell_solicitante: ``,
+                      });
+                    })
+                    .catch(() => {});
                 }}
                 onEnviar={() => togleFormVisibility()}
               />

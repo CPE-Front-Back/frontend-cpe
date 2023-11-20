@@ -1,4 +1,5 @@
-import { Box, Button, Grid, TextField, Typography } from '@mui/material';
+import { Alert, Box, Button, Grid, TextField, Typography } from '@mui/material';
+import { useConfirm } from 'material-ui-confirm';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import setMessage from '../../../../components/messages/messages';
@@ -12,6 +13,8 @@ FacultadesForm.propTypes = {
 export default function FacultadesForm({ editMode, formData, onSubmit }) {
   const { cod_facultad, nomb_facultad, eliminada } = formData;
   const [facultyNameInput, setFacultyNameInput] = useState(nomb_facultad);
+
+  const confirm = useConfirm();
 
   const [errors, setErrors] = useState({
     faclutyName: '',
@@ -72,11 +75,13 @@ export default function FacultadesForm({ editMode, formData, onSubmit }) {
   };
 
   const handleCancel = () => {
-    const confrimed = window.confirm('Está a punto de perder los cambios no guardados! ¿Desea continuar?');
-
-    if (confrimed) {
-      onSubmit();
-    }
+    confirm({
+      content: <Alert severity={'warning'}>¡Perderá los cambios no guardados! ¿Desea continuar?</Alert>,
+    })
+      .then(() => {
+        onSubmit();
+      })
+      .catch(() => {});
   };
 
   const handleNameInput = (event) => {

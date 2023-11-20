@@ -1,6 +1,7 @@
 import { mdiDelete, mdiDotsVertical, mdiPencilOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import {
+  Alert,
   Button,
   Card,
   Checkbox,
@@ -19,6 +20,7 @@ import {
   Typography,
 } from '@mui/material';
 import { filter } from 'lodash';
+import { useConfirm } from 'material-ui-confirm';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import Iconify from '../../../../components/iconify';
@@ -89,6 +91,7 @@ export default function CapacitiesPage() {
   const [FACULTIESLIST, setFACULTIESLIST] = useState([]);
 
   const { activeCourse } = UseActiveCourse();
+  const confirm = useConfirm();
 
   const [filteredCapacities, setFilteredCapacities] = useState([]);
   const [isNotFound, setIsNotFound] = useState(false);
@@ -178,25 +181,25 @@ export default function CapacitiesPage() {
     if (selected.length === 1) {
       const selectedItem = filteredCapacities.find((capacity) => capacity.cod_capacidad === selected[0]);
       if (selectedItem) {
-        const confirmed = window.confirm(
-          `Está seguro que desea eliminar la capacidad: ${selectedItem.cod_capacidad} ?`
-        );
-
-        if (confirmed) {
-          deleteCapacity(selectedItem)
-            .then((response) => {
-              if (response.status === 200) {
-                setMessage('success', '¡Capacidad eliminada con éxito!');
-                setOpenInRowMenu(false);
-                setSelected([]);
-                setRefresh(refresh + 1);
-              }
-            })
-            .catch((error) => {
-              console.log('Error al eliminar la capacidad', error);
-              setMessage('error', '¡Ha ocurrido un error!');
-            });
-        }
+        confirm({
+          content: <Alert severity={'warning'}>{`¿Desea eliminar la capacidad: ${selectedItem.nomb_aula} ?`}</Alert>,
+        })
+          .then(() => {
+            deleteCapacity(selectedItem)
+              .then((response) => {
+                if (response.status === 200) {
+                  setMessage('success', '¡Capacidad eliminada con éxito!');
+                  setOpenInRowMenu(false);
+                  setSelected([]);
+                  setRefresh(refresh + 1);
+                }
+              })
+              .catch((error) => {
+                console.log('Error al eliminar la capacidad', error);
+                setMessage('error', '¡Ha ocurrido un error!');
+              });
+          })
+          .catch(() => {});
       }
     }
   };
@@ -375,6 +378,7 @@ export default function CapacitiesPage() {
             p: 1,
             width: 140,
             '& .MuiMenuItem-root': {
+              py: 1,
               px: 1,
               typography: 'body2',
               borderRadius: 0.75,

@@ -1,6 +1,7 @@
 import { mdiDelete, mdiDotsVertical, mdiPencilOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import {
+  Alert,
   Button,
   Card,
   Checkbox,
@@ -19,6 +20,7 @@ import {
   Typography,
 } from '@mui/material';
 import { filter } from 'lodash';
+import { useConfirm } from 'material-ui-confirm';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import Iconify from '../../../../components/iconify';
@@ -81,6 +83,8 @@ export default function CareersPage() {
   const [refresh, setRefresh] = useState(0);
 
   const [CARRERASLIST, setCARRERASLIST] = useState([]);
+
+  const confirm = useConfirm();
 
   const [filteredCareers, setFilteredCareers] = useState([]);
   const [isNotFound, setIsNotFound] = useState(false);
@@ -170,23 +174,25 @@ export default function CareersPage() {
     if (selected.length === 1) {
       const selectedItem = filteredCareers.find((career) => career.cod_carrera === selected[0]);
       if (selectedItem) {
-        const confirmed = window.confirm(`Está seguro que desea eliminar la carrera: ${selectedItem.nomb_carrera}`);
-
-        if (confirmed) {
-          deleteCareer(selectedItem)
-            .then((response) => {
-              if (response.status === 200) {
-                setMessage('success', '¡Carrera eliminada con éxito!');
-                setOpenInRowMenu(false);
-                setSelected([]);
-                setRefresh(refresh + 1);
-              }
-            })
-            .catch((error) => {
-              console.log('Error al eliminar la carrera', error);
-              setMessage('error', '¡Ha ocurrido un error!');
-            });
-        }
+        confirm({
+          content: <Alert severity={'warning'}>{`¿Desea eliminar la carrera: ${selectedItem.nomb_carrera} ?`}</Alert>,
+        })
+          .then(() => {
+            deleteCareer(selectedItem)
+              .then((response) => {
+                if (response.status === 200) {
+                  setMessage('success', '¡Carrera eliminada con éxito!');
+                  setOpenInRowMenu(false);
+                  setSelected([]);
+                  setRefresh(refresh + 1);
+                }
+              })
+              .catch((error) => {
+                console.log('Error al eliminar la carrera', error);
+                setMessage('error', '¡Ha ocurrido un error!');
+              });
+          })
+          .catch(() => {});
       }
     }
   };

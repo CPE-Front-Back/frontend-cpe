@@ -1,5 +1,6 @@
-import { Autocomplete, Box, Button, Grid, TextField, Typography } from '@mui/material';
+import { Alert, Autocomplete, Box, Button, Grid, TextField, Typography } from '@mui/material';
 import { isNaN } from 'lodash';
+import { useConfirm } from 'material-ui-confirm';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import setMessage from '../../../../components/messages/messages';
@@ -22,6 +23,7 @@ export default function CapacitiesForm({ editMode, formData, onSubmit }) {
   const [selectedPriority, setSelectedPriority] = useState(formData.prioridad ? formData : null);
   const [capacityInput, setCapacityInput] = useState(capacidad);
   const { activeCourse } = UseActiveCourse();
+  const confirm = useConfirm();
 
   const [faculties, setFaculties] = useState([]);
   const [buildings, setBuildings] = useState([]);
@@ -171,11 +173,13 @@ export default function CapacitiesForm({ editMode, formData, onSubmit }) {
   };
 
   const handleCancel = () => {
-    const confrimed = window.confirm('Está a punto de perder los cambios no guardados! ¿Desea continuar?');
-
-    if (confrimed) {
-      onSubmit();
-    }
+    confirm({
+      content: <Alert severity={'warning'}>¡Perderá los cambios no guardados! ¿Desea continuar?</Alert>,
+    })
+      .then(() => {
+        onSubmit();
+      })
+      .catch(() => {});
   };
 
   const handleCapacityInput = (event) => {

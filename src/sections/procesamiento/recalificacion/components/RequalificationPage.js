@@ -1,5 +1,6 @@
-import { Button, Container, Grid, TextField, Typography } from '@mui/material';
+import { Alert, Button, Container, Grid, TextField, Typography } from '@mui/material';
 import { isNaN } from 'lodash';
+import { useConfirm } from 'material-ui-confirm';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import setMessage from '../../../../components/messages/messages';
@@ -12,7 +13,6 @@ import {
 } from '../store/store';
 
 export default function RequalificationPage() {
-  // todo: implement logic
   const [requesterIdNumber, setRequesterIdNumber] = useState(null);
   const [requester, setRequester] = useState(null);
   const [anonNumber, setAnonNumber] = useState(null);
@@ -21,6 +21,7 @@ export default function RequalificationPage() {
   const [focused, setFocused] = useState(false);
 
   const { activeCourse } = UseActiveCourse();
+  const confirm = useConfirm();
 
   const [errors, setErrors] = useState({
     requesterIdNumber: '',
@@ -30,6 +31,9 @@ export default function RequalificationPage() {
   const validateRequalification = () => {
     const newErrors = {};
 
+    if (!requester) {
+      newErrors.requesterIdNumber = 'No. Identidad requerido';
+    }
     if (!calification) {
       newErrors.calification = 'Calificación requerida';
     } else if (isNaN(Number(calification)) || calification < 0 || calification > 100) {
@@ -94,6 +98,14 @@ export default function RequalificationPage() {
     }
   };
 
+  const clearForm = () => {
+    setRequesterIdNumber('');
+    setRequester(null);
+    setAnonNumber('');
+    setCalification('');
+    setCalificationDumb('');
+  };
+
   const handleAccept = () => {
     if (validateRequalification()) {
       const requalification = {
@@ -105,19 +117,29 @@ export default function RequalificationPage() {
       insertRequalification(requalification).then((response) => {
         if (response.status === 200) {
           setMessage('success', '¡Recalificación insertada con éxito!');
+
+          setTimeout(() => {
+            confirm({
+              content: <Alert severity={'warning'}>¿Desea insertar otra recalificación?</Alert>,
+            })
+              .then(() => {
+                clearForm();
+              })
+              .catch(() => {});
+          }, 400);
         }
       });
-    } else {
-      setMessage('error', '¡Nota no es válida!');
     }
   };
 
   const handleCancel = () => {
-    const confrimed = window.confirm('Está a punto de perder los cambios no guardados! ¿Desea continuar?');
-
-    if (confrimed) {
-      setCalification(calificationDumb);
-    }
+    confirm({
+      content: <Alert severity={'warning'}>¡Perderá los cambios no guardados! ¿Desea continuar?</Alert>,
+    })
+      .then(() => {
+        setCalification(calificationDumb);
+      })
+      .catch(() => {});
   };
 
   const handleRequesterIdInput = (event) => {
@@ -147,7 +169,6 @@ export default function RequalificationPage() {
             <Grid item xs />
             <Grid item xs={3}>
               <TextField
-                type="text"
                 label="Carnet de identidad"
                 variant="outlined"
                 value={requesterIdNumber}

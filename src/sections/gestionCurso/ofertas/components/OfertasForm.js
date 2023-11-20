@@ -1,5 +1,6 @@
-import { Autocomplete, Box, Button, Grid, TextField, Typography } from '@mui/material';
+import { Alert, Autocomplete, Box, Button, Grid, TextField, Typography } from '@mui/material';
 import { isNaN } from 'lodash';
+import { useConfirm } from 'material-ui-confirm';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import setMessage from '../../../../components/messages/messages';
@@ -14,6 +15,8 @@ OfertasForm.propTypes = {
   onSubmit: PropTypes.func,
 };
 export default function OfertasForm({ editMode, formData, onSubmit }) {
+  const confirm = useConfirm();
+
   const { cod_oferta, cod_carrera, nomb_carrera, cod_curso, cant_ofertas, eliminada } = formData;
   const [amountInput, setAmountInput] = useState(cant_ofertas);
   const { activeCourse } = UseActiveCourse();
@@ -145,11 +148,13 @@ export default function OfertasForm({ editMode, formData, onSubmit }) {
   };
 
   const handleCancel = (event) => {
-    const confrimed = window.confirm('Está a punto de perder los cambios no guardados! ¿Desea continuar?');
-
-    if (confrimed) {
-      onSubmit();
-    }
+    confirm({
+      content: <Alert severity={'warning'}>¡Perderá los cambios no guardados! ¿Desea continuar?</Alert>,
+    })
+      .then(() => {
+        onSubmit();
+      })
+      .catch(() => {});
   };
 
   const handleAmountInput = (event) => {

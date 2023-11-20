@@ -1,4 +1,5 @@
 import {
+  Alert,
   Autocomplete,
   Button,
   Card,
@@ -13,6 +14,7 @@ import {
   Typography,
 } from '@mui/material';
 import { isNaN } from 'lodash';
+import { useConfirm } from 'material-ui-confirm';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import setMessage from '../../../../components/messages/messages';
@@ -47,6 +49,7 @@ export default function QualificationPage() {
 
   const [emptyRows, setEmptyRows] = useState(0);
   const { activeCourse } = UseActiveCourse();
+  const confirm = useConfirm();
 
   useEffect(() => {
     getComparecenciasCurso(activeCourse.cod_curso)
@@ -206,12 +209,13 @@ export default function QualificationPage() {
   }, [updatedQualifications]);
 
   const handleCancel = () => {
-    // todo: use confirm dialog instead
-    const confirmed = window.confirm('Está a punto de perder los cambios no guardados! ¿Desea continuar?');
-
-    if (confirmed) {
-      setRequestersList(requesterListDump);
-    }
+    confirm({
+      content: <Alert severity={'warning'}>¡Perderá los cambios no guardados! ¿Desea continuar?</Alert>,
+    })
+      .then(() => {
+        setRequestersList(requesterListDump);
+      })
+      .catch(() => {});
   };
 
   const handleQualificationInput = (event) => {

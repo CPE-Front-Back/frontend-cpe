@@ -1,6 +1,7 @@
 import { mdiDelete, mdiDotsVertical, mdiPencilOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import {
+  Alert,
   Button,
   Card,
   Checkbox,
@@ -19,6 +20,7 @@ import {
   Typography,
 } from '@mui/material';
 import { filter } from 'lodash';
+import { useConfirm } from 'material-ui-confirm';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import setMessage from '../../../../components/messages/messages';
@@ -92,6 +94,7 @@ export default function OffersPage() {
   const [rowsNumber, setRowsNumber] = useState(0);
 
   const { activeCourse } = UseActiveCourse();
+  const confirm = useConfirm();
 
   useEffect(() => {
     getCarreras()
@@ -195,25 +198,27 @@ export default function OffersPage() {
 
   const handleDeleteClick = () => {
     if (selected.length === 1) {
-      const selectedItem = filteredOffers.find((offer) => offer.cod_oferta === selected[0]);
+      const selectedItem = filteredOffers.find((offer) => offer.cod_carrera === selected[0]);
       if (selectedItem) {
-        const confirmed = window.confirm(`Está seguro que desea eliminar la oferta: ${selectedItem.cod_oferta}`);
-
-        if (confirmed) {
-          deleteOffer(selectedItem)
-            .then((response) => {
-              if (response.status === 200) {
-                setMessage('success', '¡Oferta eliminada con éxito!');
-                setOpenInRowMenu(false);
-                setSelected([]);
-                setRefresh(refresh + 1);
-              }
-            })
-            .catch((error) => {
-              console.log('Error al eliminar la oferta', error);
-              setMessage('error', '¡Ha ocurrido un error!');
-            });
-        }
+        confirm({
+          content: <Alert severity={'warning'}>{`¿Desea eliminar la oferta: ${selectedItem.nomb_carrera} ?`}</Alert>,
+        })
+          .then(() => {
+            deleteOffer(selectedItem)
+              .then((response) => {
+                if (response.status === 200) {
+                  setMessage('success', '¡Oferta eliminada con éxito!');
+                  setOpenInRowMenu(false);
+                  setSelected([]);
+                  setRefresh(refresh + 1);
+                }
+              })
+              .catch((error) => {
+                console.log('Error al eliminar la oferta', error);
+                setMessage('error', '¡Ha ocurrido un error!');
+              });
+          })
+          .catch(() => {});
       }
     }
   };
@@ -375,6 +380,7 @@ export default function OffersPage() {
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
         PaperProps={{
           sx: {
+            py: 1,
             px: 1,
             width: 140,
             '& .MuiMenuItem-root': {

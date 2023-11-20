@@ -1,6 +1,7 @@
 import { mdiDelete, mdiDotsVertical, mdiPencilOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import {
+  Alert,
   Button,
   Card,
   Checkbox,
@@ -19,6 +20,7 @@ import {
   Typography,
 } from '@mui/material';
 import { filter } from 'lodash';
+import { useConfirm } from 'material-ui-confirm';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import Iconify from '../../../../components/iconify';
@@ -82,6 +84,7 @@ export default function ClassroomsPage() {
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({});
   const [refresh, setRefresh] = useState(0);
+  const confirm = useConfirm();
 
   const [CLASSROOMSLIST, setCLASSROOMSLIST] = useState([]);
   const [BUILDINGSLIST, setBUILDINGSLIST] = useState([]);
@@ -211,23 +214,25 @@ export default function ClassroomsPage() {
     if (selected.length === 1) {
       const selectedItem = filteredClassrooms.find((classroom) => classroom.cod_aula === selected[0]);
       if (selectedItem) {
-        const confirmed = window.confirm(`Está seguro que desea eliminar el aula: ${selectedItem.nomb_aula}`);
-
-        if (confirmed) {
-          deleteClassroom(selectedItem)
-            .then((response) => {
-              if (response.status === 200) {
-                setMessage('success', '¡Aula eliminada con éxito!');
-                setOpenInRowMenu(false);
-                setSelected([]);
-                setRefresh(refresh + 1);
-              }
-            })
-            .catch((error) => {
-              console.log('Error al eliminar el aula', error);
-              setMessage('error', '¡Ha ocurrido un error!');
-            });
-        }
+        confirm({
+          content: <Alert severity={'warning'}>{`¿Desea eliminar el aula: ${selectedItem.nomb_aula} ?`}</Alert>,
+        })
+          .then(() => {
+            deleteClassroom(selectedItem)
+              .then((response) => {
+                if (response.status === 200) {
+                  setMessage('success', '¡Aula eliminada con éxito!');
+                  setOpenInRowMenu(false);
+                  setSelected([]);
+                  setRefresh(refresh + 1);
+                }
+              })
+              .catch((error) => {
+                console.log('Error al eliminar el aula', error);
+                setMessage('error', '¡Ha ocurrido un error!');
+              });
+          })
+          .catch(() => {});
       }
     }
   };

@@ -1,6 +1,7 @@
 import { mdiDelete, mdiDotsVertical, mdiPencilOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import {
+  Alert,
   Button,
   Card,
   Checkbox,
@@ -19,6 +20,7 @@ import {
   Typography,
 } from '@mui/material';
 import { filter } from 'lodash';
+import { useConfirm } from 'material-ui-confirm';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import Iconify from '../../../../components/iconify';
@@ -80,6 +82,8 @@ export default function FacultiesPage() {
   const [filteredFaculties, setFilteredFaculties] = useState([]);
   const [isNotFound, setIsNotFound] = useState(false);
   const [rowsNumber, setRowsNumber] = useState(0);
+
+  const confirm = useConfirm();
 
   useEffect(() => {
     getFaculties()
@@ -165,23 +169,25 @@ export default function FacultiesPage() {
     if (selected.length === 1) {
       const selectedItem = filteredFaculties.find((faculty) => faculty.cod_facultad === selected[0]);
       if (selectedItem) {
-        const confirmed = window.confirm(`Está seguro que desea eliminar la facultad: ${selectedItem.nomb_facultad} ?`);
-
-        if (confirmed) {
-          deleteFaculty(selectedItem)
-            .then((response) => {
-              if (response.status === 200) {
-                setMessage('success', '¡Facultad eliminada con éxito!');
-                setOpenInRowMenu(false);
-                setSelected([]);
-                setRefresh(refresh + 1);
-              }
-            })
-            .catch((error) => {
-              console.log('Error al eliminar la facultad', error);
-              setMessage('error', '¡Ha ocurrido un error!');
-            });
-        }
+        confirm({
+          content: <Alert severity={'warning'}>{`¿Desea eliminar la facultad: ${selectedItem.nomb_facultad} ?`}</Alert>,
+        })
+          .then(() => {
+            deleteFaculty(selectedItem)
+              .then((response) => {
+                if (response.status === 200) {
+                  setMessage('success', '¡Facultad eliminada con éxito!');
+                  setOpenInRowMenu(false);
+                  setSelected([]);
+                  setRefresh(refresh + 1);
+                }
+              })
+              .catch((error) => {
+                console.log('Error al eliminar la facultad', error);
+                setMessage('error', '¡Ha ocurrido un error!');
+              });
+          })
+          .catch(() => {});
       }
     }
   };
