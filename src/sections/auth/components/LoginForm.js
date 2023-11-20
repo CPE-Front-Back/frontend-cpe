@@ -71,6 +71,7 @@ export default function LoginForm() {
           onChange={(event) => setUsername(event.target.value)}
           error={!!errors.username}
           required
+          inputProps={{ maxLength: 15 }}
         />
 
         <TextField

@@ -123,9 +123,6 @@ export default function Nav({ openNav, onCloseNav }) {
         console.log('Error en el procesamiento:', actionName);
         break;
     }
-    if (actionName === 'Asignar Carreras 1ra vuelta') {
-      // todo
-    }
   };
 
   const renderContent = (

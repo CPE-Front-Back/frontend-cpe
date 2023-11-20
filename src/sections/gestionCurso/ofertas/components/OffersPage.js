@@ -218,8 +218,8 @@ export default function OffersPage() {
     }
   };
 
-  const handleRowClick = (codCarrera) => {
-    const newSelected = [codCarrera];
+  const handleRowClick = (careerCode) => {
+    const newSelected = [careerCode];
     setSelected(newSelected);
   };
 

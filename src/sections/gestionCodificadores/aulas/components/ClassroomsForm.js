@@ -191,6 +191,7 @@ export default function ClassroomsForm({ editMode, formData, onSubmit }) {
                   required
                 />
               )}
+              noOptionsText={'No hay opciones'}
             />
           </Grid>
           <Grid item xs sx={{ minWidth: '200px' }}>
@@ -211,6 +212,7 @@ export default function ClassroomsForm({ editMode, formData, onSubmit }) {
                   required
                 />
               )}
+              noOptionsText={'Seleccione una facultad'}
             />
           </Grid>
           <Grid item xs>

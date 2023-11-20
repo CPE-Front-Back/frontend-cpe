@@ -190,6 +190,7 @@ export default function OfertasForm({ editMode, formData, onSubmit }) {
                   required
                 />
               )}
+              noOptionsText={'No hay opciones'}
             />
           </Grid>
 
