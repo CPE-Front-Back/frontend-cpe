@@ -55,7 +55,7 @@ export default function Header({ onOpenNav }) {
 
         <Box sx={{ flexGrow: 1 }}>
           <Typography variant="h3" textAlign={'center'} sx={{ color: (theme) => theme.palette.primary.main }}>
-            Sistema para la asignacion de plazas de curso por encuentro
+            Sistema para la asignación de plazas de curso por encuentro
           </Typography>
         </Box>
       </StyledToolbar>

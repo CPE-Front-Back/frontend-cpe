@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { getCantCarrerasAsigSegundaVueltaCurso } from '../../@dashboard/app/store/store';
+import { getCantCarrerasAsigSegundaVueltaCurso } from '../../home/app/store/store';
 import { UseActiveCourse } from '../../gestionCurso/curso/context/ActiveCourseContext';
 import { getSolicitudesByCurso } from '../../gestionCurso/solicitudes/store/store';
 import {

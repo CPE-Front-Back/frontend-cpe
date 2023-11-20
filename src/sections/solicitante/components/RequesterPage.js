@@ -6,7 +6,7 @@ import { styled } from '@mui/material/styles';
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
-import { AppWidgetSummary } from '../../@dashboard/app';
+import { AppWidgetSummary } from '../../home/app';
 import Header from './Header';
 import SolicitanteCarrerOptionsForm from './SolicitanteCarrerOptionsForm';
 import SolicitantePersonalDataForm from './SolicitantePersonalDataForm';

@@ -2,6 +2,7 @@ import { Navigate, useLocation, useRoutes } from 'react-router-dom';
 // layouts
 import DashboardLayout from './layouts/dashboard';
 import SimpleLayout from './layouts/simple';
+import AdminPage from './sections/admin/components/AdminPage';
 import HelpPage from './sections/ayuda/components/HelpPage';
 //
 
@@ -18,7 +19,7 @@ import RequesterPage from './sections/solicitante/components/RequesterPage';
 import RequestsPage from './sections/gestionCurso/solicitudes/components/RequestsPage';
 import LoginPage from './sections/auth/components/LoginPage';
 import Page404 from './layouts/404/Page404';
-import DashboardLogedInPage from './sections/@dashboard/app/components/DashboardLogedInPage';
+import HomePage from './sections/home/app/components/HomePage';
 import QualificationPage from './sections/procesamiento/calificacion/components/QualificationPage';
 import RequalificationPage from './sections/procesamiento/recalificacion/components/RequalificationPage';
 import SolicitanteCarrerOptionsForm from './sections/solicitante/components/SolicitanteCarrerOptionsForm';
@@ -32,7 +33,7 @@ export default function Router() {
       path: '/dashboard',
       element: <DashboardLayout />,
       children: [
-        { element: <Navigate to="/dashboard/app" />, index: true },
+        { element: <Navigate to="/dashboard/home" />, index: true },
         { path: 'course', element: <CoursePage /> },
         { path: 'capacities', element: <CapacitiesPage /> },
         { path: 'offers', element: <OffersPage /> },
@@ -60,8 +61,9 @@ export default function Router() {
         { path: 'pdfPage13', element: <PdfPage pdfName="Resumen de asignaciones en 1era opción por carrera" /> },
         { path: 'pdfPage14', element: <PdfPage pdfName="Resumen final de asignaciones por carreras" /> },
         { path: 'pdfPage15', element: <PdfPage pdfName="Listado de solicitantes" /> },
-        { path: 'app', element: <DashboardLogedInPage /> },
+        { path: 'home', element: <HomePage /> },
         { path: 'help', element: <HelpPage /> },
+        { path: 'admin', element: <AdminPage /> },
       ],
     },
     {

@@ -3,6 +3,7 @@ import { Worker, Viewer } from '@react-pdf-viewer/core';
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import { pdfjs } from 'react-pdf';
 import { Button, Container, Grid, Stack, Typography } from '@mui/material';
+import setMessage from '../../../components/messages/messages';
 import Scrollbar from '../../../components/scrollbar';
 
 export default function ViewPdf({ pdfData, pdfName }) {
@@ -27,6 +28,7 @@ export default function ViewPdf({ pdfData, pdfName }) {
                 link.href = URL.createObjectURL(pdfData);
                 link.download = `${pdfName}.pdf`;
                 link.click();
+                setMessage('success', '¡Reporte creado con éxito!');
               }}
               sx={{ minWidth: '150px' }}
             >

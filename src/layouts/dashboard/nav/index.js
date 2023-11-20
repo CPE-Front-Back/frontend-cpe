@@ -1,11 +1,13 @@
 import { mdiAccountCircleOutline, mdiInformationSlabCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import PropTypes from 'prop-types';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 // @mui
 import { styled, alpha } from '@mui/material/styles';
 import { Box, Link, Drawer, Typography, Stack } from '@mui/material';
+import setMessage from '../../../components/messages/messages';
+import ProcessingStatusDialog from '../../../components/messages/ProcessingStatusDialog';
 // hooks
 import useResponsive from '../../../hooks/useResponsive';
 // components
@@ -13,9 +15,15 @@ import Logo from '../../../components/logo';
 import Scrollbar from '../../../components/scrollbar';
 import NavSection from '../../../components/nav-section';
 import { UseAuthContext } from '../../../sections/auth/context/AuthProvider';
+import { UseActiveCourse } from '../../../sections/gestionCurso/curso/context/ActiveCourseContext';
 //
 import navConfig from './config';
-import { asignar1raVuelta } from '../../../sections/procesamiento/store/store';
+import {
+  asignar1raVuelta,
+  asignar2daVuelta,
+  asignarActas,
+  asignarAulas,
+} from '../../../sections/procesamiento/store/store';
 
 // ----------------------------------------------------------------------
 
@@ -42,6 +50,14 @@ export default function Nav({ openNav, onCloseNav }) {
   const isDesktop = useResponsive('up', 'lg');
   const navigate = useNavigate();
 
+  const { activeCourse } = UseActiveCourse();
+
+  const [isOpen, setIsOpen] = useState(false);
+  const [actionName, setActionName] = useState('');
+  const handleClose = () => {
+    setIsOpen(false);
+  };
+
   useEffect(() => {
     if (openNav) {
       onCloseNav();
@@ -49,16 +65,66 @@ export default function Nav({ openNav, onCloseNav }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
-  const handleSubmenuItemClicked = (title) => {
-    if (title === 'Asignar 1ra vuelta') {
-      console.log(`Submenu item clicked: ${title}`);
-      asignar1raVuelta(5)
-        .then((response) => {
-          console.log(response);
-        })
-        .catch((error) => {
-          console.log('Error al asignar Primera Vuelta', error);
-        });
+  const handleSubmenuItemClicked = (actionName) => {
+    setActionName(actionName);
+    switch (actionName) {
+      case 'Asignar carreras 1ra vuelta':
+        /* asignar1raVuelta(activeCourse.cod_curso)
+          .then((response) => {
+            console.log(response);
+          })
+          .catch((error) => {
+            console.log('Error al asignar primera vuelta', error);
+            setMessage('error', '¡Ha ocurrido un error!');
+          }); */
+        setMessage('success', '¡Asignación realizada con éxito!');
+        setIsOpen(true);
+        break;
+      case 'Asignar carreras 2da vuelta':
+        console.log(`Submenu item clicked: ${actionName}`);
+        /* asignar2daVuelta(activeCourse.cod_curso)
+          .then((response) => {
+            console.log(response);
+          })
+          .catch((error) => {
+            console.log('Error al asignar segunda vuelta', error);
+            setMessage('error', '¡Ha ocurrido un error!');
+          }); */
+        setMessage('success', '¡Asignación realizada con éxito!');
+        setIsOpen(true);
+        break;
+      case 'Asignar aulas':
+        console.log(`Submenu item clicked: ${actionName}`);
+        /* asignarAulas(activeCourse.cod_curso)
+          .then((response) => {
+            console.log(response);
+          })
+          .catch((error) => {
+            console.log('Error al asignar las aulas', error);
+            setMessage('error', '¡Ha ocurrido un error!');
+          }); */
+        setMessage('success', '¡Asignación realizada con éxito!');
+        setIsOpen(true);
+        break;
+      case 'Asignar actas':
+        console.log(`Submenu item clicked: ${actionName}`);
+        /* asignarActas(activeCourse.cod_curso)
+          .then((response) => {
+            console.log(response);
+          })
+          .catch((error) => {
+            console.log('Error al asignar las actas', error);
+            setMessage('error', '¡Ha ocurrido un error!');
+          }); */
+        setMessage('success', '¡Asignación realizada con éxito!');
+        setIsOpen(true);
+        break;
+      default:
+        console.log('Error en el procesamiento:', actionName);
+        break;
+    }
+    if (actionName === 'Asignar Carreras 1ra vuelta') {
+      // todo
     }
   };
 
@@ -131,6 +197,7 @@ export default function Nav({ openNav, onCloseNav }) {
             },
           }}
         >
+          {isOpen && <ProcessingStatusDialog open={isOpen} handleClose={handleClose} actionName={actionName} />}
           {renderContent}
         </Drawer>
       ) : (
@@ -144,6 +211,7 @@ export default function Nav({ openNav, onCloseNav }) {
             sx: { width: NAV_WIDTH },
           }}
         >
+          {isOpen && <ProcessingStatusDialog open={isOpen} handleClose={handleClose} actionName={actionName} />}
           {renderContent}
         </Drawer>
       )}

@@ -1,13 +1,15 @@
 import { Button, Container, Grid, Typography } from '@mui/material';
+import { useState } from 'react';
 // @mui
 import { Helmet } from 'react-helmet-async';
+import ProcessingStatusDialog from '../../../../components/messages/ProcessingStatusDialog';
 // sections
 import CourseStatisticsViewer from './CourseStatisticsViewer';
 import { UseActiveCourse } from '../../../gestionCurso/curso/context/ActiveCourseContext';
 
 // ----------------------------------------------------------------------
 
-export default function DashboardLogedInPage() {
+export default function HomePage() {
   const { activeCourse } = UseActiveCourse();
 
   return (

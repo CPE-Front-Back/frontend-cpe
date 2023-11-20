@@ -48,6 +48,12 @@ export default function navConfig() {
       icon: icon('ic_analytics'),
     }, */
     {
+      title: 'Gestión de usuarios',
+      path: '/dashboard/admin',
+      icon: <Icon size={1} path={mdiStoreEditOutline} />,
+      haveAccess: auth.rol === 'Administrador',
+    },
+    {
       title: 'Gestión de curso',
       icon: <Icon size={1} path={mdiBank} />,
       haveAccess: auth.rol === 'Secretario General' || auth.rol === 'Matriculador' || auth.rol === 'Técnico',
@@ -140,28 +146,25 @@ export default function navConfig() {
       haveAccess: auth.rol === 'Secretario General',
       subItems: [
         {
-          title: 'Asignar Carreras 1ra vuelta',
+          title: 'Asignar carreras 1ra vuelta',
           icon: <Icon size={1} path={mdiSchoolOutline} />,
           haveAccess: auth.rol === 'Secretario General',
           // isDisabled: canAsigPrimVuelta,
         },
         {
-          title: 'Asignar Carreras 2da vuelta',
-          path: '/dashboard/apps',
+          title: 'Asignar carreras 2da vuelta',
           icon: <Icon size={1} path={mdiSchoolOutline} />,
           haveAccess: auth.rol === 'Secretario General',
           // isDisabled: canAsigSegVuelta,
         },
         {
-          title: 'Asignar Aulas',
-          path: '/dashboard/apps',
+          title: 'Asignar aulas',
           icon: <Icon size={1} path={mdiStoreEditOutline} />,
           haveAccess: auth.rol === 'Secretario General',
           // isDisabled: canAsigClassrooms,
         },
         {
-          title: 'Asignar Actas',
-          path: '/dashboard/apps',
+          title: 'Asignar actas',
           icon: <Icon size={1} path={mdiFileDocumentMultipleOutline} />,
           haveAccess: auth.rol === 'Secretario General',
           // isDisabled: canAsigActs,
