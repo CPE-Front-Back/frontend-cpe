@@ -72,6 +72,11 @@ export default function LoginForm() {
           error={!!errors.username}
           required
           inputProps={{ maxLength: 15 }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              handleLogin();
+            }
+          }}
         />
 
         <TextField

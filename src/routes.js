@@ -1,6 +1,7 @@
 import { Navigate, useLocation, useRoutes } from 'react-router-dom';
 // layouts
 import DashboardLayout from './layouts/dashboard';
+import RequesterLayout from './layouts/requester';
 import SimpleLayout from './layouts/simple';
 import AdminPage from './sections/admin/components/AdminPage';
 import HelpPage from './sections/ayuda/components/HelpPage';
@@ -67,13 +68,20 @@ export default function Router() {
       ],
     },
     {
-      path: '/solicitante',
+      path: '/requester',
+      element: <RequesterLayout />,
+      children: [
+        { element: <Navigate to="/requester/requester-page" />, index: true },
+        { path: 'requester-page', element: <RequesterPage /> },
+      ],
+    },
+    {
+      path: '/simple',
       element: <SimpleLayout />,
       children: [
-        { element: <Navigate to="/solicitante/solicitante-page" />, index: true },
-        { path: 'solicitante-page', element: <RequesterPage /> },
-        { path: 'formulario-personal-data', element: <RequesterPersonalDataForm /> },
-        { path: 'formulario-carreras', element: <RequesterCarrerOptionsForm /> },
+        { element: <Navigate to="/simple/personal-data-form" />, index: true },
+        { path: 'personal-data-form', element: <RequesterPersonalDataForm /> },
+        { path: 'careers-form', element: <RequesterCarrerOptionsForm /> },
       ],
     },
     {
@@ -82,9 +90,9 @@ export default function Router() {
     },
     {
       // define la ruta de entrada de la aplicación
-      element: <SimpleLayout />,
+      element: <RequesterLayout />,
       children: [
-        { element: <Navigate to="/solicitante" />, index: true },
+        { element: <Navigate to="/requester" />, index: true },
         { path: '404', element: <Page404 /> },
         { path: '*', element: <Navigate to="/404" /> },
       ],

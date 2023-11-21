@@ -1,14 +1,12 @@
 import { mdiSchoolOutline, mdiTextBoxMultipleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { LoadingButton } from '@mui/lab';
-import { Backdrop, CircularProgress, Container, Grid, Typography } from '@mui/material';
+import { Backdrop, CircularProgress, Container, Grid } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { AppWidgetSummary } from '../../home/app';
-import Header from './Header';
-import RequesterPersonalDataForm from './RequesterPersonalDataForm';
 import { UseActiveCourse } from '../../gestionCurso/curso/context/ActiveCourseContext';
 import { getResumenSolicitudes1raOpcCarreraReport } from '../../reportes/store/store';
 import ViewPdf from '../../reportes/components/ViewPdf';
@@ -44,15 +42,11 @@ const Main = styled('div')(({ theme }) => ({
 
 export default function RequesterPage() {
   const navigate = useNavigate();
-  const [isFormVisible, setIsFormVisible] = useState(false);
+  const location = useLocation();
   const [isLoading, setIsLoading] = useState(false);
   const [pdfData, setPdfData] = useState(null);
   const [pdfNameValue, setPdfNameValue] = useState('');
   const { activeCourse } = UseActiveCourse();
-
-  const toggleFormView = () => {
-    setIsFormVisible(!isFormVisible);
-  };
 
   const handleReport1Click = () => {
     setIsLoading(true);
@@ -178,44 +172,42 @@ export default function RequesterPage() {
           )}
           {!pdfData && !pdfNameValue && (
             <Container>
-              {!isFormVisible ? (
-                <Grid container spacing={3} justifyContent={'center'}>
-                  <Grid item xs={12} sm={12} md={12} style={{ textAlign: 'center' }}>
-                    <LoadingButton
-                      size="large"
-                      type="submit"
-                      variant="contained"
-                      sx={{ margin: '0 auto' }}
-                      onClick={toggleFormView}
-                      startIcon={<Icon size={1} path={mdiSchoolOutline} />}
-                    >
-                      Prematrícula
-                    </LoadingButton>
-                  </Grid>
-
-                  <Grid item xs={12} sm={6} md={3} onClick={handleReport1Click}>
-                    <AppWidgetSummary pdfName="Reporte 1" icon={mdiTextBoxMultipleOutline} />
-                  </Grid>
-
-                  <Grid item xs={12} sm={6} md={3} onClick={handleReport2Click}>
-                    <AppWidgetSummary pdfName="Reporte 2" icon={mdiTextBoxMultipleOutline} />
-                  </Grid>
-
-                  <Grid item xs={12} sm={6} md={3} onClick={handleReport2Click}>
-                    <AppWidgetSummary pdfName="Reporte 3" icon={mdiTextBoxMultipleOutline} />
-                  </Grid>
-
-                  <Grid item xs={12} sm={6} md={3} onClick={handleReport3Click}>
-                    <AppWidgetSummary pdfName="Reporte 4" icon={mdiTextBoxMultipleOutline} />
-                  </Grid>
-
-                  <Grid item xs={12} sm={6} md={3} onClick={handleReport5Click}>
-                    <AppWidgetSummary pdfName="Reporte 5" icon={mdiTextBoxMultipleOutline} />
-                  </Grid>
+              <Grid container spacing={3} justifyContent={'center'}>
+                <Grid item xs={12} sm={12} md={12} style={{ textAlign: 'center' }}>
+                  <LoadingButton
+                    size="large"
+                    type="submit"
+                    variant="contained"
+                    sx={{ margin: '0 auto' }}
+                    onClick={() => {
+                      navigate('/simple', { state: { from: location }, replace: true });
+                    }}
+                    startIcon={<Icon size={1} path={mdiSchoolOutline} />}
+                  >
+                    Prematrícula
+                  </LoadingButton>
                 </Grid>
-              ) : (
-                <RequesterPersonalDataForm togleFormVisibility={() => toggleFormView()} />
-              )}
+
+                <Grid item xs={12} sm={6} md={3} onClick={handleReport1Click}>
+                  <AppWidgetSummary pdfName="Reporte 1" icon={mdiTextBoxMultipleOutline} />
+                </Grid>
+
+                <Grid item xs={12} sm={6} md={3} onClick={handleReport2Click}>
+                  <AppWidgetSummary pdfName="Reporte 2" icon={mdiTextBoxMultipleOutline} />
+                </Grid>
+
+                <Grid item xs={12} sm={6} md={3} onClick={handleReport3Click}>
+                  <AppWidgetSummary pdfName="Reporte 3" icon={mdiTextBoxMultipleOutline} />
+                </Grid>
+
+                <Grid item xs={12} sm={6} md={3} onClick={handleReport4Click}>
+                  <AppWidgetSummary pdfName="Reporte 4" icon={mdiTextBoxMultipleOutline} />
+                </Grid>
+
+                <Grid item xs={12} sm={6} md={1} onClick={handleReport5Click}>
+                  <AppWidgetSummary pdfName="Reporte 5" icon={mdiTextBoxMultipleOutline} />
+                </Grid>
+              </Grid>
             </Container>
           )}
         </Main>

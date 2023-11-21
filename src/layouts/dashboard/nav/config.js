@@ -1,5 +1,6 @@
 // component
 import {
+  mdiAccountWrenchOutline,
   mdiBank,
   mdiBookOpenPageVariantOutline,
   mdiChairSchool,
@@ -50,7 +51,7 @@ export default function navConfig() {
     {
       title: 'Gestión de usuarios',
       path: '/dashboard/admin',
-      icon: <Icon size={1} path={mdiStoreEditOutline} />,
+      icon: <Icon size={1} path={mdiAccountWrenchOutline} />,
       haveAccess: auth.rol === 'Administrador',
     },
     {

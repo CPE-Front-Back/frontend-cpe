@@ -1,11 +1,12 @@
-import { mdiAccountCircleOutline, mdiInformationSlabCircleOutline } from '@mdi/js';
+import { mdiAccountCircleOutline, mdiInformationSlabCircleOutline, mdiLogout } from '@mdi/js';
 import { Icon } from '@mdi/react';
+import { useConfirm } from 'material-ui-confirm';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 // @mui
 import { styled, alpha } from '@mui/material/styles';
-import { Box, Link, Drawer, Typography, Stack } from '@mui/material';
+import { Box, Link, Drawer, Typography, Stack, MenuItem, Popover, Alert } from '@mui/material';
 import setMessage from '../../../components/messages/messages';
 import ProcessingStatusDialog from '../../../components/messages/ProcessingStatusDialog';
 // hooks
@@ -49,10 +50,14 @@ export default function Nav({ openNav, onCloseNav }) {
   const { auth } = UseAuthContext();
   const isDesktop = useResponsive('up', 'lg');
   const navigate = useNavigate();
+  const location = useLocation();
 
   const { activeCourse } = UseActiveCourse();
+  const { setAuth } = UseAuthContext();
+  const confirm = useConfirm();
 
   const [isOpen, setIsOpen] = useState(false);
+  const [openSessionMenu, setOpenSessionMenu] = useState(null);
   const [actionName, setActionName] = useState('');
   const handleClose = () => {
     setIsOpen(false);
@@ -64,6 +69,14 @@ export default function Nav({ openNav, onCloseNav }) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
+
+  const handleOpenSessionMenu = (event) => {
+    setOpenSessionMenu(event.currentTarget);
+  };
+
+  const handleCloseSessionMenu = () => {
+    setOpenSessionMenu(null);
+  };
 
   const handleSubmenuItemClicked = (actionName) => {
     setActionName(actionName);
@@ -138,7 +151,7 @@ export default function Nav({ openNav, onCloseNav }) {
 
       <Box sx={{ mb: 5, mx: 2.5 }}>
         <Link underline="none">
-          <StyledAccount>
+          <StyledAccount onClick={(event) => handleOpenSessionMenu(event)}>
             <Icon size={2.5} path={mdiAccountCircleOutline} />
 
             <Box sx={{ ml: 2 }}>
@@ -175,43 +188,82 @@ export default function Nav({ openNav, onCloseNav }) {
   );
 
   return (
-    <Box
-      component="nav"
-      sx={{
-        flexShrink: { lg: 0 },
-        width: { lg: NAV_WIDTH },
-      }}
-    >
-      {isDesktop ? (
-        <Drawer
-          open
-          variant="permanent"
-          PaperProps={{
-            sx: {
-              width: NAV_WIDTH,
-              bgcolor: 'background.default',
-              borderRightStyle: 'double',
+    <>
+      <Box
+        component="nav"
+        sx={{
+          flexShrink: { lg: 0 },
+          width: { lg: NAV_WIDTH },
+        }}
+      >
+        {isDesktop ? (
+          <Drawer
+            open
+            variant="permanent"
+            PaperProps={{
+              sx: {
+                width: NAV_WIDTH,
+                bgcolor: 'background.default',
+                borderRightStyle: 'double',
+              },
+            }}
+          >
+            {isOpen && <ProcessingStatusDialog open={isOpen} handleClose={handleClose} actionName={actionName} />}
+            {renderContent}
+          </Drawer>
+        ) : (
+          <Drawer
+            open={openNav}
+            onClose={onCloseNav}
+            ModalProps={{
+              keepMounted: true,
+            }}
+            PaperProps={{
+              sx: { width: NAV_WIDTH },
+            }}
+          >
+            {isOpen && <ProcessingStatusDialog open={isOpen} handleClose={handleClose} actionName={actionName} />}
+            {renderContent}
+          </Drawer>
+        )}
+      </Box>
+
+      <Popover
+        open={Boolean(openSessionMenu)}
+        anchorEl={openSessionMenu}
+        onClose={handleCloseSessionMenu}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'center' }}
+        PaperProps={{
+          sx: {
+            p: 1,
+            width: 180,
+            '& .MuiMenuItem-root': {
+              px: 1,
+              typography: 'body2',
+              borderRadius: 0.75,
             },
+          },
+        }}
+      >
+        <MenuItem
+          onClick={() => {
+            confirm({
+              content: <Alert severity={'warning'}>{`¡Perderá los cambios no guardados! ¿Desea continuar?`}</Alert>,
+            })
+              .then(() => {
+                navigate('/login', { state: { from: location }, replace: true });
+                setAuth({});
+                sessionStorage.removeItem('accessToken');
+              })
+              .catch(() => {});
           }}
+          sx={{ color: 'error.main' }}
         >
-          {isOpen && <ProcessingStatusDialog open={isOpen} handleClose={handleClose} actionName={actionName} />}
-          {renderContent}
-        </Drawer>
-      ) : (
-        <Drawer
-          open={openNav}
-          onClose={onCloseNav}
-          ModalProps={{
-            keepMounted: true,
-          }}
-          PaperProps={{
-            sx: { width: NAV_WIDTH },
-          }}
-        >
-          {isOpen && <ProcessingStatusDialog open={isOpen} handleClose={handleClose} actionName={actionName} />}
-          {renderContent}
-        </Drawer>
-      )}
-    </Box>
+          <Icon size={1} path={mdiLogout} />
+          <span style={{ marginLeft: 15 }}>Cerrar sesión</span>
+        </MenuItem>
+      </Popover>
+    </>
   );
 }

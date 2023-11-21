@@ -30,7 +30,7 @@ export default function AppWidgetSummary({ pdfName, icon, color = 'primary', sx,
   return (
     <Card
       sx={{
-        py: 5,
+        py: 1,
         boxShadow: 0,
         textAlign: 'center',
         color: (theme) => theme.palette[color].darker,

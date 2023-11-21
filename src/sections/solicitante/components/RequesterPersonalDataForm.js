@@ -3,7 +3,8 @@ import { Alert, Autocomplete, Container, Grid, TextField, Typography } from '@mu
 import { styled } from '@mui/material/styles';
 import { useConfirm } from 'material-ui-confirm';
 import PropTypes from 'prop-types';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useLocation, use, useNavigate } from 'react-router-dom';
 import {
   getFuentesIngreso,
   getMunicipiosPorProvincia,
@@ -34,7 +35,7 @@ const Main = styled('div')(({ theme }) => ({
     paddingRight: theme.spacing(2),
   },
   [theme.breakpoints.down('sm')]: {
-    paddingTop: APP_BAR_MOBILE - 60,
+    paddingTop: APP_BAR_MOBILE + 20,
     paddingLeft: theme.spacing(2),
     paddingRight: theme.spacing(2),
   },
@@ -62,12 +63,12 @@ export default function RequesterPersonalDataForm({ togleFormVisibility }) {
   const [municipioSeleccionado, setMunicipioSeleccionado] = useState(null);
   const [fuentesIngreso, setFuentesIngreso] = useState([]);
   const [fuenteIngresoSeleccionada, setFuenteIngresoSeleccionada] = useState(null);
-  // const [num_id, setNum_id] = useState('');
-  // const [nomb_solicitante, setNomb_solicitante] = useState('');
   const [firstLastName, setFirstLastName] = useState('');
   const [secondLastName, setSecondLastName] = useState('');
 
   const confirm = useConfirm();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const [errors, setErrors] = useState({
     num_id: '',
@@ -168,6 +169,7 @@ export default function RequesterPersonalDataForm({ togleFormVisibility }) {
       }
     }
   };
+
   const concatLastNames = () => {
     setFormData({
       ...formData,
@@ -298,6 +300,7 @@ export default function RequesterPersonalDataForm({ togleFormVisibility }) {
                       error={!!errors.nomb_solicitante}
                       helperText={errors.nomb_solicitante}
                       inputProps={{ maxLength: 40 }}
+                      sx={{ textAlign: 'center' }}
                     />
                   </Grid>
                   <Grid item xs={12} sm={6} md={3}>
@@ -313,6 +316,7 @@ export default function RequesterPersonalDataForm({ togleFormVisibility }) {
                       error={!!errors.apell_solicitante}
                       helperText={errors.apell_solicitante}
                       inputProps={{ maxLength: 25 }}
+                      sx={{ margin: 'auto' }}
                     />
                   </Grid>
                   <Grid item xs={12} sm={6} md={3}>
@@ -327,6 +331,7 @@ export default function RequesterPersonalDataForm({ togleFormVisibility }) {
                       error={!!errors.secondLastName}
                       helperText={errors.secondLastName}
                       inputProps={{ maxLength: 25 }}
+                      sx={{ margin: 'auto' }}
                     />
                   </Grid>
                 </Grid>
@@ -343,6 +348,7 @@ export default function RequesterPersonalDataForm({ togleFormVisibility }) {
                       error={!!errors.num_telefono}
                       helperText={errors.num_telefono}
                       inputProps={{ maxLength: 11 }}
+                      sx={{ margin: 'auto' }}
                     />
                   </Grid>
                   <Grid item xs={12} sm={6} md={1}>
@@ -354,7 +360,7 @@ export default function RequesterPersonalDataForm({ togleFormVisibility }) {
                         setProvinciaSeleccionada(newValue);
                         setMunicipioSeleccionado(null);
                       }}
-                      sx={{ maxWidth: '240px' }}
+                      sx={{ maxWidth: '240px', margin: 'auto' }}
                       renderInput={(params) => (
                         <TextField
                           {...params}
@@ -378,7 +384,7 @@ export default function RequesterPersonalDataForm({ togleFormVisibility }) {
                           cod_municipio: newValue ? newValue.cod_municipio : null,
                         }));
                       }}
-                      sx={{ maxWidth: '240px' }}
+                      sx={{ maxWidth: '240px', margin: 'auto' }}
                       renderInput={(params) => (
                         <TextField
                           {...params}
@@ -402,7 +408,7 @@ export default function RequesterPersonalDataForm({ togleFormVisibility }) {
                           fuente_ingreso: newValue ? newValue.cod_fuente : null,
                         }));
                       }}
-                      sx={{ maxWidth: '240px' }}
+                      sx={{ maxWidth: '240px', margin: 'auto' }}
                       renderInput={(params) => (
                         <TextField
                           {...params}
@@ -416,15 +422,34 @@ export default function RequesterPersonalDataForm({ togleFormVisibility }) {
                   </Grid>
                 </Grid>
 
-                <LoadingButton
-                  fullWidth
-                  size="large"
-                  variant="contained"
-                  onClick={handleAvanzarClick}
-                  sx={{ mt: '30px', mb: '30px' }}
-                >
-                  Avanzar
-                </LoadingButton>
+                <Grid container spacing={2} columns={{ xs: 1, sm: 1, md: 2 }} sx={{ mt: '20px' }}>
+                  <Grid item xs={1} sx={{ mt: '10px', mb: '10px' }}>
+                    <LoadingButton
+                      fullWidth
+                      size="large"
+                      variant="contained"
+                      onClick={() => {
+                        confirm({
+                          content: (
+                            <Alert severity={'warning'}>¡Perderá los cambios no guardados! ¿Desea continuar?</Alert>
+                          ),
+                        })
+                          .then(() => {
+                            navigate('/requester', { state: { from: location }, replace: true });
+                          })
+                          .catch(() => {});
+                      }}
+                    >
+                      Cancelar
+                    </LoadingButton>
+                  </Grid>
+
+                  <Grid item xs={1} sx={{ mt: '10px', mb: '10px' }}>
+                    <LoadingButton fullWidth size="large" variant="contained" onClick={handleAvanzarClick}>
+                      Avanzar
+                    </LoadingButton>
+                  </Grid>
+                </Grid>
               </>
             ) : (
               <RequesterCarrerOptionsForm

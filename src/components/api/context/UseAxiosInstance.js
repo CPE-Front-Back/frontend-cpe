@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import { UseAuthContext } from '../../sections/auth/context/AuthProvider';
-import { axiosInstance } from './api';
+import { UseAuthContext } from '../../../sections/auth/context/AuthProvider';
+import { axiosInstance } from '../api';
 
 export default function UseAxiosInstance() {
   const { auth } = UseAuthContext;
