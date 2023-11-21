@@ -40,6 +40,7 @@ export default function DashboardLayout() {
   useEffect(() => {
     console.log('el username', auth.username);
   }, [auth]);
+
   return (
     <>
       {auth.username ? (
@@ -53,7 +54,7 @@ export default function DashboardLayout() {
           </Main>
         </StyledRoot>
       ) : (
-        <Navigate to={'login'} />
+        <Navigate to={'/login'} />
       )}
     </>
   );
