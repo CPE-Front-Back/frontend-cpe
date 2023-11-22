@@ -239,13 +239,13 @@ export default function ClassroomsForm({ editMode, formData, onSubmit }) {
         <Grid container spacing={1} sx={{ pt: 5 }}>
           <Grid item xs />
           <Grid item xs={2}>
-            <Button type="submit" variant="contained" color="primary" onClick={handleSubmit}>
-              {editMode ? 'Modificar' : 'Registrar'}
+            <Button type="submit" variant="contained" color="primary" onClick={handleCancel}>
+              Cancelar
             </Button>
           </Grid>
           <Grid item xs={2}>
-            <Button type="submit" variant="contained" color="primary" onClick={handleCancel}>
-              Cancelar
+            <Button type="submit" variant="contained" color="primary" onClick={handleSubmit}>
+              {editMode ? 'Modificar' : 'Registrar'}
             </Button>
           </Grid>
           <Grid item xs />
