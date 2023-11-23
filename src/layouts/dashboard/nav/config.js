@@ -199,13 +199,13 @@ export default function navConfig() {
           haveAccess: auth.rol === 'Secretario General' || auth.rol === 'Técnico',
         },
         {
-          title: 'Listado de asignaciones en 1era vuelta por carrera',
+          title: 'Listado de asignaciones en 1ra vuelta por carrera',
           path: '/dashboard/pdfPage2',
           icon: <Icon size={1} path={mdiTextBoxMultipleOutline} />,
           haveAccess: auth.rol === 'Secretario General' || auth.rol === 'Técnico',
         },
         {
-          title: 'Listado de asignaciones en 1era vuelta por estudiante',
+          title: 'Listado de asignaciones en 1ra vuelta por estudiante',
           path: '/dashboard/pdfPage3',
           icon: <Icon size={1} path={mdiTextBoxMultipleOutline} />,
           haveAccess: auth.rol === 'Secretario General' || auth.rol === 'Técnico',
@@ -265,7 +265,7 @@ export default function navConfig() {
           haveAccess: auth.rol === 'Secretario General' || auth.rol === 'Técnico',
         },
         {
-          title: 'Resumen de asignaciones en 1era opción por carrera',
+          title: 'Resumen de asignaciones en 1ra opción por carrera',
           path: '/dashboard/pdfPage13',
           icon: <Icon size={1} path={mdiTextBoxMultipleOutline} />,
           haveAccess: auth.rol === 'Secretario General' || auth.rol === 'Técnico',

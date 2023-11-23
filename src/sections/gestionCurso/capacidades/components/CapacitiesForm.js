@@ -116,8 +116,8 @@ export default function CapacitiesForm({ editMode, formData, onSubmit }) {
     }
     if (!capacityInput) {
       newErrors.capacity = 'Capacidad requerida';
-    } else if (isNaN(Number(capacityInput)) || capacityInput < 0 || capacityInput > 30) {
-      newErrors.capacity = 'La capacidad debe estar entre 0 y 30.';
+    } else if (isNaN(Number(capacityInput)) || capacityInput < 1 || capacityInput > 30) {
+      newErrors.capacity = 'La capacidad debe estar entre 1 y 30.';
     }
 
     setErrors(newErrors);
@@ -280,6 +280,7 @@ export default function CapacitiesForm({ editMode, formData, onSubmit }) {
               required
               error={!!errors.capacity}
               helperText={errors.capacity}
+              inputProps={{ maxLength: 3 }}
             />
           </Grid>
           <Grid item xs sx={{ minWidth: '200px' }}>

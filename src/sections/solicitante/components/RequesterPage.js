@@ -188,7 +188,10 @@ export default function RequesterPage() {
         <title> Solicitante | SAPCE </title>
       </Helmet>
       {isLoading && (
-        <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={isLoading}>
+        <Backdrop
+          sx={{ bgcolor: 'rgba(255,255,255,0.41)', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={isLoading}
+        >
           <CircularProgress color="primary" />
         </Backdrop>
       )}

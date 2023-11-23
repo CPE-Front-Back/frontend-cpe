@@ -210,6 +210,7 @@ export default function OffersForm({ editMode, formData, onSubmit }) {
               required
               error={!!errors.amount}
               helperText={errors.amount}
+              inputProps={{ maxLength: 3 }}
             />
           </Grid>
           <Grid item xs />

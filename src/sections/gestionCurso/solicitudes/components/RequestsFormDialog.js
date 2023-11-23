@@ -147,15 +147,22 @@ export default function RequestsFormDialog({ open, handleCloseClick, editMode, D
     const isValid = validateForm();
 
     if (isValid) {
-      if (formData.num_id.length !== 11) {
+      const currentYear = new Date().getFullYear();
+      const centuryDigit = Number(formData.num_id.charAt(6));
+      const birthYear =
+        Number(formData.num_id.substring(0, 2)) + (centuryDigit === 9 ? 1800 : centuryDigit < 5 ? 1900 : 2000);
+      const age = currentYear - birthYear;
+      console.log('currentYear', currentYear, 'century', centuryDigit, 'birth', birthYear, 'age', age);
+
+      if (!/^\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])\d{5}$/.test(formData.num_id)) {
         setErrors((prevErrors) => ({
           ...prevErrors,
-          num_id: 'El carnet de identidad debe tener 11 dígitos.',
+          num_id: 'Carnet de Identidad inválido.',
         }));
-      } else if (!/^[0-9]*$/.test(formData.num_id)) {
+      } else if (age < 18) {
         setErrors((prevErrors) => ({
           ...prevErrors,
-          num_id: 'El carnet de identidad debe contener solo números.',
+          num_id: 'La edad mínima es 18 años.',
         }));
       } else if (!/^(\w+\s)?(\w+\s)?(\w+\s)?\w+$/.test(formData.nomb_solicitante)) {
         console.log('nombre', formData.nomb_solicitante);
@@ -377,7 +384,7 @@ export default function RequestsFormDialog({ open, handleCloseClick, editMode, D
 
   const handleLastNamesInput = (event) => {
     // allow only letters
-    const inputValue = event.target.value.replace(/[^a-z]/g, '');
+    const inputValue = event.target.value.replace(/[^a-zA-Z]/g, '');
     event.target.value = inputValue;
   };
 

@@ -90,7 +90,7 @@ export default function CourseStatisticsViewer({ title, ...other }) {
           <StatisticItem key="statistic2" title="Cantidad de solicitudes total en el curso:" cant={cant2} />
           <StatisticItem key="statistic3" title="Cantidad de solicitantes asignados en 1ra vuelta:" cant={cant3} />
           <StatisticItem key="statistic4" title="Cantidad de solicitantes para instrumento:" cant={cant4} />
-          <StatisticItem key="statistic5" title="Cantidad de solicitantes asignados en 2ra vuelta:" cant={cant5} />
+          <StatisticItem key="statistic5" title="Cantidad de solicitantes asignados en 2da vuelta:" cant={cant5} />
         </Stack>
       </Scrollbar>
     </Card>

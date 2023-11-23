@@ -34,7 +34,7 @@ import { UseActiveCourse } from '../../curso/context/ActiveCourseContext';
 
 const TABLE_HEAD = [
   { id: 'nomb_aula', label: 'Aula', alignRight: false },
-  { id: 'nomb_edif', label: 'Edificio', alignRight: false },
+  { id: 'nomb_edificio', label: 'Edificio', alignRight: false },
   { id: 'nomb_facultad', label: 'Facultad', alignRight: false },
   { id: 'capacidad', label: 'Capacidad', alignRight: false },
   { id: 'prioridad', label: 'Prioridad', alignRight: false },

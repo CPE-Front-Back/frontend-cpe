@@ -21,7 +21,7 @@ import {
 } from '@mui/material';
 import { filter } from 'lodash';
 import { useConfirm } from 'material-ui-confirm';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import PropTypes from 'prop-types';
 import Iconify from '../../../../components/iconify';
@@ -38,7 +38,7 @@ import { deleteRequester, getSolicitantesByCurso, getSolicitudesByCurso } from '
 const TABLE_HEAD = [
   { id: 'num_id', label: 'No. Identidad', alignRight: false },
   { id: 'nomb_solicitante', label: 'Nombre', alignRight: false },
-  { id: 'firstLastName', label: '1er Apellido', alignRight: false },
+  { id: 'apell_solicitante', label: '1er Apellido', alignRight: false },
   { id: 'SecondLastName', label: '2do Apellido', alignRight: false },
   { id: 'opcion1', label: 'Opción 1', alignRight: false },
   { id: 'opcion2', label: 'Opción 2', alignRight: false },
@@ -373,7 +373,7 @@ export default function RequestsPage(solicitantesConfirmados) {
             </Button>
           </Stack>
 
-          <Card>
+          <Card sx={{ minWidth: '101%' }}>
             <RequestsListToolbar
               numSelected={selected.length}
               filterValue={filterValue}
@@ -459,7 +459,7 @@ export default function RequestsPage(solicitantesConfirmados) {
                   {isNotFound && (
                     <TableBody>
                       <TableRow>
-                        <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
+                        <TableCell align="center" colSpan={10} sx={{ py: 3 }}>
                           <Paper
                             sx={{
                               textAlign: 'center',

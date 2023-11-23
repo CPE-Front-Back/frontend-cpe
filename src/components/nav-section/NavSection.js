@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { NavLink as RouterLink } from 'react-router-dom';
 // @mui
-import { Box, List, ListItemIcon, ListItemText } from '@mui/material';
+import { Box, List, ListItemText } from '@mui/material';
 import { mdiChevronDown, mdiChevronUp } from '@mdi/js';
 //
 import { StyledNavItem, StyledNavItemIcon } from './styles';
@@ -76,7 +76,7 @@ function NavItem({ item, onSubmenuItemClicked }) {
     <>
       {haveAccess && (
         <StyledNavItem
-          component={path ? RouterLink : ''}
+          component={path ? RouterLink : Box}
           to={path}
           sx={{
             '&.active': {

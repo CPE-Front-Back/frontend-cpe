@@ -352,6 +352,7 @@ export default function AdminForm({ editMode, formData, onSubmit }) {
                   required
                   error={!!errors.pwd}
                   helperText={errors.pwd}
+                  sx={{ minWidth: '230px' }}
                 />
               </Grid>
               <Grid item xs>
@@ -374,6 +375,7 @@ export default function AdminForm({ editMode, formData, onSubmit }) {
                   required
                   error={!!errors.pwdConfirm}
                   helperText={errors.pwdConfirm}
+                  sx={{ minWidth: '230px' }}
                 />
               </Grid>
             </Grid>

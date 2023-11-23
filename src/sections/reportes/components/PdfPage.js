@@ -12,7 +12,6 @@ import {
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet-async';
-import Iconify from '../../../components/iconify';
 import { UseActiveCourse } from '../../gestionCurso/curso/context/ActiveCourseContext';
 import { getCursos } from '../../gestionCurso/curso/store/store';
 import {
@@ -28,7 +27,6 @@ import {
   getListadoRecalificacionesReport,
   getListadoSolicitantesReport,
   getListadoUbicacionEstudianteReport,
-  getProvinciasReport,
   getResumenAsignaciones1raOpcCarreraReport,
   getResumenFinalAsignacionesCarreraReport,
   getResumenSolicitudes1raOpcCarreraReport,
@@ -45,6 +43,10 @@ export default function PdfPage({ pdfName }) {
   const { activeCourse } = UseActiveCourse();
   const [courses, setCourses] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState(null);
+
+  const [errors, setErrors] = useState({
+    course: '',
+  });
 
   useEffect(() => {
     setPdfNameValue(pdfName);
@@ -66,226 +68,238 @@ export default function PdfPage({ pdfName }) {
 
   useEffect(() => {
     const sc = courses.find((curso) => curso.nomb_curso === activeCourse.nomb_curso);
-    console.log('curso activo: ', sc);
     setSelectedCourse(sc);
   }, [activeCourse, courses]);
 
+  const validateSelectedCourse = () => {
+    const newErrors = {};
+
+    if (!selectedCourse) {
+      newErrors.course = 'Curso requerido';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const HandleGeneratePdf = () => {
-    setLoading(true);
-    switch (pdfNameValue) {
-      case 'Resumen solicitudes 1ra opción por Carrera':
-        getResumenSolicitudes1raOpcCarreraReport(selectedCourse.nomb_curso)
-          .then((response) => {
-            if (response.status === 200) {
-              const blob = new Blob([response.data], { type: 'application/pdf' });
+    if (validateSelectedCourse()) {
+      setLoading(true);
+      switch (pdfNameValue) {
+        case 'Resumen de solicitudes 1ra opción por carrera':
+          getResumenSolicitudes1raOpcCarreraReport(selectedCourse.nomb_curso)
+            .then((response) => {
+              if (response.status === 200) {
+                const blob = new Blob([response.data], { type: 'application/pdf' });
 
-              setPdfData(blob);
-              setLoading(false);
-            }
-          })
-          .catch((error) => {
-            console.log('Error al cargar el reporte', error);
-          });
-        break;
-      case 'Listado de asignaciones en 1era vuelta por carrera':
-        getListadoAsignaciones1raVueltaCarreraReport(selectedCourse.nomb_curso)
-          .then((response) => {
-            if (response.status === 200) {
-              const blob = new Blob([response.data], { type: 'application/pdf' });
+                setPdfData(blob);
+                setLoading(false);
+              }
+            })
+            .catch((error) => {
+              console.log('Error al cargar el reporte', error);
+            });
+          break;
+        case 'Listado de asignaciones en 1ra vuelta por carrera':
+          getListadoAsignaciones1raVueltaCarreraReport(selectedCourse.nomb_curso)
+            .then((response) => {
+              if (response.status === 200) {
+                const blob = new Blob([response.data], { type: 'application/pdf' });
 
-              setPdfData(blob);
-              setLoading(false);
-            }
-          })
-          .catch((error) => {
-            console.log('Error al cargar el reporte', error);
-          });
-        break;
-      case 'Listado de asignaciones en 1era vuelta por estudiante':
-        getListadoAsignaciones1raVueltaEstudianteReport(selectedCourse.nomb_curso)
-          .then((response) => {
-            if (response.status === 200) {
-              const blob = new Blob([response.data], { type: 'application/pdf' });
+                setPdfData(blob);
+                setLoading(false);
+              }
+            })
+            .catch((error) => {
+              console.log('Error al cargar el reporte', error);
+            });
+          break;
+        case 'Listado de asignaciones en 1ra vuelta por estudiante':
+          getListadoAsignaciones1raVueltaEstudianteReport(selectedCourse.nomb_curso)
+            .then((response) => {
+              if (response.status === 200) {
+                const blob = new Blob([response.data], { type: 'application/pdf' });
 
-              setPdfData(blob);
-              setLoading(false);
-            }
-          })
-          .catch((error) => {
-            console.log('Error al cargar el reporte', error);
-          });
-        break;
-      case 'Listado de ubicación de estudiantes':
-        getListadoUbicacionEstudianteReport(selectedCourse.nomb_curso)
-          .then((response) => {
-            if (response.status === 200) {
-              const blob = new Blob([response.data], { type: 'application/pdf' });
+                setPdfData(blob);
+                setLoading(false);
+              }
+            })
+            .catch((error) => {
+              console.log('Error al cargar el reporte', error);
+            });
+          break;
+        case 'Listado de ubicación de estudiantes':
+          getListadoUbicacionEstudianteReport(selectedCourse.nomb_curso)
+            .then((response) => {
+              if (response.status === 200) {
+                const blob = new Blob([response.data], { type: 'application/pdf' });
 
-              setPdfData(blob);
-              setLoading(false);
-            }
-          })
-          .catch((error) => {
-            console.log('Error al cargar el reporte', error);
-          });
-        break;
-      case 'Actas de comparecencia':
-        getActasComparecenciaReport(selectedCourse.nomb_curso)
-          .then((response) => {
-            if (response.status === 200) {
-              const blob = new Blob([response.data], { type: 'application/pdf' });
+                setPdfData(blob);
+                setLoading(false);
+              }
+            })
+            .catch((error) => {
+              console.log('Error al cargar el reporte', error);
+            });
+          break;
+        case 'Actas de comparecencia':
+          getActasComparecenciaReport(selectedCourse.nomb_curso)
+            .then((response) => {
+              if (response.status === 200) {
+                const blob = new Blob([response.data], { type: 'application/pdf' });
 
-              setPdfData(blob);
-              setLoading(false);
-            }
-          })
-          .catch((error) => {
-            console.log('Error al cargar el reporte', error);
-          });
-        break;
-      case 'Actas de notas':
-        getActasNotasReport(selectedCourse.nomb_curso)
-          .then((response) => {
-            if (response.status === 200) {
-              const blob = new Blob([response.data], { type: 'application/pdf' });
+                setPdfData(blob);
+                setLoading(false);
+              }
+            })
+            .catch((error) => {
+              console.log('Error al cargar el reporte', error);
+            });
+          break;
+        case 'Actas de notas':
+          getActasNotasReport(selectedCourse.nomb_curso)
+            .then((response) => {
+              if (response.status === 200) {
+                const blob = new Blob([response.data], { type: 'application/pdf' });
 
-              setPdfData(blob);
-              setLoading(false);
-            }
-          })
-          .catch((error) => {
-            console.log('Error al cargar el reporte', error);
-          });
-        break;
-      case 'Actas de anonimato':
-        getActasAnonimatoReport(selectedCourse.nomb_curso)
-          .then((response) => {
-            if (response.status === 200) {
-              const blob = new Blob([response.data], { type: 'application/pdf' });
+                setPdfData(blob);
+                setLoading(false);
+              }
+            })
+            .catch((error) => {
+              console.log('Error al cargar el reporte', error);
+            });
+          break;
+        case 'Actas de anonimato':
+          getActasAnonimatoReport(selectedCourse.nomb_curso)
+            .then((response) => {
+              if (response.status === 200) {
+                const blob = new Blob([response.data], { type: 'application/pdf' });
 
-              setPdfData(blob);
-              setLoading(false);
-            }
-          })
-          .catch((error) => {
-            console.log('Error al cargar el reporte', error);
-          });
-        break;
-      case 'Listado de notas':
-        getListadoNotasReport(selectedCourse.nomb_curso)
-          .then((response) => {
-            if (response.status === 200) {
-              const blob = new Blob([response.data], { type: 'application/pdf' });
+                setPdfData(blob);
+                setLoading(false);
+              }
+            })
+            .catch((error) => {
+              console.log('Error al cargar el reporte', error);
+            });
+          break;
+        case 'Listado de notas':
+          getListadoNotasReport(selectedCourse.nomb_curso)
+            .then((response) => {
+              if (response.status === 200) {
+                const blob = new Blob([response.data], { type: 'application/pdf' });
 
-              setPdfData(blob);
-              setLoading(false);
-            }
-          })
-          .catch((error) => {
-            console.log('Error al cargar el reporte', error);
-          });
-        break;
-      case 'Listado de asignaciones final por carrera':
-        getListadoAsignacionesFinalCarreraReport(selectedCourse.nomb_curso)
-          .then((response) => {
-            if (response.status === 200) {
-              const blob = new Blob([response.data], { type: 'application/pdf' });
+                setPdfData(blob);
+                setLoading(false);
+              }
+            })
+            .catch((error) => {
+              console.log('Error al cargar el reporte', error);
+            });
+          break;
+        case 'Listado de asignaciones final por carrera':
+          getListadoAsignacionesFinalCarreraReport(selectedCourse.nomb_curso)
+            .then((response) => {
+              if (response.status === 200) {
+                const blob = new Blob([response.data], { type: 'application/pdf' });
 
-              setPdfData(blob);
-              setLoading(false);
-            }
-          })
-          .catch((error) => {
-            console.log('Error al cargar el reporte', error);
-          });
-        break;
-      case 'Listado de recalificaciones':
-        getListadoRecalificacionesReport(selectedCourse.nomb_curso)
-          .then((response) => {
-            if (response.status === 200) {
-              const blob = new Blob([response.data], { type: 'application/pdf' });
+                setPdfData(blob);
+                setLoading(false);
+              }
+            })
+            .catch((error) => {
+              console.log('Error al cargar el reporte', error);
+            });
+          break;
+        case 'Listado de recalificaciones':
+          getListadoRecalificacionesReport(selectedCourse.nomb_curso)
+            .then((response) => {
+              if (response.status === 200) {
+                const blob = new Blob([response.data], { type: 'application/pdf' });
 
-              setPdfData(blob);
-              setLoading(false);
-            }
-          })
-          .catch((error) => {
-            console.log('Error al cargar el reporte', error);
-          });
-        break;
-      case 'Actas de reclamación':
-        getActasReclamacionReport(selectedCourse.nomb_curso)
-          .then((response) => {
-            if (response.status === 200) {
-              const blob = new Blob([response.data], { type: 'application/pdf' });
+                setPdfData(blob);
+                setLoading(false);
+              }
+            })
+            .catch((error) => {
+              console.log('Error al cargar el reporte', error);
+            });
+          break;
+        case 'Actas de reclamación':
+          getActasReclamacionReport(selectedCourse.nomb_curso)
+            .then((response) => {
+              if (response.status === 200) {
+                const blob = new Blob([response.data], { type: 'application/pdf' });
 
-              setPdfData(blob);
-              setLoading(false);
-            }
-          })
-          .catch((error) => {
-            console.log('Error al cargar el reporte', error);
-          });
-        break;
-      case 'Listado de asignaciones final por estudiante':
-        getListadoAsignacionesFinalEstudianteReport(selectedCourse.nomb_curso)
-          .then((response) => {
-            if (response.status === 200) {
-              const blob = new Blob([response.data], { type: 'application/pdf' });
+                setPdfData(blob);
+                setLoading(false);
+              }
+            })
+            .catch((error) => {
+              console.log('Error al cargar el reporte', error);
+            });
+          break;
+        case 'Listado de asignaciones final por estudiante':
+          getListadoAsignacionesFinalEstudianteReport(selectedCourse.nomb_curso)
+            .then((response) => {
+              if (response.status === 200) {
+                const blob = new Blob([response.data], { type: 'application/pdf' });
 
-              setPdfData(blob);
-              setLoading(false);
-            }
-          })
-          .catch((error) => {
-            console.log('Error al cargar el reporte', error);
-          });
-        break;
-      case 'Resumen de asignaciones en 1era opción por carrera':
-        getResumenAsignaciones1raOpcCarreraReport(selectedCourse.nomb_curso)
-          .then((response) => {
-            if (response.status === 200) {
-              const blob = new Blob([response.data], { type: 'application/pdf' });
+                setPdfData(blob);
+                setLoading(false);
+              }
+            })
+            .catch((error) => {
+              console.log('Error al cargar el reporte', error);
+            });
+          break;
+        case 'Resumen de asignaciones en 1era opción por carrera':
+          getResumenAsignaciones1raOpcCarreraReport(selectedCourse.nomb_curso)
+            .then((response) => {
+              if (response.status === 200) {
+                const blob = new Blob([response.data], { type: 'application/pdf' });
 
-              setPdfData(blob);
-              setLoading(false);
-            }
-          })
-          .catch((error) => {
-            console.log('Error al cargar el reporte', error);
-          });
-        break;
-      case 'Resumen final de asignaciones por carreras':
-        getResumenFinalAsignacionesCarreraReport(selectedCourse.nomb_curso)
-          .then((response) => {
-            if (response.status === 200) {
-              const blob = new Blob([response.data], { type: 'application/pdf' });
+                setPdfData(blob);
+                setLoading(false);
+              }
+            })
+            .catch((error) => {
+              console.log('Error al cargar el reporte', error);
+            });
+          break;
+        case 'Resumen final de asignaciones por carreras':
+          getResumenFinalAsignacionesCarreraReport(selectedCourse.nomb_curso)
+            .then((response) => {
+              if (response.status === 200) {
+                const blob = new Blob([response.data], { type: 'application/pdf' });
 
-              setPdfData(blob);
-              setLoading(false);
-            }
-          })
-          .catch((error) => {
-            console.log('Error al cargar el reporte', error);
-          });
-        break;
-      case 'Listado de solicitantes':
-        getListadoSolicitantesReport(selectedCourse.nomb_curso)
-          .then((response) => {
-            if (response.status === 200) {
-              const blob = new Blob([response.data], { type: 'application/pdf' });
+                setPdfData(blob);
+                setLoading(false);
+              }
+            })
+            .catch((error) => {
+              console.log('Error al cargar el reporte', error);
+            });
+          break;
+        case 'Listado de solicitantes':
+          getListadoSolicitantesReport(selectedCourse.nomb_curso)
+            .then((response) => {
+              if (response.status === 200) {
+                const blob = new Blob([response.data], { type: 'application/pdf' });
 
-              setPdfData(blob);
-              setLoading(false);
-            }
-          })
-          .catch((error) => {
-            console.log('Error al cargar el reporte', error);
-          });
-        break;
+                setPdfData(blob);
+                setLoading(false);
+              }
+            })
+            .catch((error) => {
+              console.log('Error al cargar el reporte', error);
+            });
+          break;
 
-      default:
-        console.log('Unknown PDF name:', pdfName);
+        default:
+          console.log('Unknown PDF name:', pdfName);
+      }
     }
   };
 
@@ -297,7 +311,7 @@ export default function PdfPage({ pdfName }) {
 
       {loading && (
         <Backdrop sx={{ bgcolor: 'white' }} open={loading}>
-          <CircularProgress color="primary" />
+          <CircularProgress color="primary" sx={{ ml: '200px', mt: '10px' }} />
         </Backdrop>
       )}
       {!loading && pdfData && <ViewPdf pdfData={pdfData} pdfName={pdfName} />}
@@ -330,7 +344,14 @@ export default function PdfPage({ pdfName }) {
                 onChange={(event, newValue) => {
                   setSelectedCourse(newValue);
                 }}
-                renderInput={(params) => <TextField {...params} label="Cursos disponibles" />}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Cursos disponibles"
+                    error={!!errors.course}
+                    helperText={errors.course}
+                  />
+                )}
                 noOptionsText={'No hay opciones'}
               />
             </Grid>

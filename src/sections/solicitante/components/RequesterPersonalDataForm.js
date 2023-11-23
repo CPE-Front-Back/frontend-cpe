@@ -249,7 +249,7 @@ export default function RequesterPersonalDataForm({ togleFormVisibility }) {
 
   const handleNameInput = (event) => {
     // allow only one blank space and letters
-    const inputValue = event.target.value.replace(/[^a-z][\s]/g, '');
+    const inputValue = event.target.value.replace(/[^a-zA-Z\s]/g, '');
     event.target.value = inputValue;
   };
 

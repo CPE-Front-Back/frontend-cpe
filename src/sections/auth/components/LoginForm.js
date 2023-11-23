@@ -94,6 +94,7 @@ export default function LoginForm() {
               </InputAdornment>
             ),
           }}
+          inputProps={{ maxLength: 20 }}
           error={!!errors.password}
           required
           onKeyDown={(e) => {

@@ -1,4 +1,4 @@
-import { Alert, Button, Container, Grid, TextField, Typography } from '@mui/material';
+import { Alert, Box, Button, Container, Grid, TextField, Typography } from '@mui/material';
 import { isNaN } from 'lodash';
 import { useConfirm } from 'material-ui-confirm';
 import { useEffect, useState } from 'react';
@@ -156,93 +156,99 @@ export default function RequalificationPage() {
 
   return (
     <>
-      <Container sx={{ pt: '50px' }}>
-        <Helmet>
-          <title> Recalificaciones | SAPCE </title>
-        </Helmet>
-        <Typography variant="h4" gutterBottom>
-          Insertar recalificación
-        </Typography>
+      <Box
+        flexGrow={{ flexGrow: 1 }}
+        sx={{ backgroundColor: 'white', marginTop: '20px', pr: '100px', pl: '100px', pb: '20px', pt: '20px' }}
+      >
+        <Container>
+          <Helmet>
+            <title> Recalificaciones | SAPCE </title>
+          </Helmet>
+          <Typography variant="h4" gutterBottom>
+            Insertar recalificación
+          </Typography>
 
-        <Container sx={{ bgcolor: 'white', pt: '50px' }}>
-          <Grid container spacing={2} sx={{ pt: '10px' }}>
-            <Grid item xs />
-            <Grid item xs={3}>
-              <TextField
-                label="Carnet de identidad"
-                variant="outlined"
-                value={requesterIdNumber}
-                onChange={(event) => {
-                  setRequesterIdNumber(event.target.value);
-                }}
-                onInput={handleRequesterIdInput}
-                inputProps={{ maxLength: 11 }}
-                error={!!errors.requesterIdNumber}
-                helperText={errors.requesterIdNumber}
-                required
-              />
-            </Grid>
-            <Grid item xs={3}>
-              <Button variant="contained" sx={{ width: '100%', mt: '10px' }} onClick={findRequester}>
-                Buscar
-              </Button>
-            </Grid>
-            <Grid item xs />
-          </Grid>
-
-          <Grid container spacing={1} sx={{ pt: '50px', pb: '20px' }}>
-            <Grid item xs />
-            <Grid item xs={3}>
-              <TextField
-                type="number"
-                label="No. Anonimato"
-                variant="outlined"
-                value={anonNumber}
-                InputProps={{
-                  readOnly: true,
-                }}
-                InputLabelProps={{
-                  shrink: !!anonNumber,
-                }}
-              />
-            </Grid>
-            <Grid item xs={3}>
-              <TextField
-                label="Calificación"
-                variant="outlined"
-                value={calification}
-                onChange={(event) => setCalification(event.target.value)}
-                onInput={handleRequalificationInput}
-                required
-                InputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
-                InputLabelProps={{
-                  shrink: !!calification || focused,
-                }}
-                error={!!errors.calification}
-                helperText={errors.calification}
-                onFocus={() => setFocused(true)}
-                onBlur={() => setFocused(false)}
-              />
-            </Grid>
-            <Grid item xs />
-
-            <Grid container spacing={2} sx={{ pt: '15px', pb: '20px', pl: '8px' }}>
+          <Container sx={{ bgcolor: 'white', pt: '50px' }}>
+            <Grid container spacing={2} sx={{ pt: '10px' }}>
               <Grid item xs />
               <Grid item xs={3}>
-                <Button variant="contained" sx={{ width: '100%' }} onClick={handleCancel}>
-                  Cancelar
-                </Button>
+                <TextField
+                  label="Carnet de identidad"
+                  variant="outlined"
+                  value={requesterIdNumber}
+                  onChange={(event) => {
+                    setRequesterIdNumber(event.target.value);
+                  }}
+                  onInput={handleRequesterIdInput}
+                  inputProps={{ maxLength: 11 }}
+                  error={!!errors.requesterIdNumber}
+                  helperText={errors.requesterIdNumber}
+                  required
+                />
               </Grid>
               <Grid item xs={3}>
-                <Button variant="contained" sx={{ width: '100%' }} onClick={handleAccept}>
-                  Aceptar
+                <Button variant="contained" sx={{ width: '100%', mt: '10px' }} onClick={findRequester}>
+                  Buscar
                 </Button>
               </Grid>
               <Grid item xs />
             </Grid>
-          </Grid>
+
+            <Grid container spacing={1} sx={{ pt: '50px', pb: '20px' }}>
+              <Grid item xs />
+              <Grid item xs={3}>
+                <TextField
+                  type="number"
+                  label="No. Anonimato"
+                  variant="outlined"
+                  value={anonNumber}
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                  InputLabelProps={{
+                    shrink: !!anonNumber,
+                  }}
+                />
+              </Grid>
+              <Grid item xs={3}>
+                <TextField
+                  label="Calificación"
+                  variant="outlined"
+                  value={calification}
+                  onChange={(event) => setCalification(event.target.value)}
+                  onInput={handleRequalificationInput}
+                  required
+                  InputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+                  inputProps={{ maxLength: 3 }}
+                  InputLabelProps={{
+                    shrink: !!calification || focused,
+                  }}
+                  error={!!errors.calification}
+                  helperText={errors.calification}
+                  onFocus={() => setFocused(true)}
+                  onBlur={() => setFocused(false)}
+                />
+              </Grid>
+              <Grid item xs />
+
+              <Grid container spacing={2} sx={{ pt: '15px', pb: '20px', pl: '8px' }}>
+                <Grid item xs />
+                <Grid item xs={3}>
+                  <Button variant="contained" sx={{ width: '100%' }} onClick={handleCancel}>
+                    Cancelar
+                  </Button>
+                </Grid>
+                <Grid item xs={3}>
+                  <Button variant="contained" sx={{ width: '100%' }} onClick={handleAccept}>
+                    Aceptar
+                  </Button>
+                </Grid>
+                <Grid item xs />
+              </Grid>
+            </Grid>
+          </Container>
         </Container>
-      </Container>
+      </Box>
     </>
   );
 }

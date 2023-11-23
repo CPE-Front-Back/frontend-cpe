@@ -116,7 +116,7 @@ export default function CareersForm({ editMode, formData, onSubmit }) {
           <Grid item xs>
             <TextField
               type={'text'}
-              label="Codigo"
+              label="Código"
               variant="outlined"
               value={careerCodeInput}
               onInput={handleCodeInput}
