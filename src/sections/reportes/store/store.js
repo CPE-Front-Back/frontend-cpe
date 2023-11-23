@@ -1,4 +1,4 @@
-import { axiosInstance } from '../../../components/api/api';
+import { axiosForAuth, axiosInstance } from '../../../components/api/api';
 
 export const getProvinciasReport = async () => {
   try {
@@ -81,6 +81,22 @@ export const getListadoAsignaciones1raVueltaCarreraReport = async (nomb_curso) =
   }
 };
 
+export const getListadoAsignaciones1raVueltaCarreraReportRequester = async (nomb_curso) => {
+  try {
+    const format = 'pdf';
+    const response = await axiosForAuth.get(
+      `report/listadoAsignaciones1raVueltaCarrera/nomb_curso/${nomb_curso}/format/${format}`,
+      {
+        responseType: 'arraybuffer',
+      }
+    );
+    return response;
+  } catch (error) {
+    console.log('Error en getListadoAsignaciones1raVueltaCarreraReportRequester', error);
+    throw error;
+  }
+};
+
 export const getListadoAsignaciones1raVueltaEstudianteReport = async (nomb_curso) => {
   try {
     const format = 'pdf';
@@ -109,6 +125,22 @@ export const getListadoAsignacionesFinalCarreraReport = async (nomb_curso) => {
     return response;
   } catch (error) {
     console.log('Error en getListadoAsignacionesFinalCarreraReport', error);
+    throw error;
+  }
+};
+
+export const getListadoAsignacionesFinalCarreraReportRequester = async (nomb_curso) => {
+  try {
+    const format = 'pdf';
+    const response = await axiosForAuth.get(
+      `report/listadoAsignacionesFinalCarrera/nomb_curso/${nomb_curso}/format/${format}`,
+      {
+        responseType: 'arraybuffer',
+      }
+    );
+    return response;
+  } catch (error) {
+    console.log('Error en getListadoAsignacionesFinalCarreraReportRequester', error);
     throw error;
   }
 };
@@ -142,6 +174,19 @@ export const getListadoNotasReport = async (nomb_curso) => {
   }
 };
 
+export const getListadoNotasReportRequester = async (nomb_curso) => {
+  try {
+    const format = 'pdf';
+    const response = await axiosForAuth.get(`report/listadoNotas/nomb_curso/${nomb_curso}/format/${format}`, {
+      responseType: 'arraybuffer',
+    });
+    return response;
+  } catch (error) {
+    console.log('Error en getListadoNotasReportRequester', error);
+    throw error;
+  }
+};
+
 export const getListadoRecalificacionesReport = async (nomb_curso) => {
   try {
     const format = 'pdf';
@@ -158,6 +203,22 @@ export const getListadoRecalificacionesReport = async (nomb_curso) => {
   }
 };
 
+export const getListadoRecalificacionesReportRequester = async (nomb_curso) => {
+  try {
+    const format = 'pdf';
+    const response = await axiosForAuth.get(
+      `report/listadoRecalificaciones/nomb_curso/${nomb_curso}/format/${format}`,
+      {
+        responseType: 'arraybuffer',
+      }
+    );
+    return response;
+  } catch (error) {
+    console.log('Error en getListadoRecalificacionesReportRequester', error);
+    throw error;
+  }
+};
+
 export const getListadoUbicacionEstudianteReport = async (nomb_curso) => {
   try {
     const format = 'pdf';
@@ -170,6 +231,22 @@ export const getListadoUbicacionEstudianteReport = async (nomb_curso) => {
     return response;
   } catch (error) {
     console.log('Error en getListadoUbicacionEstudianteReport', error);
+    throw error;
+  }
+};
+
+export const getListadoUbicacionEstudianteReportRequester = async (nomb_curso) => {
+  try {
+    const format = 'pdf';
+    const response = await axiosForAuth.get(
+      `report/listadoUbicacionEstudiante/nomb_curso/${nomb_curso}/format/${format}`,
+      {
+        responseType: 'arraybuffer',
+      }
+    );
+    return response;
+  } catch (error) {
+    console.log('Error en getListadoUbicacionEstudianteReportRequester', error);
     throw error;
   }
 };
@@ -231,6 +308,20 @@ export const getListadoSolicitantesReport = async (nomb_curso) => {
     return response;
   } catch (error) {
     console.log('Error en getListadoSolicitantesReport', error);
+    throw error;
+  }
+};
+
+export const getListadoOfertasReportRequester = async (nomb_curso) => {
+  // todo: implement report template and backend methods
+  try {
+    const format = 'pdf';
+    const response = await axiosInstance.get(`report/solicitantesCurso/nomb_curso/${nomb_curso}/format/${format}`, {
+      responseType: 'arraybuffer',
+    });
+    return response;
+  } catch (error) {
+    console.log('Error en getListadoOfertasReportRequester', error);
     throw error;
   }
 };

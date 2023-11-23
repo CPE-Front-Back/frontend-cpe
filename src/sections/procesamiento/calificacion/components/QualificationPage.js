@@ -301,14 +301,14 @@ export default function QualificationPage() {
 
           <Grid item container xs={3}>
             <Grid item xs>
-              <Button type="submit" variant="contained" color="primary" onClick={handleAccept}>
-                Aceptar
+              <Button type="submit" variant="contained" color="primary" onClick={handleCancel}>
+                Cancelar
               </Button>
             </Grid>
 
             <Grid item xs>
-              <Button type="submit" variant="contained" color="primary" onClick={handleCancel}>
-                Cancelar
+              <Button type="submit" variant="contained" color="primary" onClick={handleAccept}>
+                Aceptar
               </Button>
             </Grid>
           </Grid>

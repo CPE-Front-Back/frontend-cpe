@@ -104,19 +104,13 @@ export default function LoginForm() {
         />
       </Stack>
 
-      <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>
-        <Link variant="subtitle2" underline="hover">
-          Olvidaste tú contraseña?
-        </Link>
-      </Stack>
-
       <LoadingButton
         fullWidth
         size="large"
         type="submit"
         variant="contained"
         onClick={handleLogin}
-        sx={{ textTransform: 'none' }}
+        sx={{ textTransform: 'none', mt: '20px' }}
         onKeyDown={(e) => {
           if (e.key === 'Enter') {
             handleLogin();

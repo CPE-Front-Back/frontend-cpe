@@ -5,10 +5,14 @@ import { useEffect, useState } from 'react';
 import setMessage from '../../../components/messages/messages';
 import useResponsive from '../../../hooks/useResponsive';
 
-import { getCarreras } from '../../gestionCodificadores/carreras/store/store';
+import { getCarrerasRequester } from '../../gestionCodificadores/carreras/store/store';
 import { UseActiveCourse } from '../../gestionCurso/curso/context/ActiveCourseContext';
-import { getAllOfertasByCurso } from '../../gestionCurso/ofertas/store/store';
-import { getSolicitanteById, insertarSolicitudes, sendSolicitantePersonalData } from '../store/store';
+import { getAllOfertasByCursoRequester } from '../../gestionCurso/ofertas/store/store';
+import {
+  getSolicitanteByIdRequester,
+  insertarSolicitudesRequester,
+  sendSolicitantePersonalDataRequester,
+} from '../store/store';
 
 RequesterCarrerOptionsForm.propTypes = {
   personalData: PropTypes.object,
@@ -43,7 +47,7 @@ export default function RequesterCarrerOptionsForm({ personalData, options, onVo
   };
 
   useEffect(() => {
-    getAllOfertasByCurso(activeCourse.cod_curso)
+    getAllOfertasByCursoRequester(activeCourse.cod_curso)
       .then((response) => {
         console.log(response.data);
         if (response.status === 200) {
@@ -64,7 +68,7 @@ export default function RequesterCarrerOptionsForm({ personalData, options, onVo
   }, [carreras]);
 
   useEffect(() => {
-    getCarreras()
+    getCarrerasRequester()
       .then((response) => {
         if (response.status === 200) {
           setCarreras(response.data);
@@ -86,14 +90,14 @@ export default function RequesterCarrerOptionsForm({ personalData, options, onVo
       console.log('Datos del solicitante', personalData);
       console.log('Solicitudes', selectedOptions);
 
-      sendSolicitantePersonalData(personalData)
+      sendSolicitantePersonalDataRequester(personalData)
         .then((response) => {
           if (response.status === 200) {
             console.log(response.data);
-            getSolicitanteById(personalData.num_id)
+            getSolicitanteByIdRequester(personalData.num_id)
               .then((response) => {
                 if (response.status === 200) {
-                  insertarSolicitudes(selectedOptions, response.data.cod_solicitante)
+                  insertarSolicitudesRequester(selectedOptions, response.data.cod_solicitante)
                     .then((response) => {
                       if (response) {
                         console.log('Insertadas: ', response);

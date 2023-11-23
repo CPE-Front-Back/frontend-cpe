@@ -229,13 +229,13 @@ export default function RequalificationPage() {
             <Grid container spacing={2} sx={{ pt: '15px', pb: '20px', pl: '8px' }}>
               <Grid item xs />
               <Grid item xs={3}>
-                <Button variant="contained" sx={{ width: '100%' }} onClick={handleAccept}>
-                  Aceptar
+                <Button variant="contained" sx={{ width: '100%' }} onClick={handleCancel}>
+                  Cancelar
                 </Button>
               </Grid>
               <Grid item xs={3}>
-                <Button variant="contained" sx={{ width: '100%' }} onClick={handleCancel}>
-                  Cancelar
+                <Button variant="contained" sx={{ width: '100%' }} onClick={handleAccept}>
+                  Aceptar
                 </Button>
               </Grid>
               <Grid item xs />

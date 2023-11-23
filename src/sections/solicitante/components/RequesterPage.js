@@ -8,7 +8,14 @@ import { Helmet } from 'react-helmet-async';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { AppWidgetSummary } from '../../home/app';
 import { UseActiveCourse } from '../../gestionCurso/curso/context/ActiveCourseContext';
-import { getResumenSolicitudes1raOpcCarreraReport } from '../../reportes/store/store';
+import {
+  getListadoAsignaciones1raVueltaCarreraReportRequester,
+  getListadoAsignacionesFinalCarreraReportRequester,
+  getListadoNotasReportRequester,
+  getListadoOfertasReportRequester,
+  getListadoRecalificacionesReportRequester,
+  getListadoUbicacionEstudianteReportRequester,
+} from '../../reportes/store/store';
 import ViewPdf from '../../reportes/components/ViewPdf';
 
 const StyledRoot = styled('div')(({ theme }) => ({
@@ -51,13 +58,14 @@ export default function RequesterPage() {
   const handleReport1Click = () => {
     setIsLoading(true);
 
-    getResumenSolicitudes1raOpcCarreraReport(activeCourse.nomb_curso)
+    // todo: implement this function logic in the report store
+    getListadoOfertasReportRequester(activeCourse.nomb_curso)
       .then((response) => {
         if (response.status === 200) {
           const blob = new Blob([response.data], { type: 'application/pdf' });
 
           setPdfData(blob);
-          setPdfNameValue('Resumen de algoa y drsaewad yy hgdzfafda');
+          setPdfNameValue('Listado de ofertas');
 
           setTimeout(() => {
             setIsLoading(false);
@@ -72,13 +80,13 @@ export default function RequesterPage() {
   const handleReport2Click = () => {
     setIsLoading(true);
 
-    getResumenSolicitudes1raOpcCarreraReport(activeCourse.nomb_curso)
+    getListadoAsignaciones1raVueltaCarreraReportRequester(activeCourse.nomb_curso)
       .then((response) => {
         if (response.status === 200) {
           const blob = new Blob([response.data], { type: 'application/pdf' });
 
           setPdfData(blob);
-          setPdfNameValue('Resumen de algoa y drsaewad yy hgdzfafda');
+          setPdfNameValue('Listado de asignaciones en primera vuelta por carrera');
 
           setTimeout(() => {
             setIsLoading(false);
@@ -93,13 +101,13 @@ export default function RequesterPage() {
   const handleReport3Click = () => {
     setIsLoading(true);
 
-    getResumenSolicitudes1raOpcCarreraReport(activeCourse.nomb_curso)
+    getListadoUbicacionEstudianteReportRequester(activeCourse.nomb_curso)
       .then((response) => {
         if (response.status === 200) {
           const blob = new Blob([response.data], { type: 'application/pdf' });
 
           setPdfData(blob);
-          setPdfNameValue('Resumen de algoa y drsaewad yy hgdzfafda');
+          setPdfNameValue('Listado de ubicaciones para instrumento por estudiante');
 
           setTimeout(() => {
             setIsLoading(false);
@@ -114,13 +122,13 @@ export default function RequesterPage() {
   const handleReport4Click = () => {
     setIsLoading(true);
 
-    getResumenSolicitudes1raOpcCarreraReport(activeCourse.nomb_curso)
+    getListadoNotasReportRequester(activeCourse.nomb_curso)
       .then((response) => {
         if (response.status === 200) {
           const blob = new Blob([response.data], { type: 'application/pdf' });
 
           setPdfData(blob);
-          setPdfNameValue('Resumen de algoa y drsaewad yy hgdzfafda');
+          setPdfNameValue('Listado de notas');
 
           setTimeout(() => {
             setIsLoading(false);
@@ -135,13 +143,34 @@ export default function RequesterPage() {
   const handleReport5Click = () => {
     setIsLoading(true);
 
-    getResumenSolicitudes1raOpcCarreraReport(activeCourse.nomb_curso)
+    getListadoRecalificacionesReportRequester(activeCourse.nomb_curso)
       .then((response) => {
         if (response.status === 200) {
           const blob = new Blob([response.data], { type: 'application/pdf' });
 
           setPdfData(blob);
-          setPdfNameValue('Resumen de algoa y drsaewad yy hgdzfafda');
+          setPdfNameValue('Listado de recalificaciones');
+
+          setTimeout(() => {
+            setIsLoading(false);
+          }, 500);
+        }
+      })
+      .catch((error) => {
+        console.log('Error al cargar el reporte', error);
+      });
+  };
+
+  const handleReport6Click = () => {
+    setIsLoading(true);
+
+    getListadoAsignacionesFinalCarreraReportRequester(activeCourse.nomb_curso)
+      .then((response) => {
+        if (response.status === 200) {
+          const blob = new Blob([response.data], { type: 'application/pdf' });
+
+          setPdfData(blob);
+          setPdfNameValue('Listado de asignaciones en finales por carrera');
 
           setTimeout(() => {
             setIsLoading(false);
@@ -189,23 +218,36 @@ export default function RequesterPage() {
                 </Grid>
 
                 <Grid item xs={12} sm={6} md={3} onClick={handleReport1Click}>
-                  <AppWidgetSummary pdfName="Reporte 1" icon={mdiTextBoxMultipleOutline} />
+                  <AppWidgetSummary pdfName="Listado de ofertas" icon={mdiTextBoxMultipleOutline} />
                 </Grid>
 
                 <Grid item xs={12} sm={6} md={3} onClick={handleReport2Click}>
-                  <AppWidgetSummary pdfName="Reporte 2" icon={mdiTextBoxMultipleOutline} />
+                  <AppWidgetSummary
+                    pdfName="Listado de asignaciones en primera vuelta por carrera"
+                    icon={mdiTextBoxMultipleOutline}
+                  />
                 </Grid>
 
                 <Grid item xs={12} sm={6} md={3} onClick={handleReport3Click}>
-                  <AppWidgetSummary pdfName="Reporte 3" icon={mdiTextBoxMultipleOutline} />
+                  <AppWidgetSummary
+                    pdfName="Listado de ubicaciones para instrumento por estudiante"
+                    icon={mdiTextBoxMultipleOutline}
+                  />
                 </Grid>
 
                 <Grid item xs={12} sm={6} md={3} onClick={handleReport4Click}>
-                  <AppWidgetSummary pdfName="Reporte 4" icon={mdiTextBoxMultipleOutline} />
+                  <AppWidgetSummary pdfName="Listado de notas" icon={mdiTextBoxMultipleOutline} />
                 </Grid>
 
-                <Grid item xs={12} sm={6} md={1} onClick={handleReport5Click}>
-                  <AppWidgetSummary pdfName="Reporte 5" icon={mdiTextBoxMultipleOutline} />
+                <Grid item xs={12} sm={6} md={3} onClick={handleReport5Click}>
+                  <AppWidgetSummary pdfName="Listado de recalificaciones" icon={mdiTextBoxMultipleOutline} />
+                </Grid>
+
+                <Grid item xs={12} sm={6} md={3} onClick={handleReport6Click}>
+                  <AppWidgetSummary
+                    pdfName="Listado de asignaciones en finales por carrera"
+                    icon={mdiTextBoxMultipleOutline}
+                  />
                 </Grid>
               </Grid>
             </Container>

@@ -4,11 +4,11 @@ import { styled } from '@mui/material/styles';
 import { useConfirm } from 'material-ui-confirm';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-import { useLocation, use, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
-  getFuentesIngreso,
-  getMunicipiosPorProvincia,
-  getProvincias,
+  getFuentesIngresoRequester,
+  getMunicipiosPorProvinciaRequester,
+  getProvinciasRequester,
 } from '../../../utils/codificadores/codificadoresStore';
 import RequesterCarrerOptionsForm from './RequesterCarrerOptionsForm';
 
@@ -186,7 +186,7 @@ export default function RequesterPersonalDataForm({ togleFormVisibility }) {
   }, [formData]);
 
   useEffect(() => {
-    getProvincias()
+    getProvinciasRequester()
       .then((response) => {
         if (response.status === 200) {
           console.log('Provincias: ', response.data);
@@ -200,7 +200,7 @@ export default function RequesterPersonalDataForm({ togleFormVisibility }) {
 
   useEffect(() => {
     if (provinciaSeleccionada !== null) {
-      getMunicipiosPorProvincia(provinciaSeleccionada.cod_provincia)
+      getMunicipiosPorProvinciaRequester(provinciaSeleccionada.cod_provincia)
         .then((response) => {
           if (response.status === 200) {
             console.log('Municipios: ', response.data);
@@ -214,7 +214,7 @@ export default function RequesterPersonalDataForm({ togleFormVisibility }) {
   }, [provinciaSeleccionada]);
 
   useEffect(() => {
-    getFuentesIngreso()
+    getFuentesIngresoRequester()
       .then((response) => {
         if (response.data) {
           console.log('Fuentes de Ingreso: ', response.data);

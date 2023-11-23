@@ -75,7 +75,7 @@ export default function RequesterLayout() {
                   onClick={() => {
                     navigate('/login', { replace: true });
                   }}
-                  sx={{ textTransform: 'none' }}
+                  sx={{ textTransform: 'none', mt: '-15px' }}
                 >
                   Iniciar sesión
                 </LoadingButton>

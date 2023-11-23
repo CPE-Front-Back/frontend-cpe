@@ -1,4 +1,4 @@
-import { axiosInstance } from '../../../../components/api/api';
+import { axiosForAuth, axiosInstance } from '../../../../components/api/api';
 
 export const getAllOfertasByCurso = async (codCurso) => {
   try {
@@ -6,6 +6,16 @@ export const getAllOfertasByCurso = async (codCurso) => {
     return response;
   } catch (error) {
     console.log('Error en getAllOfertasByCurso', error);
+    throw error;
+  }
+};
+
+export const getAllOfertasByCursoRequester = async (codCurso) => {
+  try {
+    const response = await axiosForAuth.get(`oferta/curso/${codCurso}`);
+    return response;
+  } catch (error) {
+    console.log('Error en getAllOfertasByCursoRequester', error);
     throw error;
   }
 };

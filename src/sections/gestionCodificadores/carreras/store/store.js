@@ -1,4 +1,4 @@
-import { axiosInstance } from '../../../../components/api/api';
+import { axiosForAuth, axiosInstance } from '../../../../components/api/api';
 
 export const getCarreras = async () => {
   try {
@@ -6,6 +6,16 @@ export const getCarreras = async () => {
     return response;
   } catch (error) {
     console.log('Error en getCarreras', error);
+    throw error;
+  }
+};
+
+export const getCarrerasRequester = async () => {
+  try {
+    const response = await axiosForAuth.get(`carrera/`);
+    return response;
+  } catch (error) {
+    console.log('Error en getCarrerasRequester', error);
     throw error;
   }
 };
