@@ -37,10 +37,11 @@ const Transition = forwardRef((props, ref) => <Slide direction="up" ref={ref} {.
 RequestsFormDialog.propTypes = {
   open: PropTypes.bool,
   handleCloseClick: PropTypes.func,
+  handleCloseAfterAction: PropTypes.func,
   editMode: PropTypes.bool,
   formData: PropTypes.object,
 };
-export default function RequestsFormDialog({ open, handleCloseClick, editMode, Data }) {
+export default function RequestsFormDialog({ open, handleCloseClick, handleCLoseAfterAction, editMode, Data }) {
   /* {
     cod_solicitante,
     num_id,
@@ -237,7 +238,7 @@ export default function RequestsFormDialog({ open, handleCloseClick, editMode, D
                                   setMessage('success', '¡Solicitante actualizado con éxito!');
 
                                   setTimeout(() => {
-                                    handleCloseClick();
+                                    handleCLoseAfterAction();
                                   }, 500);
                                 }
                               })
@@ -275,7 +276,7 @@ export default function RequestsFormDialog({ open, handleCloseClick, editMode, D
                             console.log('Insertadas: ', response);
                             setMessage('success', '¡Solicitante confirmado con éxito!');
 
-                            handleCloseClick();
+                            handleCLoseAfterAction();
                           }
                         })
                         .catch((error) => {

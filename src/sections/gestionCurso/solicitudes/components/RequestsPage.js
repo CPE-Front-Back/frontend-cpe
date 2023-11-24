@@ -327,6 +327,13 @@ export default function RequestsPage(solicitantesConfirmados) {
       .catch(() => {});
   };
 
+  const handleCloseAfterAction = () => {
+    setRefresh(refresh + 1);
+    setIsFormDialogVisible(false);
+    setEditMode(false);
+    setFormData({});
+  };
+
   const handleRowClick = (codSol) => {
     const newSelected = [codSol];
     setSelected(newSelected);
@@ -348,6 +355,7 @@ export default function RequestsPage(solicitantesConfirmados) {
         <RequestsFormDialog
           open={isFormDialogVisible}
           handleCloseClick={handleClose}
+          handleCLoseAfterAction={handleCloseAfterAction}
           Data={formData}
           editMode={editMode}
         />
