@@ -267,18 +267,25 @@ export default function RequesterPersonalDataForm({ togleFormVisibility }) {
 
   return (
     <>
-      <StyledRoot>
-        <Main>
-          <Container sx={{ backgroundColor: 'white' }}>
-            {!isCarrersFormVisible ? (
-              <>
-                <Typography variant="h4" sx={{ textAlign: 'center' }}>
-                  Introduzca sus datos personales
-                </Typography>
-                <Grid container spacing={3} sx={{ pb: '25px', mt: '10px' }}>
-                  <Grid item xs={12} sm={6} md={3}>
+      {' '}
+      {!isCarrersFormVisible ? (
+        <StyledRoot>
+          <Main>
+            <Container sx={{ backgroundColor: 'white', mb: '20px' }}>
+              <Grid container spacing={2}>
+                <Grid item container sx={{ mb: '30px' }}>
+                  <Grid item xs>
+                    <Typography variant="h4" sx={{ textAlign: 'center' }}>
+                      Introduzca sus datos personales
+                    </Typography>
+                  </Grid>
+                </Grid>
+
+                <Grid item container spacing={2}>
+                  <Grid item xs={12} sm={3}>
                     <TextField
                       name="num_id"
+                      fullWidth
                       type="text"
                       value={formData.num_id}
                       label="Carnet de identidad"
@@ -289,9 +296,11 @@ export default function RequesterPersonalDataForm({ togleFormVisibility }) {
                       inputProps={{ maxLength: 11 }}
                     />
                   </Grid>
-                  <Grid item xs={12} sm={6} md={3}>
+
+                  <Grid item xs={12} sm={3}>
                     <TextField
                       name="nomb_solicitante"
+                      fullWidth
                       type="text"
                       value={formData.nomb_solicitante}
                       label="Nombres"
@@ -303,9 +312,11 @@ export default function RequesterPersonalDataForm({ togleFormVisibility }) {
                       sx={{ textAlign: 'center' }}
                     />
                   </Grid>
-                  <Grid item xs={12} sm={6} md={3}>
+
+                  <Grid item xs={12} sm={3}>
                     <TextField
                       name="apell_solicitante"
+                      fullWidth
                       type={'text'}
                       value={firstLastName}
                       label="1er apellido"
@@ -319,9 +330,11 @@ export default function RequesterPersonalDataForm({ togleFormVisibility }) {
                       sx={{ margin: 'auto' }}
                     />
                   </Grid>
-                  <Grid item xs={12} sm={6} md={3}>
+
+                  <Grid item xs={12} sm={3}>
                     <TextField
                       name="secondLastName"
+                      fullWidth
                       label="2do apellido"
                       value={secondLastName}
                       onChange={(event) => {
@@ -336,10 +349,11 @@ export default function RequesterPersonalDataForm({ togleFormVisibility }) {
                   </Grid>
                 </Grid>
 
-                <Grid container spacing={3} columns={{ xs: 12, sm: 12, md: 4 }}>
-                  <Grid item xs={12} sm={6} md={1}>
+                <Grid item container spacing={2}>
+                  <Grid item xs={12} sm={3}>
                     <TextField
                       name="num_telefono"
+                      fullWidth
                       type="tel"
                       value={formData.num_telefono}
                       label="Teléfono"
@@ -351,7 +365,8 @@ export default function RequesterPersonalDataForm({ togleFormVisibility }) {
                       sx={{ margin: 'auto' }}
                     />
                   </Grid>
-                  <Grid item xs={12} sm={6} md={1}>
+
+                  <Grid item xs={12} sm={3}>
                     <Autocomplete
                       id="ComboProvincia"
                       {...ProvinceProps}
@@ -360,7 +375,6 @@ export default function RequesterPersonalDataForm({ togleFormVisibility }) {
                         setProvinciaSeleccionada(newValue);
                         setMunicipioSeleccionado(null);
                       }}
-                      sx={{ maxWidth: '240px', margin: 'auto' }}
                       renderInput={(params) => (
                         <TextField
                           {...params}
@@ -372,7 +386,8 @@ export default function RequesterPersonalDataForm({ togleFormVisibility }) {
                       noOptionsText={'No hay opciones'}
                     />
                   </Grid>
-                  <Grid item xs={12} sm={6} md={1}>
+
+                  <Grid item xs={12} sm={3}>
                     <Autocomplete
                       id="ComboMunicipio"
                       {...MunicipioProps}
@@ -384,7 +399,6 @@ export default function RequesterPersonalDataForm({ togleFormVisibility }) {
                           cod_municipio: newValue ? newValue.cod_municipio : null,
                         }));
                       }}
-                      sx={{ maxWidth: '240px', margin: 'auto' }}
                       renderInput={(params) => (
                         <TextField
                           {...params}
@@ -396,7 +410,8 @@ export default function RequesterPersonalDataForm({ togleFormVisibility }) {
                       noOptionsText={'Seleccione una provincia'}
                     />
                   </Grid>
-                  <Grid item xs={12} sm={6} md={1}>
+
+                  <Grid item xs={12} sm={3}>
                     <Autocomplete
                       id="ComboFuentesIngreso"
                       {...FuenteIngresoProps}
@@ -408,7 +423,6 @@ export default function RequesterPersonalDataForm({ togleFormVisibility }) {
                           fuente_ingreso: newValue ? newValue.cod_fuente : null,
                         }));
                       }}
-                      sx={{ maxWidth: '240px', margin: 'auto' }}
                       renderInput={(params) => (
                         <TextField
                           {...params}
@@ -422,8 +436,8 @@ export default function RequesterPersonalDataForm({ togleFormVisibility }) {
                   </Grid>
                 </Grid>
 
-                <Grid container spacing={2} columns={{ xs: 1, sm: 1, md: 2 }} sx={{ mt: '20px' }}>
-                  <Grid item xs={1} sx={{ mt: '10px', mb: '10px' }}>
+                <Grid item container spacing={2}>
+                  <Grid item xs={12} sm={6} sx={{ mt: '10px', mb: '10px' }}>
                     <LoadingButton
                       fullWidth
                       size="large"
@@ -444,39 +458,39 @@ export default function RequesterPersonalDataForm({ togleFormVisibility }) {
                     </LoadingButton>
                   </Grid>
 
-                  <Grid item xs={1} sx={{ mt: '10px', mb: '10px' }}>
+                  <Grid item xs={12} sm={6} sx={{ mt: '10px', mb: '10px' }}>
                     <LoadingButton fullWidth size="large" variant="contained" onClick={handleAvanzarClick}>
                       Avanzar
                     </LoadingButton>
                   </Grid>
                 </Grid>
-              </>
-            ) : (
-              <RequesterCarrerOptionsForm
-                personalData={formData}
-                onVolver={() => {
-                  confirm({
-                    content: (
-                      <Alert severity={'warning'}>
-                        ¡Perderá los cambios no guardados! ¿Desea volver a sus datos personales?
-                      </Alert>
-                    ),
-                  })
-                    .then(() => {
-                      setIsCarrersFormVisible(!isCarrersFormVisible);
-                      setFormData({
-                        ...formData,
-                        apell_solicitante: ``,
-                      });
-                    })
-                    .catch(() => {});
-                }}
-                onEnviar={() => togleFormVisibility()}
-              />
-            )}
-          </Container>
-        </Main>
-      </StyledRoot>
+              </Grid>
+            </Container>
+          </Main>
+        </StyledRoot>
+      ) : (
+        <RequesterCarrerOptionsForm
+          personalData={formData}
+          onVolver={() => {
+            confirm({
+              content: (
+                <Alert severity={'warning'}>
+                  ¡Perderá los cambios no guardados! ¿Desea volver a sus datos personales?
+                </Alert>
+              ),
+            })
+              .then(() => {
+                setIsCarrersFormVisible(!isCarrersFormVisible);
+                setFormData({
+                  ...formData,
+                  apell_solicitante: ``,
+                });
+              })
+              .catch(() => {});
+          }}
+          onEnviar={() => togleFormVisibility()}
+        />
+      )}
     </>
   );
 }
