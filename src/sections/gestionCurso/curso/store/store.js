@@ -1,4 +1,4 @@
-import { axiosInstance } from '../../../../components/api/api';
+import { axiosForAuth, axiosInstance } from '../../../../components/api/api';
 
 export const getCursos = async () => {
   try {
@@ -12,7 +12,7 @@ export const getCursos = async () => {
 
 export const getActiveCourse = async () => {
   try {
-    const response = await axiosInstance.get(`curso/activo/`);
+    const response = await axiosForAuth.get(`curso/activo/`);
     return response;
   } catch (error) {
     console.log('Error en getActiveCourse', error);

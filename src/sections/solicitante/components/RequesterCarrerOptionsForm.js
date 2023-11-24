@@ -2,6 +2,7 @@ import { LoadingButton } from '@mui/lab';
 import { Autocomplete, Grid, Stack, TextField, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import setMessage from '../../../components/messages/messages';
 import useResponsive from '../../../hooks/useResponsive';
 
@@ -19,16 +20,15 @@ RequesterCarrerOptionsForm.propTypes = {
   onVolver: PropTypes.func,
   onEnviar: PropTypes.func,
 };
-export default function RequesterCarrerOptionsForm({ personalData, options, onVolver, onEnviar }) {
+export default function RequesterCarrerOptionsForm({ personalData, options, onVolver }) {
   const [ofertas, setOfertas] = useState([]);
   const [ofertasFiltradas, setOfertasFiltradas] = useState([]);
   const [selectedOptions, setSelectedOptions] = useState(null);
   const [carreras, setCarreras] = useState([]);
 
   const { activeCourse } = UseActiveCourse();
-
-  const isPhoneSize = useResponsive('down', 'sm');
-  const mtSize = isPhoneSize ? '-10px' : '-140px';
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const [errors, setErrors] = useState({
     selectedOption: '',
@@ -78,6 +78,10 @@ export default function RequesterCarrerOptionsForm({ personalData, options, onVo
         console.log('Error al cargar las carreras', error);
       });
   }, []);
+
+  const onEnviar = () => {
+    navigate('/requester', { state: { from: location }, replace: true });
+  };
 
   const handleVolverClick = () => {
     onVolver();
@@ -166,9 +170,9 @@ export default function RequesterCarrerOptionsForm({ personalData, options, onVo
   }, [selectedOptions]);
 
   return (
-    <Grid container sx={{ mt: mtSize, pt: '30px' }}>
+    <Grid container sx={{ margin: 'auto', mb: '20px', maxWidth: '700px' }}>
       <Grid item xs />
-      <Grid item xs={6}>
+      <Grid item xs={10}>
         <Typography variant="h4" sx={{ textAlign: 'center' }}>
           Listado de solicitudes
         </Typography>
@@ -244,13 +248,13 @@ export default function RequesterCarrerOptionsForm({ personalData, options, onVo
         </Grid>
       </Stack>
 
-      <Grid container columnSpacing={4} sx={{ mt: 5 }}>
-        <Grid item xs>
+      <Grid container rowSpacing={2} columnSpacing={2} sx={{ mt: '20px' }}>
+        <Grid item xs={12} sm={6}>
           <LoadingButton fullWidth size="large" type="submit" variant="contained" onClick={handleVolverClick}>
             Volver
           </LoadingButton>
         </Grid>
-        <Grid item xs>
+        <Grid item xs={12} sm={6}>
           <LoadingButton fullWidth size="large" type="submit" variant="contained" onClick={handleSubmitClick}>
             Enviar Solicitud
           </LoadingButton>

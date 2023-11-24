@@ -313,10 +313,9 @@ export const getListadoSolicitantesReport = async (nomb_curso) => {
 };
 
 export const getListadoOfertasReportRequester = async (nomb_curso) => {
-  // todo: implement report template and backend methods
   try {
     const format = 'pdf';
-    const response = await axiosInstance.get(`report/solicitantesCurso/nomb_curso/${nomb_curso}/format/${format}`, {
+    const response = await axiosForAuth.get(`report/listadoOfertas/nomb_curso/${nomb_curso}/format/${format}`, {
       responseType: 'arraybuffer',
     });
     return response;

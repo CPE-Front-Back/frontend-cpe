@@ -81,7 +81,6 @@ export default function Router() {
       children: [
         { element: <Navigate to="/simple/personal-data-form" />, index: true },
         { path: 'personal-data-form', element: <RequesterPersonalDataForm /> },
-        { path: 'careers-form', element: <RequesterCarrerOptionsForm /> },
       ],
     },
     {

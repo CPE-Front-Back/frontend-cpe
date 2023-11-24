@@ -35,7 +35,7 @@ const Main = styled('div')(({ theme }) => ({
     paddingRight: theme.spacing(2),
   },
   [theme.breakpoints.down('sm')]: {
-    paddingTop: APP_BAR_MOBILE + 20,
+    paddingTop: APP_BAR_MOBILE + 40,
     paddingLeft: theme.spacing(2),
     paddingRight: theme.spacing(2),
   },
@@ -44,7 +44,7 @@ const Main = styled('div')(({ theme }) => ({
 RequesterPersonalDataForm.propTypes = {
   togleFormVisibility: PropTypes.func,
 };
-export default function RequesterPersonalDataForm({ togleFormVisibility }) {
+export default function RequesterPersonalDataForm() {
   const [isCarrersFormVisible, setIsCarrersFormVisible] = useState(false);
   const [formData, setFormData] = useState({
     cod_solicitante: '',
@@ -143,15 +143,22 @@ export default function RequesterPersonalDataForm({ togleFormVisibility }) {
     const isValid = validateForm();
 
     if (isValid) {
-      if (formData.num_id.length !== 11) {
+      const currentYear = new Date().getFullYear();
+      const centuryDigit = Number(formData.num_id.charAt(6));
+      const birthYear =
+        Number(formData.num_id.substring(0, 2)) + (centuryDigit === 9 ? 1800 : centuryDigit < 5 ? 1900 : 2000);
+      const age = currentYear - birthYear;
+      console.log('currentYear', currentYear, 'century', centuryDigit, 'birth', birthYear, 'age', age);
+
+      if (!/^\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])\d{5}$/.test(formData.num_id)) {
         setErrors((prevErrors) => ({
           ...prevErrors,
-          num_id: 'El carnet de identidad debe tener 11 dígitos.',
+          num_id: 'Carnet de Identidad inválido.',
         }));
-      } else if (!/^[0-9]*$/.test(formData.num_id)) {
+      } else if (age < 18) {
         setErrors((prevErrors) => ({
           ...prevErrors,
-          num_id: 'El carnet de identidad debe contener solo números.',
+          num_id: 'La edad mínima es 18 años.',
         }));
       } else if (!/^(\w+\s)?(\w+\s)?(\w+\s)?\w+$/.test(formData.nomb_solicitante)) {
         console.log('nombre', formData.nomb_solicitante);
@@ -267,7 +274,6 @@ export default function RequesterPersonalDataForm({ togleFormVisibility }) {
 
   return (
     <>
-      {' '}
       {!isCarrersFormVisible ? (
         <StyledRoot>
           <Main>
@@ -436,8 +442,8 @@ export default function RequesterPersonalDataForm({ togleFormVisibility }) {
                   </Grid>
                 </Grid>
 
-                <Grid item container spacing={2}>
-                  <Grid item xs={12} sm={6} sx={{ mt: '10px', mb: '10px' }}>
+                <Grid item container rowSpacing={2} columnSpacing={2}>
+                  <Grid item xs={12} sm={6} sx={{ mt: '10px' }}>
                     <LoadingButton
                       fullWidth
                       size="large"
@@ -458,7 +464,7 @@ export default function RequesterPersonalDataForm({ togleFormVisibility }) {
                     </LoadingButton>
                   </Grid>
 
-                  <Grid item xs={12} sm={6} sx={{ mt: '10px', mb: '10px' }}>
+                  <Grid item xs={12} sm={6} sx={{ mb: '10px', mt: '10px' }}>
                     <LoadingButton fullWidth size="large" variant="contained" onClick={handleAvanzarClick}>
                       Avanzar
                     </LoadingButton>
@@ -469,27 +475,30 @@ export default function RequesterPersonalDataForm({ togleFormVisibility }) {
           </Main>
         </StyledRoot>
       ) : (
-        <RequesterCarrerOptionsForm
-          personalData={formData}
-          onVolver={() => {
-            confirm({
-              content: (
-                <Alert severity={'warning'}>
-                  ¡Perderá los cambios no guardados! ¿Desea volver a sus datos personales?
-                </Alert>
-              ),
-            })
-              .then(() => {
-                setIsCarrersFormVisible(!isCarrersFormVisible);
-                setFormData({
-                  ...formData,
-                  apell_solicitante: ``,
-                });
-              })
-              .catch(() => {});
-          }}
-          onEnviar={() => togleFormVisibility()}
-        />
+        <StyledRoot>
+          <Main>
+            <RequesterCarrerOptionsForm
+              personalData={formData}
+              onVolver={() => {
+                confirm({
+                  content: (
+                    <Alert severity={'warning'}>
+                      ¡Perderá los cambios no guardados! ¿Desea volver a sus datos personales?
+                    </Alert>
+                  ),
+                })
+                  .then(() => {
+                    setIsCarrersFormVisible(!isCarrersFormVisible);
+                    setFormData({
+                      ...formData,
+                      apell_solicitante: ``,
+                    });
+                  })
+                  .catch(() => {});
+              }}
+            />
+          </Main>
+        </StyledRoot>
       )}
     </>
   );
