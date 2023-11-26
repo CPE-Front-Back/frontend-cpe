@@ -52,7 +52,7 @@ export default function Nav({ openNav, onCloseNav }) {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { activeCourse } = UseActiveCourse();
+  const { activeCourse, refreshProcessingStatus, setRefreshProcessingStatus } = UseActiveCourse();
   const { setAuth } = UseAuthContext();
   const confirm = useConfirm();
 
@@ -82,58 +82,82 @@ export default function Nav({ openNav, onCloseNav }) {
     setActionName(actionName);
     switch (actionName) {
       case 'Asignar carreras 1ra vuelta':
-        /* asignar1raVuelta(activeCourse.cod_curso)
+        asignar1raVuelta(activeCourse.cod_curso)
           .then((response) => {
             console.log(response);
+            if (response.data) {
+              setRefreshProcessingStatus(refreshProcessingStatus + 1);
+              setMessage('success', '¡Asignación realizada con éxito!');
+              setIsOpen(true);
+            } else {
+              setMessage('error', '¡No se ha podido realizar la asignación!');
+            }
           })
           .catch((error) => {
             console.log('Error al asignar primera vuelta', error);
             setMessage('error', '¡Ha ocurrido un error!');
-          }); */
-        setMessage('success', '¡Asignación realizada con éxito!');
-        setIsOpen(true);
+          });
+
         break;
       case 'Asignar carreras 2da vuelta':
         console.log(`Submenu item clicked: ${actionName}`);
-        /* asignar2daVuelta(activeCourse.cod_curso)
+        asignar2daVuelta(activeCourse.cod_curso)
           .then((response) => {
             console.log(response);
+            if (response.data) {
+              setRefreshProcessingStatus(refreshProcessingStatus + 1);
+              setMessage('success', '¡Asignación realizada con éxito!');
+              setIsOpen(true);
+            } else {
+              setMessage('error', '¡No se ha podido realizar la asignación!');
+            }
           })
           .catch((error) => {
             console.log('Error al asignar segunda vuelta', error);
             setMessage('error', '¡Ha ocurrido un error!');
-          }); */
-        setMessage('success', '¡Asignación realizada con éxito!');
-        setIsOpen(true);
+          });
+
         break;
       case 'Asignar aulas':
         console.log(`Submenu item clicked: ${actionName}`);
-        /* asignarAulas(activeCourse.cod_curso)
+        asignarAulas(activeCourse.cod_curso)
           .then((response) => {
             console.log(response);
+            if (response.data) {
+              setRefreshProcessingStatus(refreshProcessingStatus + 1);
+              setMessage('success', '¡Asignación realizada con éxito!');
+              setIsOpen(true);
+            } else {
+              setMessage('error', '¡No se ha podido realizar la asignación!');
+            }
           })
           .catch((error) => {
             console.log('Error al asignar las aulas', error);
             setMessage('error', '¡Ha ocurrido un error!');
-          }); */
-        setMessage('success', '¡Asignación realizada con éxito!');
-        setIsOpen(true);
+          });
+
         break;
       case 'Asignar actas':
         console.log(`Submenu item clicked: ${actionName}`);
-        /* asignarActas(activeCourse.cod_curso)
+        asignarActas(activeCourse.cod_curso)
           .then((response) => {
             console.log(response);
+            if (response.data) {
+              setRefreshProcessingStatus(refreshProcessingStatus + 1);
+              setMessage('success', '¡Asignación realizada con éxito!');
+              setIsOpen(true);
+            } else {
+              setMessage('error', '¡No se ha podido realizar la asignación!');
+            }
           })
           .catch((error) => {
             console.log('Error al asignar las actas', error);
             setMessage('error', '¡Ha ocurrido un error!');
-          }); */
-        setMessage('success', '¡Asignación realizada con éxito!');
-        setIsOpen(true);
+          });
+
         break;
       default:
-        console.log('Error en el procesamiento:', actionName);
+        console.log('Accion no reconocida:', actionName);
         break;
     }
   };

@@ -12,9 +12,9 @@ export const getSolicitantesByCurso = async (codCurso, confirmado) => {
   }
 };
 
-export const getSolicitudesByCurso = async (codCurso) => {
+export const getSolicitudesByCurso = async (codCurso, confirmado) => {
   try {
-    const response = await axiosInstance.get(`solicitud/curso/${codCurso}`);
+    const response = await axiosInstance.get(`solicitud/curso/${codCurso}/confirmado/${confirmado}`);
     return response;
   } catch (error) {
     console.log('Error en getSolicitudesByCurso', error);

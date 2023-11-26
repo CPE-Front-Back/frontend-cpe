@@ -35,7 +35,7 @@ NavItem.propTypes = {
 };
 
 function NavItem({ item, onSubmenuItemClicked }) {
-  const { title, path, icon, info, haveAccess, showSubItems, subItems, isDisabled } = item;
+  const { title, path, icon, info, haveAccess, showSubItems, subItems, enabled } = item;
   const [isExpanded, setIsExpanded] = useState(showSubItems);
 
   const ToggleShowSubItems = () => {
@@ -86,7 +86,7 @@ function NavItem({ item, onSubmenuItemClicked }) {
             },
           }}
           onClick={() => onSubmenuItemClicked(title)}
-          disabled={isDisabled}
+          disabled={!enabled}
         >
           <StyledNavItemIcon>{icon && icon}</StyledNavItemIcon>
 

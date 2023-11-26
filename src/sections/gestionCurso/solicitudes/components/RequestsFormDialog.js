@@ -69,6 +69,9 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
   const [firstLN, secondLN] = Data.apell_solicitante ? Data.apell_solicitante.split(' ') : [null, null];
   const [firstLastName, setFirstLastName] = useState(firstLN);
   const [secondLastName, setSecondLastName] = useState(secondLN);
+  const [userClickedActionButton, setUserClickedActionButton] = useState(false);
+
+  const { activeCourse, refreshProcessingStatus, setRefreshProcessingStatus } = UseActiveCourse();
 
   const [errors, setErrors] = useState({
     num_id: '',
@@ -191,7 +194,7 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
   };
 
   useEffect(() => {
-    if (formData.apell_solicitante) {
+    if (formData.apell_solicitante && userClickedActionButton) {
       if (secondLastName !== '' && formData.apell_solicitante.includes(secondLastName) && formData.confirmado) {
         console.log(formData);
         if (editMode) {
@@ -238,6 +241,7 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
                                   setMessage('success', '¡Solicitante actualizado con éxito!');
 
                                   setTimeout(() => {
+                                    setRefreshProcessingStatus(refreshProcessingStatus + 1);
                                     handleCLoseAfterAction();
                                   }, 500);
                                 }
@@ -276,6 +280,7 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
                             console.log('Insertadas: ', response);
                             setMessage('success', '¡Solicitante confirmado con éxito!');
 
+                            setRefreshProcessingStatus(refreshProcessingStatus + 1);
                             handleCLoseAfterAction();
                           }
                         })
@@ -296,7 +301,7 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
         }
       }
     }
-  }, [formData]);
+  }, [formData, userClickedActionButton]);
 
   useEffect(() => {
     if (municipioSeleccionado) {
@@ -410,7 +415,6 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
   // FINAL DE LA LOGICA PARA LOS DATOS DE LOS SOLICITANTES
 
   // INICIO DE LA LOGICA PARA LAS ******CARRERAS******
-  const { activeCourse } = UseActiveCourse();
 
   const [ofertas, setOfertas] = useState([]);
   const [ofertasFiltradas, setOfertasFiltradas] = useState([]);
@@ -753,7 +757,15 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
             </Stack>
           </Grid>
 
-          <LoadingButton fullWidth size="large" variant="contained" onClick={handleEnviarClick}>
+          <LoadingButton
+            fullWidth
+            size="large"
+            variant="contained"
+            onClick={() => {
+              setUserClickedActionButton(true);
+              handleEnviarClick().then(() => {});
+            }}
+          >
             {editMode ? 'Confirmar' : 'Registrar'}
           </LoadingButton>
         </Grid>

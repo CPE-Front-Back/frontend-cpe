@@ -48,9 +48,11 @@ export default function RequalificationPage() {
     const newErrors = {};
 
     if (!requesterIdNumber) {
-      newErrors.requesterIdNumber = 'No. Identidad requerido';
+      newErrors.requesterIdNumber = 'No. identidad requerido';
     } else if (requesterIdNumber?.length !== 11) {
-      newErrors.requesterIdNumber = 'El carnet de identidad debe tener 11 dígitos.';
+      newErrors.requesterIdNumber = 'El carnet de identidad debe tener 11 dígitos';
+    } else if (!/^\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])\d{5}$/.test(requesterIdNumber)) {
+      newErrors.requesterIdNumber = 'Carnet de Identidad inválido';
     }
 
     setErrors(newErrors);
@@ -64,32 +66,38 @@ export default function RequalificationPage() {
         .then((response) => {
           if (response.status === 200) {
             const requester = response.data;
-            setRequester(requester);
-            console.log('el solicitante', requester);
-            getActByRequesterId(requester.cod_solicitante)
-              .then((response) => {
-                if (response.status === 200) {
-                  const act = response.data;
-                  console.log('el acta', act);
-                  getAssignmentByRequesterId(requester.cod_solicitante)
-                    .then((response) => {
-                      if (response.status === 200) {
-                        const assignment = response.data;
-                        console.log('la asignacion', assignment);
+            if (requester) {
+              setRequester(requester);
+              console.log('el solicitante', requester);
+              getActByRequesterId(requester.cod_solicitante)
+                .then((response) => {
+                  if (response.status === 200) {
+                    const act = response.data;
+                    console.log('el acta', act);
+                    getAssignmentByRequesterId(requester.cod_solicitante)
+                      .then((response) => {
+                        if (response.status === 200) {
+                          const assignment = response.data;
+                          console.log('la asignacion', assignment);
 
-                        setAnonNumber(act.cod_anonimato);
-                        setCalification(assignment.calificacion);
-                        setCalificationDumb(assignment.calificacion);
-                      }
-                    })
-                    .catch((error) => {
-                      console.log('Error al buscar la solicitud del solicitante', error);
-                    });
-                }
-              })
-              .catch((error) => {
-                console.log('Error al buscar el acta del solicitante', error);
-              });
+                          setAnonNumber(act.cod_anonimato);
+                          setCalification(assignment.calificacion);
+                          setCalificationDumb(assignment.calificacion);
+                        }
+                      })
+                      .catch((error) => {
+                        console.log('Error al buscar la solicitud del solicitante', error);
+                      });
+                  }
+                })
+                .catch((error) => {
+                  console.log('Error al buscar el acta del solicitante', error);
+                });
+            } else {
+              setMessage('warning', '¡Solicitante no encontrado!');
+              setAnonNumber(null);
+              setCalification(null);
+            }
           }
         })
         .catch((error) => {
@@ -206,7 +214,7 @@ export default function RequalificationPage() {
                     readOnly: true,
                   }}
                   InputLabelProps={{
-                    shrink: !!anonNumber,
+                    shrink: !!anonNumber || anonNumber === 0,
                   }}
                 />
               </Grid>
@@ -221,7 +229,7 @@ export default function RequalificationPage() {
                   InputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
                   inputProps={{ maxLength: 3 }}
                   InputLabelProps={{
-                    shrink: !!calification || focused,
+                    shrink: !!calification || focused || calification === 0,
                   }}
                   error={!!errors.calification}
                   helperText={errors.calification}

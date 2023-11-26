@@ -52,7 +52,7 @@ export default function QualificationPage() {
 
   const [emptyRows, setEmptyRows] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-  const { activeCourse } = UseActiveCourse();
+  const { activeCourse, refreshProcessingStatus, setRefreshProcessingStatus } = UseActiveCourse();
   const confirm = useConfirm();
 
   const [errors, setErrors] = useState({
@@ -113,7 +113,7 @@ export default function QualificationPage() {
 
       const req = actasNotasList.map((actaNota, index) => ({
         no_anonimato: actaNota.cod_anonimato,
-        calificacion: asignacionesList[index].calificacion,
+        calificacion: asignacionesList[index].calificacion === 0 ? -1 : asignacionesList[index].calificacion,
       }));
 
       setRequestersList(req);
@@ -221,6 +221,7 @@ export default function QualificationPage() {
 
   useEffect(() => {
     if (updatedQualifications) {
+      setRefreshProcessingStatus(refreshProcessingStatus + 1);
       setMessage('success', '¡Notas actualizadas con éxito!');
     }
   }, [updatedQualifications]);
@@ -269,10 +270,12 @@ export default function QualificationPage() {
                     })
                       .then(() => {
                         setSelectedComp(newValue);
+                        setUpdatedQualifications(false);
                       })
                       .catch(() => {});
                   } else {
                     setSelectedComp(newValue);
+                    setUpdatedQualifications(false);
                   }
                 }}
                 getOptionLabel={(option) => option.cod_acta_comp + 500}
@@ -344,20 +347,22 @@ export default function QualificationPage() {
               </Card>
             </Grid>
 
-            <Grid item xs={12} />
+            <Grid item container sx={{ mb: '20px' }}>
+              <Grid item xs />
 
-            <Grid item container xs={3} sx={{ mb: '20px' }}>
-              <Grid item xs>
+              <Grid item xs={2}>
                 <Button type="submit" variant="contained" color="primary" onClick={handleCancel}>
                   Cancelar
                 </Button>
               </Grid>
 
-              <Grid item xs>
+              <Grid item xs={2}>
                 <Button type="submit" variant="contained" color="primary" onClick={handleAccept}>
                   Aceptar
                 </Button>
               </Grid>
+
+              <Grid item xs />
             </Grid>
           </Grid>
         </Container>

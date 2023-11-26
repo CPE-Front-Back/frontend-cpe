@@ -102,7 +102,7 @@ export default function RequestsPage(solicitantesConfirmados) {
   const [CARRERASLIST, setCARRERASLIST] = useState([]);
 
   useEffect(() => {
-    getSolicitudesByCurso(activeCourse.cod_curso)
+    getSolicitudesByCurso(activeCourse.cod_curso, solicitantesConfirmados.solicitantesConfirmados)
       .then((response) => {
         if (response.status === 200) {
           setSOLICITUDESLIST(response.data);
@@ -111,7 +111,7 @@ export default function RequestsPage(solicitantesConfirmados) {
       .catch((error) => {
         console.log('Error al cargar las solicitudes', error);
       });
-  }, []);
+  }, [solicitantesConfirmados]);
 
   useEffect(() => {
     getCarreras()

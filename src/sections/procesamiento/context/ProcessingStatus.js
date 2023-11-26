@@ -21,29 +21,55 @@ export function ProcessingStatusProvider({ children }) {
   const [canRecalify, setCanRecalify] = useState(false);
   const [canActOffers, setCanActOffers] = useState(false);
   const [canActCapacities, setCanActCapacities] = useState(false);
-  const [canActRequests, setCanActRequests] = useState(false);
-  const { activeCourse } = UseActiveCourse();
+  const [canActRequests, setCanActRequests] = useState(true);
+  const { activeCourse, refreshProcessingStatus } = UseActiveCourse();
 
   useEffect(() => {
     if (activeCourse.cod_curso !== -1) {
-      verifyCanAsigPrimVuelta(activeCourse.cod_curso).then(() =>
-        verifyCanAsigSegVuelta(activeCourse.cod_curso).then(() =>
-          VerifyCanCapacityOfferRequest(activeCourse.cod_curso).then(() =>
-            verifyCanAsigClassrooms(activeCourse.cod_curso).then(() =>
-              verifyCanAsigActs(activeCourse.cod_curso).then(() =>
-                verifyCalify(activeCourse.cod_curso).then(() => verifyRecalify(activeCourse.cod_curso))
-              )
-            )
-          )
-        )
-      );
+      verifyCanAsigPrimVuelta(activeCourse.cod_curso)
+        .then(() => {})
+        .finally(() => {
+          setTimeout(() => {
+            VerifyCanCapacityOfferRequest(activeCourse.cod_curso)
+              .then(() => {})
+              .finally(() => {
+                setTimeout(() => {
+                  verifyCanAsigClassrooms(activeCourse.cod_curso)
+                    .then(() => {})
+                    .finally(() => {
+                      setTimeout(() => {
+                        verifyCanAsigActs(activeCourse.cod_curso)
+                          .then(() => {})
+                          .finally(() => {
+                            setTimeout(() => {
+                              verifyCalify(activeCourse.cod_curso)
+                                .then(() => {})
+                                .finally(() => {
+                                  setTimeout(() => {
+                                    verifyRecalify(activeCourse.cod_curso)
+                                      .then(() => {})
+                                      .finally(() => {
+                                        setTimeout(() => {
+                                          verifyCanAsigSegVuelta(activeCourse.cod_curso).then(() => {});
+                                        }, 1000);
+                                      });
+                                  }, 1000);
+                                });
+                            }, 1000);
+                          });
+                      }, 1000);
+                    });
+                }, 1000);
+              });
+          }, 1000);
+        });
     }
-  }, [activeCourse]);
+  }, [activeCourse, refreshProcessingStatus]);
 
   // ok
   const verifyCanAsigPrimVuelta = async (codCurso) => {
     console.log('verificando asigPrimVuelta');
-    getSolicitudesByCurso(codCurso)
+    getSolicitudesByCurso(codCurso, true)
       .then((response) => {
         if (response.status === 200) {
           if (response.data.length > 0) {

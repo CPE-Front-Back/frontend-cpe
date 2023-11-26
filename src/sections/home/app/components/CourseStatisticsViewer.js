@@ -21,7 +21,7 @@ CourseStatisticsViewer.propTypes = {
   title: PropTypes.string.isRequired,
 };
 export default function CourseStatisticsViewer({ title, ...other }) {
-  const { activeCourse } = UseActiveCourse();
+  const { activeCourse, refreshProcessingStatus } = UseActiveCourse();
   const [cant1, setCant1] = useState(0);
   const [cant2, setCant2] = useState(0);
   const [cant3, setCant3] = useState(0);
@@ -38,9 +38,7 @@ export default function CourseStatisticsViewer({ title, ...other }) {
       .catch((error) => {
         console.log('Error al cargar la cantidad total de solicitantes en el curso', error);
       });
-  }, [activeCourse]);
 
-  useEffect(() => {
     getCantSolicitudesTotalCurso(activeCourse.cod_curso)
       .then((response) => {
         if (response.status === 200) {
@@ -50,9 +48,7 @@ export default function CourseStatisticsViewer({ title, ...other }) {
       .catch((error) => {
         console.log('Error al cargar la cantidad total de solicitudes en el curso', error);
       });
-  }, [activeCourse]);
 
-  useEffect(() => {
     getCantCarrerasAsigPrimeraVueltaCurso(activeCourse.cod_curso)
       .then((response) => {
         if (response.status === 200) {
@@ -62,13 +58,7 @@ export default function CourseStatisticsViewer({ title, ...other }) {
       .catch((error) => {
         console.log('Error al cargar la cantidad de carreras asig 1ra vuelta en el curso', error);
       });
-  }, [activeCourse]);
 
-  useEffect(() => {
-    setCant4(cant1 - cant3);
-  }, [cant1, cant3]);
-
-  useEffect(() => {
     getCantCarrerasAsigSegundaVueltaCurso(activeCourse.cod_curso)
       .then((response) => {
         if (response.status === 200) {
@@ -78,7 +68,11 @@ export default function CourseStatisticsViewer({ title, ...other }) {
       .catch((error) => {
         console.log('Error al cargar la cantidad de carreras asig 2da vuelta en el curso', error);
       });
-  }, [activeCourse]);
+  }, [activeCourse, refreshProcessingStatus]);
+
+  useEffect(() => {
+    setCant4(cant1 - cant3);
+  }, [cant1, cant3]);
 
   return (
     <Card {...other}>
