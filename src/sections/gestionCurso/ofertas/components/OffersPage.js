@@ -1,6 +1,7 @@
 import { mdiDelete, mdiDotsVertical, mdiPencilOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import {
+  Alert,
   Button,
   Card,
   Checkbox,
@@ -19,6 +20,7 @@ import {
   Typography,
 } from '@mui/material';
 import { filter } from 'lodash';
+import { useConfirm } from 'material-ui-confirm';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import setMessage from '../../../../components/messages/messages';
@@ -29,9 +31,9 @@ import { deleteOffer, getAllOfertasByCurso } from '../store/store';
 
 import Iconify from '../../../../components/iconify';
 import Scrollbar from '../../../../components/scrollbar';
-import OfertasForm from './OfertasForm';
-import OfertasListHead from './OfertasListHead';
-import OfertasListToolbar from './OfertasListToolbar';
+import OffersForm from './OffersForm';
+import OffersListHead from './OffersListHead';
+import OffersListToolbar from './OffersListToolbar';
 
 const TABLE_HEAD = [
   { id: 'nomb_carrera', label: 'Carrera', alignRight: false },
@@ -92,6 +94,7 @@ export default function OffersPage() {
   const [rowsNumber, setRowsNumber] = useState(0);
 
   const { activeCourse } = UseActiveCourse();
+  const confirm = useConfirm();
 
   useEffect(() => {
     getCarreras()
@@ -195,31 +198,64 @@ export default function OffersPage() {
 
   const handleDeleteClick = () => {
     if (selected.length === 1) {
-      const selectedItem = filteredOffers.find((offer) => offer.cod_oferta === selected[0]);
+      const selectedItem = filteredOffers.find((offer) => offer.cod_carrera === selected[0]);
       if (selectedItem) {
-        const confirmed = window.confirm(`Está seguro que desea eliminar la oferta: ${selectedItem.cod_oferta}`);
-
-        if (confirmed) {
-          deleteOffer(selectedItem)
-            .then((response) => {
-              if (response.status === 200) {
-                setMessage('success', '¡Oferta eliminada con éxito!');
-                setOpenInRowMenu(false);
-                setSelected([]);
-                setRefresh(refresh + 1);
-              }
-            })
-            .catch((error) => {
-              console.log('Error al eliminar la oferta', error);
-              setMessage('error', '¡Ha ocurrido un error!');
-            });
-        }
+        confirm({
+          content: <Alert severity={'warning'}>{`¿Desea eliminar la oferta: ${selectedItem.nomb_carrera} ?`}</Alert>,
+        })
+          .then(() => {
+            deleteOffer(selectedItem)
+              .then((response) => {
+                if (response.status === 200) {
+                  setMessage('success', '¡Oferta eliminada con éxito!');
+                  setOpenInRowMenu(false);
+                  setSelected([]);
+                  setRefresh(refresh + 1);
+                }
+              })
+              .catch((error) => {
+                console.log('Error al eliminar la oferta', error);
+                setMessage('error', '¡Ha ocurrido un error!');
+              });
+          })
+          .catch(() => {});
       }
     }
   };
 
-  const handleRowClick = (codCarrera) => {
-    const newSelected = [codCarrera];
+  const handleMultipleDeleteClick = () => {
+    if (selected.length > 0) {
+      const selectedItems = filteredOffers.filter((offer) => selected.includes(offer.cod_carrera));
+
+      confirm({
+        content: <Alert severity={'warning'}>{`¿Desea eliminar las ${selected.length} ofertas seleccionadas?`}</Alert>,
+      })
+        .then(() => {
+          // Perform the deletion of multiple records
+          Promise.all(selectedItems.map((selectedItem) => deleteOffer(selectedItem)))
+            .then((responses) => {
+              const isSuccess = responses.every((response) => response.status === 200);
+
+              if (isSuccess) {
+                setMessage('success', `¡${selected.length} ofertas eliminadas con éxito!`);
+                setOpenInRowMenu(false);
+                setSelected([]);
+                setRefresh(refresh + 1);
+              } else {
+                setMessage('warning', '¡Alguna oferta no pudo ser eliminada!');
+              }
+            })
+            .catch((error) => {
+              console.log('Error al eliminar las ofertas', error);
+              setMessage('error', '¡Ha ocurrido un error!');
+            });
+        })
+        .catch(() => {});
+    }
+  };
+
+  const handleRowClick = (careerCode) => {
+    const newSelected = [careerCode];
     setSelected(newSelected);
   };
 
@@ -236,7 +272,7 @@ export default function OffersPage() {
       </Helmet>
 
       {isFormVisible ? (
-        <OfertasForm
+        <OffersForm
           formData={formData}
           editMode={editMode}
           onSubmit={() => {
@@ -268,16 +304,17 @@ export default function OffersPage() {
           </Stack>
 
           <Card>
-            <OfertasListToolbar
+            <OffersListToolbar
               numSelected={selected.length}
               filterValue={filterValue}
               onFilterValue={handleFilterByValue}
+              handleDelete={handleMultipleDeleteClick}
             />
 
             <Scrollbar>
               <TableContainer>
                 <Table size="small">
-                  <OfertasListHead
+                  <OffersListHead
                     order={order}
                     orderBy={orderBy}
                     headLabel={TABLE_HEAD}
@@ -375,6 +412,7 @@ export default function OffersPage() {
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
         PaperProps={{
           sx: {
+            py: 1,
             px: 1,
             width: 140,
             '& .MuiMenuItem-root': {

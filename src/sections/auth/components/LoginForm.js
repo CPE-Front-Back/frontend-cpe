@@ -6,9 +6,8 @@ import { LoadingButton } from '@mui/lab';
 // components
 import Iconify from '../../../components/iconify';
 import setMessage from '../../../components/messages/messages';
-import { UseActiveCourse } from '../../gestionCurso/curso/context/ActiveCourseContext';
 import { UseAuthContext } from '../context/AuthProvider';
-import { getUserData, login } from '../store/store';
+import { login } from '../store/store';
 
 // ----------------------------------------------------------------------
 
@@ -27,7 +26,12 @@ export default function LoginForm() {
   const destino = '/dashboard';
   const [showPassword, setShowPassword] = useState(false);
 
+  const setToken = (token) => {
+    sessionStorage.setItem('accessToken', token);
+  };
+
   const handleLogin = () => {
+    sessionStorage.removeItem('accessToken');
     const loginData = { username, password };
 
     login(loginData)
@@ -36,6 +40,7 @@ export default function LoginForm() {
           const userAuth = response.data;
 
           setAuth({ ...userAuth });
+          setToken(response.data.token);
 
           setMessage('success', `¡Bienvenido ${userAuth.name}!`);
 
@@ -66,6 +71,12 @@ export default function LoginForm() {
           onChange={(event) => setUsername(event.target.value)}
           error={!!errors.username}
           required
+          inputProps={{ maxLength: 15 }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              handleLogin();
+            }
+          }}
         />
 
         <TextField
@@ -83,15 +94,15 @@ export default function LoginForm() {
               </InputAdornment>
             ),
           }}
+          inputProps={{ maxLength: 20 }}
           error={!!errors.password}
           required
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              handleLogin();
+            }
+          }}
         />
-      </Stack>
-
-      <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>
-        <Link variant="subtitle2" underline="hover">
-          Olvidaste tú contraseña?
-        </Link>
       </Stack>
 
       <LoadingButton
@@ -100,7 +111,12 @@ export default function LoginForm() {
         type="submit"
         variant="contained"
         onClick={handleLogin}
-        sx={{ textTransform: 'none' }}
+        sx={{ textTransform: 'none', mt: '20px' }}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            handleLogin();
+          }
+        }}
       >
         Iniciar sesión
       </LoadingButton>

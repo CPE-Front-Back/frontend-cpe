@@ -1,4 +1,5 @@
-import { Autocomplete, Box, Button, Grid, TextField, Typography } from '@mui/material';
+import { Alert, Autocomplete, Box, Button, Grid, TextField, Typography } from '@mui/material';
+import { useConfirm } from 'material-ui-confirm';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import setMessage from '../../../../components/messages/messages';
@@ -16,6 +17,12 @@ export default function BuildingsForm({ editMode, formData, onSubmit }) {
   const [selectedFaculty, setSelectedFaculty] = useState(formData.nomb_facultad ? formData : null);
 
   const [faculties, setFaculties] = useState([]);
+  const confirm = useConfirm();
+
+  const [errors, setErrors] = useState({
+    facluty: '',
+    buildingName: '',
+  });
 
   useEffect(() => {
     getFaculties()
@@ -29,48 +36,76 @@ export default function BuildingsForm({ editMode, formData, onSubmit }) {
       });
   }, []);
 
-  const handleBack = (event) => {
-    event.preventDefault();
+  const validateData = () => {
+    const newErrors = {};
 
-    onSubmit();
-  };
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const updatedData = {
-      cod_edif: formData.cod_edif,
-      nomb_edif: buildingNameInput,
-      nomb_facultad: selectedFaculty.nomb_facultad,
-    };
-
-    if (editMode) {
-      updateBuilding(updatedData)
-        .then((response) => {
-          if (response.status === 200) {
-            console.log(response.data);
-            setMessage('success', '¡Edificio actualizado con éxito!');
-          }
-        })
-        .catch((error) => {
-          console.log('Error al actualizar la oferta: ', error);
-          setMessage('error', '¡Ha ocurrido un error!');
-        });
-    } else {
-      insertBuilding(updatedData)
-        .then((response) => {
-          if (response.status === 200) {
-            console.log(response.data);
-            setMessage('success', '¡Edificio registrado con éxito!');
-          }
-        })
-        .catch((error) => {
-          console.log('Error al insertar la oferta: ', error);
-          setMessage('error', '¡Ha ocurrido un error!');
-        });
+    if (!selectedFaculty) {
+      newErrors.faculty = 'Facultad requerida';
+    }
+    if (!buildingNameInput) {
+      newErrors.buildingName = 'Nombre requerido';
     }
 
-    setTimeout(() => {
-      onSubmit();
-    }, 500);
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (validateData()) {
+      const updatedData = {
+        cod_edif: formData.cod_edif,
+        nomb_edif: buildingNameInput,
+        nomb_facultad: selectedFaculty.nomb_facultad,
+      };
+
+      if (editMode) {
+        updateBuilding(updatedData)
+          .then((response) => {
+            if (response.status === 200) {
+              console.log(response.data);
+              setMessage('success', '¡Edificio actualizado con éxito!');
+            }
+          })
+          .catch((error) => {
+            console.log('Error al actualizar la oferta: ', error);
+            setMessage('error', '¡Ha ocurrido un error!');
+          });
+      } else {
+        insertBuilding(updatedData)
+          .then((response) => {
+            if (response.status === 200) {
+              console.log(response.data);
+              setMessage('success', '¡Edificio registrado con éxito!');
+            }
+          })
+          .catch((error) => {
+            console.log('Error al insertar la oferta: ', error);
+            setMessage('error', '¡Ha ocurrido un error!');
+          });
+      }
+
+      setTimeout(() => {
+        onSubmit();
+      }, 500);
+    }
+  };
+
+  const handleCancel = () => {
+    confirm({
+      content: <Alert severity={'warning'}>¡Perderá los cambios no guardados! ¿Desea continuar?</Alert>,
+    })
+      .then(() => {
+        onSubmit();
+      })
+      .catch(() => {});
+  };
+
+  const handleNameInput = (event) => {
+    // allow only letters
+    const inputValue = event.target.value.replace(/[^a-zA-Z]/g, '');
+    event.target.value = inputValue;
   };
 
   return (
@@ -93,19 +128,31 @@ export default function BuildingsForm({ editMode, formData, onSubmit }) {
               onChange={(event, newValue) => {
                 setSelectedFaculty(newValue);
               }}
-              renderInput={(params) => <TextField {...params} label="Facultades disponibles" />}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Facultades disponibles"
+                  error={!!errors.faculty}
+                  helperText={errors.faculty}
+                  required
+                />
+              )}
             />
           </Grid>
 
           <Grid item xs />
 
-          <Grid item xs>
+          <Grid item xs={5}>
             <TextField
-              type="text"
+              type={'text'}
               label="Nombre edificio"
               variant="outlined"
               value={buildingNameInput}
+              onInput={handleNameInput}
               onChange={(event) => setBuildingNameInput(event.target.value)}
+              error={!!errors.buildingName}
+              helperText={errors.buildingName}
+              inputProps={{ maxLength: 30 }}
               required
             />
           </Grid>
@@ -114,15 +161,16 @@ export default function BuildingsForm({ editMode, formData, onSubmit }) {
         <Grid container spacing={1} sx={{ pt: 5 }}>
           <Grid item xs />
           <Grid item xs={2}>
+            <Button type="submit" variant="contained" color="primary" onClick={handleCancel}>
+              Cancelar
+            </Button>
+          </Grid>
+          <Grid item xs={2}>
             <Button type="submit" variant="contained" color="primary" onClick={handleSubmit}>
               {editMode ? 'Modificar' : 'Registrar'}
             </Button>
           </Grid>
-          <Grid item xs>
-            <Button type="submit" variant="contained" color="primary" onClick={handleBack}>
-              Cancelar
-            </Button>
-          </Grid>
+          <Grid item xs />
         </Grid>
       </Box>
     </>

@@ -1,7 +1,7 @@
 import { IconButton, InputAdornment, OutlinedInput, Toolbar, Tooltip, Typography } from '@mui/material';
 import { alpha, styled } from '@mui/material/styles';
 import PropTypes from 'prop-types';
-import Iconify from '../../../../components/iconify';
+import Iconify from '../../../components/iconify';
 
 const StyledRoot = styled(Toolbar)(({ theme }) => ({
   height: 96,
@@ -28,12 +28,13 @@ const StyledSearch = styled(OutlinedInput)(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-OfertasListToolbar.propTypes = {
+AdminListToolbar.propTypes = {
   numSelected: PropTypes.number,
   filterValue: PropTypes.string,
   onFilterValue: PropTypes.func,
+  handleDelete: PropTypes.func,
 };
-export default function OfertasListToolbar({ numSelected, filterValue, onFilterValue }) {
+export default function AdminListToolbar({ numSelected, filterValue, onFilterValue, handleDelete }) {
   return (
     <StyledRoot
       sx={{
@@ -51,7 +52,7 @@ export default function OfertasListToolbar({ numSelected, filterValue, onFilterV
         <StyledSearch
           value={filterValue}
           onChange={onFilterValue}
-          placeholder="Buscar oferta..."
+          placeholder="Buscar usuario..."
           startAdornment={
             <InputAdornment position="start">
               <Iconify icon="eva:search-fill" sx={{ color: 'text.disabled', width: 20, height: 20 }} />
@@ -60,16 +61,10 @@ export default function OfertasListToolbar({ numSelected, filterValue, onFilterV
         />
       )}
 
-      {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton>
+      {numSelected > 0 && (
+        <Tooltip title="Eliminar">
+          <IconButton onClick={handleDelete}>
             <Iconify icon="eva:trash-2-fill" />
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <Tooltip title="Filter list">
-          <IconButton>
-            <Iconify icon="ic:round-filter-list" />
           </IconButton>
         </Tooltip>
       )}

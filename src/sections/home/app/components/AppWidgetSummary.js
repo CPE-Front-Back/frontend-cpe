@@ -3,10 +3,6 @@ import { Icon } from '@mdi/react';
 import PropTypes from 'prop-types';
 import { alpha, styled } from '@mui/material/styles';
 import { Card, Typography } from '@mui/material';
-// utils
-import { fShortenNumber } from '../../../utils/formatNumber';
-// components
-import Iconify from '../../../components/iconify';
 
 // ----------------------------------------------------------------------
 
@@ -26,16 +22,15 @@ const StyledIcon = styled('div')(({ theme }) => ({
 AppWidgetSummary.propTypes = {
   color: PropTypes.string,
   icon: PropTypes.string,
-  title: PropTypes.string.isRequired,
-  // total: PropTypes.number.isRequired,
+  pdfName: PropTypes.string.isRequired,
   sx: PropTypes.object,
 };
 
-export default function AppWidgetSummary({ title, /* total, */ icon, color = 'primary', sx, ...other }) {
+export default function AppWidgetSummary({ pdfName, icon, color = 'primary', sx, ...other }) {
   return (
     <Card
       sx={{
-        py: 5,
+        py: 1,
         boxShadow: 0,
         textAlign: 'center',
         color: (theme) => theme.palette[color].darker,
@@ -57,10 +52,8 @@ export default function AppWidgetSummary({ title, /* total, */ icon, color = 'pr
         <Icon size={2} path={icon} />
       </StyledIcon>
 
-      {/* <Typography variant="h3">{fShortenNumber(total)}</Typography> */}
-
       <Typography variant="subtitle2" sx={{ opacity: 0.72 }}>
-        {title}
+        {pdfName}
       </Typography>
     </Card>
   );

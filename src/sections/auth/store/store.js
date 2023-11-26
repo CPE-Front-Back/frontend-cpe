@@ -1,8 +1,8 @@
-import instance from '../../../components/api/api';
+import { axiosForAuth } from '../../../components/api/api';
 
 export const login = async (loginData) => {
   try {
-    const response = await instance.post(`auth/login`, loginData);
+    const response = await axiosForAuth.post(`auth/login`, loginData);
     return response;
   } catch (error) {
     if (!error?.response) {
@@ -13,19 +13,3 @@ export const login = async (loginData) => {
     return error;
   }
 };
-
-export const getUserData = async (userName) => {
-  try {
-    const response = await instance.get(`users/${userName}`);
-    return response;
-  } catch (error) {
-    console.log('Error en login', error);
-    throw error;
-  }
-};
-
-/*
-export const login = (loginData) => {
-  console.log('loginData', loginData);
-};
-*/

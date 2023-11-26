@@ -1,4 +1,5 @@
-import { Box, Button, Grid, TextField, Typography } from '@mui/material';
+import { Alert, Box, Button, Grid, TextField, Typography } from '@mui/material';
+import { useConfirm } from 'material-ui-confirm';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import setMessage from '../../../../components/messages/messages';
@@ -13,49 +14,80 @@ export default function IncomeSourcesForm({ editMode, formData, onSubmit }) {
   const { cod_fuente, nomb_fuente, eliminada } = formData;
   const [IncomeSourceNameInput, setIncomeSourceNameInput] = useState(nomb_fuente);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const updatedData = {
-      cod_fuente: formData.cod_fuente,
-      nomb_fuente: IncomeSourceNameInput,
-      eliminada: false,
-    };
+  const confirm = useConfirm();
 
-    if (editMode) {
-      updateIncomeSource(updatedData)
-        .then((response) => {
-          if (response.status === 200) {
-            console.log(response.data);
-            setMessage('success', '¡Fuente de ingreso actualizada con éxito!');
-          }
-        })
-        .catch((error) => {
-          console.log('Error al modificar la fuente de ingreso: ', error);
-          setMessage('error', '¡Ha ocurrido un error!');
-        });
-    } else {
-      insertIncomeSource(updatedData)
-        .then((response) => {
-          if (response.status === 200) {
-            console.log(response.data);
-            setMessage('success', '¡Fuente de ingreso registrada con éxito!');
-          }
-        })
-        .catch((error) => {
-          console.log('Error al registrar la fuente de ingreso: ', error);
-          setMessage('error', '¡Ha ocurrido un error!');
-        });
+  const [errors, setErrors] = useState({
+    incomeSourceName: '',
+  });
+
+  const validateData = () => {
+    const newErrors = {};
+
+    if (!IncomeSourceNameInput) {
+      newErrors.incomeSourceName = 'Nombre requerido';
     }
 
-    setTimeout(() => {
-      onSubmit();
-    }, 500);
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
   };
 
-  const handleBack = (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
 
-    onSubmit();
+    if (validateData()) {
+      const updatedData = {
+        cod_fuente: formData.cod_fuente,
+        nomb_fuente: IncomeSourceNameInput,
+        eliminada: false,
+      };
+
+      if (editMode) {
+        updateIncomeSource(updatedData)
+          .then((response) => {
+            if (response.status === 200) {
+              console.log(response.data);
+              setMessage('success', '¡Fuente de ingreso actualizada con éxito!');
+            }
+          })
+          .catch((error) => {
+            console.log('Error al modificar la fuente de ingreso: ', error);
+            setMessage('error', '¡Ha ocurrido un error!');
+          });
+      } else {
+        insertIncomeSource(updatedData)
+          .then((response) => {
+            if (response.status === 200) {
+              console.log(response.data);
+              setMessage('success', '¡Fuente de ingreso registrada con éxito!');
+            }
+          })
+          .catch((error) => {
+            console.log('Error al registrar la fuente de ingreso: ', error);
+            setMessage('error', '¡Ha ocurrido un error!');
+          });
+      }
+
+      setTimeout(() => {
+        onSubmit();
+      }, 500);
+    }
+  };
+
+  const handleCancel = () => {
+    confirm({
+      content: <Alert severity={'warning'}>¡Perderá los cambios no guardados! ¿Desea continuar?</Alert>,
+    })
+      .then(() => {
+        onSubmit();
+      })
+      .catch(() => {});
+  };
+
+  const handleNameInput = (event) => {
+    // allow only letters
+    const inputValue = event.target.value.replace(/[^a-zA-Z]/g, '');
+    event.target.value = inputValue;
   };
 
   return (
@@ -76,7 +108,11 @@ export default function IncomeSourcesForm({ editMode, formData, onSubmit }) {
               label="Nombre"
               variant="outlined"
               value={IncomeSourceNameInput}
+              onInput={handleNameInput}
               onChange={(event) => setIncomeSourceNameInput(event.target.value)}
+              error={!!errors.incomeSourceName}
+              helperText={errors.incomeSourceName}
+              inputProps={{ maxLength: 30 }}
               required
             />
           </Grid>
@@ -86,13 +122,13 @@ export default function IncomeSourcesForm({ editMode, formData, onSubmit }) {
         <Grid container spacing={1} sx={{ pt: 5 }}>
           <Grid item xs />
           <Grid item xs={2}>
-            <Button type="submit" variant="contained" color="primary" onClick={handleSubmit}>
-              {editMode ? 'Modificar' : 'Registrar'}
+            <Button type="submit" variant="contained" color="primary" onClick={handleCancel}>
+              Cancelar
             </Button>
           </Grid>
           <Grid item xs={2}>
-            <Button type="submit" variant="contained" color="primary" onClick={handleBack}>
-              Cancelar
+            <Button type="submit" variant="contained" color="primary" onClick={handleSubmit}>
+              {editMode ? 'Modificar' : 'Registrar'}
             </Button>
           </Grid>
           <Grid item xs />

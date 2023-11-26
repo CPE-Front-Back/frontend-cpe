@@ -2,29 +2,33 @@ import { LoadingButton } from '@mui/lab';
 import { Autocomplete, Grid, Stack, TextField, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import setMessage from '../../../components/messages/messages';
 import useResponsive from '../../../hooks/useResponsive';
 
-import { getCarreras } from '../../gestionCodificadores/carreras/store/store';
+import { getCarrerasRequester } from '../../gestionCodificadores/carreras/store/store';
 import { UseActiveCourse } from '../../gestionCurso/curso/context/ActiveCourseContext';
-import { getAllOfertasByCurso } from '../../gestionCurso/ofertas/store/store';
-import { getSolicitanteById, insertarSolicitudes, sendSolicitantePersonalData } from '../store/store';
+import { getAllOfertasByCursoRequester } from '../../gestionCurso/ofertas/store/store';
+import {
+  getSolicitanteByIdRequester,
+  insertarSolicitudesRequester,
+  sendSolicitantePersonalDataRequester,
+} from '../store/store';
 
-SolicitanteCarrerOptionsForm.propTypes = {
+RequesterCarrerOptionsForm.propTypes = {
   personalData: PropTypes.object,
   onVolver: PropTypes.func,
   onEnviar: PropTypes.func,
 };
-export default function SolicitanteCarrerOptionsForm({ personalData, options, onVolver, onEnviar }) {
+export default function RequesterCarrerOptionsForm({ personalData, options, onVolver }) {
   const [ofertas, setOfertas] = useState([]);
   const [ofertasFiltradas, setOfertasFiltradas] = useState([]);
   const [selectedOptions, setSelectedOptions] = useState(null);
   const [carreras, setCarreras] = useState([]);
 
   const { activeCourse } = UseActiveCourse();
-
-  const isPhoneSize = useResponsive('down', 'sm');
-  const mtSize = isPhoneSize ? '-10px' : '-140px';
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const [errors, setErrors] = useState({
     selectedOption: '',
@@ -43,7 +47,7 @@ export default function SolicitanteCarrerOptionsForm({ personalData, options, on
   };
 
   useEffect(() => {
-    getAllOfertasByCurso(activeCourse.cod_curso)
+    getAllOfertasByCursoRequester(activeCourse.cod_curso)
       .then((response) => {
         console.log(response.data);
         if (response.status === 200) {
@@ -64,7 +68,7 @@ export default function SolicitanteCarrerOptionsForm({ personalData, options, on
   }, [carreras]);
 
   useEffect(() => {
-    getCarreras()
+    getCarrerasRequester()
       .then((response) => {
         if (response.status === 200) {
           setCarreras(response.data);
@@ -74,6 +78,10 @@ export default function SolicitanteCarrerOptionsForm({ personalData, options, on
         console.log('Error al cargar las carreras', error);
       });
   }, []);
+
+  const onEnviar = () => {
+    navigate('/requester', { state: { from: location }, replace: true });
+  };
 
   const handleVolverClick = () => {
     onVolver();
@@ -86,14 +94,14 @@ export default function SolicitanteCarrerOptionsForm({ personalData, options, on
       console.log('Datos del solicitante', personalData);
       console.log('Solicitudes', selectedOptions);
 
-      sendSolicitantePersonalData(personalData)
+      sendSolicitantePersonalDataRequester(personalData)
         .then((response) => {
           if (response.status === 200) {
             console.log(response.data);
-            getSolicitanteById(personalData.num_id)
+            getSolicitanteByIdRequester(personalData.num_id)
               .then((response) => {
                 if (response.status === 200) {
-                  insertarSolicitudes(selectedOptions, response.data.cod_solicitante)
+                  insertarSolicitudesRequester(selectedOptions, response.data.cod_solicitante)
                     .then((response) => {
                       if (response) {
                         console.log('Insertadas: ', response);
@@ -162,9 +170,9 @@ export default function SolicitanteCarrerOptionsForm({ personalData, options, on
   }, [selectedOptions]);
 
   return (
-    <Grid container sx={{ mt: mtSize, pt: '30px' }}>
+    <Grid container sx={{ margin: 'auto', mb: '20px', maxWidth: '700px' }}>
       <Grid item xs />
-      <Grid item xs={6}>
+      <Grid item xs={10}>
         <Typography variant="h4" sx={{ textAlign: 'center' }}>
           Listado de solicitudes
         </Typography>
@@ -240,13 +248,13 @@ export default function SolicitanteCarrerOptionsForm({ personalData, options, on
         </Grid>
       </Stack>
 
-      <Grid container columnSpacing={4} sx={{ mt: 5 }}>
-        <Grid item xs>
+      <Grid container rowSpacing={2} columnSpacing={2} sx={{ mt: '20px' }}>
+        <Grid item xs={12} sm={6}>
           <LoadingButton fullWidth size="large" type="submit" variant="contained" onClick={handleVolverClick}>
             Volver
           </LoadingButton>
         </Grid>
-        <Grid item xs>
+        <Grid item xs={12} sm={6}>
           <LoadingButton fullWidth size="large" type="submit" variant="contained" onClick={handleSubmitClick}>
             Enviar Solicitud
           </LoadingButton>

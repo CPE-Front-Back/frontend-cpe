@@ -1,8 +1,8 @@
-import instance from '../../../../components/api/api';
+import { axiosInstance } from '../../../../components/api/api';
 
 export const getBuildings = async () => {
   try {
-    const response = await instance.get(`edificio/`);
+    const response = await axiosInstance.get(`edificio/`);
     return response;
   } catch (error) {
     console.log('Error en getBuildings', error);
@@ -12,7 +12,7 @@ export const getBuildings = async () => {
 
 export const getBuildingsByFaclulty = async (facultyCode) => {
   try {
-    const response = await instance.get(`edificio/facultad/${facultyCode}`);
+    const response = await axiosInstance.get(`edificio/facultad/${facultyCode}`);
     return response;
   } catch (error) {
     console.log('Error en getBuildingsByFaclulty', error);
@@ -22,7 +22,7 @@ export const getBuildingsByFaclulty = async (facultyCode) => {
 
 export const getBuildingById = async (buildingCode) => {
   try {
-    const response = await instance.get(`edificio/${buildingCode}`);
+    const response = await axiosInstance.get(`edificio/${buildingCode}`);
     return response;
   } catch (error) {
     console.log('Error en getBuildingsById', error);
@@ -32,7 +32,7 @@ export const getBuildingById = async (buildingCode) => {
 
 export const insertBuilding = async (building) => {
   try {
-    const response = await instance.post(`edificio/`, building);
+    const response = await axiosInstance.post(`edificio/`, building);
     return response;
   } catch (error) {
     console.log('Error en insertarEdificio', error);
@@ -42,7 +42,7 @@ export const insertBuilding = async (building) => {
 
 export const updateBuilding = async (building) => {
   try {
-    const response = await instance.put(`edificio/`, building);
+    const response = await axiosInstance.put(`edificio/`, building);
     return response;
   } catch (error) {
     console.log('Error en modificarEdificio', error);
@@ -52,7 +52,7 @@ export const updateBuilding = async (building) => {
 
 export const deleteBuilding = async (building) => {
   try {
-    const response = await instance.delete(`edificio/${building.cod_edif}`);
+    const response = await axiosInstance.delete(`edificio/${building.cod_edif}`);
     return response;
   } catch (error) {
     console.log('Error en deleteBuilding', error);

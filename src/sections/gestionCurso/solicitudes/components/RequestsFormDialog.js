@@ -37,10 +37,11 @@ const Transition = forwardRef((props, ref) => <Slide direction="up" ref={ref} {.
 RequestsFormDialog.propTypes = {
   open: PropTypes.bool,
   handleCloseClick: PropTypes.func,
+  handleCloseAfterAction: PropTypes.func,
   editMode: PropTypes.bool,
   formData: PropTypes.object,
 };
-export default function RequestsFormDialog({ open, handleCloseClick, editMode, Data }) {
+export default function RequestsFormDialog({ open, handleCloseClick, handleCLoseAfterAction, editMode, Data }) {
   /* {
     cod_solicitante,
     num_id,
@@ -68,6 +69,9 @@ export default function RequestsFormDialog({ open, handleCloseClick, editMode, D
   const [firstLN, secondLN] = Data.apell_solicitante ? Data.apell_solicitante.split(' ') : [null, null];
   const [firstLastName, setFirstLastName] = useState(firstLN);
   const [secondLastName, setSecondLastName] = useState(secondLN);
+  const [userClickedActionButton, setUserClickedActionButton] = useState(false);
+
+  const { activeCourse, refreshProcessingStatus, setRefreshProcessingStatus } = UseActiveCourse();
 
   const [errors, setErrors] = useState({
     num_id: '',
@@ -147,15 +151,22 @@ export default function RequestsFormDialog({ open, handleCloseClick, editMode, D
     const isValid = validateForm();
 
     if (isValid) {
-      if (formData.num_id.length !== 11) {
+      const currentYear = new Date().getFullYear();
+      const centuryDigit = Number(formData.num_id.charAt(6));
+      const birthYear =
+        Number(formData.num_id.substring(0, 2)) + (centuryDigit === 9 ? 1800 : centuryDigit < 5 ? 1900 : 2000);
+      const age = currentYear - birthYear;
+      console.log('currentYear', currentYear, 'century', centuryDigit, 'birth', birthYear, 'age', age);
+
+      if (!/^\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])\d{5}$/.test(formData.num_id)) {
         setErrors((prevErrors) => ({
           ...prevErrors,
-          num_id: 'El carnet de identidad debe tener 11 dígitos.',
+          num_id: 'Carnet de Identidad inválido.',
         }));
-      } else if (!/^[0-9]*$/.test(formData.num_id)) {
+      } else if (age < 18) {
         setErrors((prevErrors) => ({
           ...prevErrors,
-          num_id: 'El carnet de identidad debe contener solo números.',
+          num_id: 'La edad mínima es 18 años.',
         }));
       } else if (!/^(\w+\s)?(\w+\s)?(\w+\s)?\w+$/.test(formData.nomb_solicitante)) {
         console.log('nombre', formData.nomb_solicitante);
@@ -183,7 +194,7 @@ export default function RequestsFormDialog({ open, handleCloseClick, editMode, D
   };
 
   useEffect(() => {
-    if (formData.apell_solicitante) {
+    if (formData.apell_solicitante && userClickedActionButton) {
       if (secondLastName !== '' && formData.apell_solicitante.includes(secondLastName) && formData.confirmado) {
         console.log(formData);
         if (editMode) {
@@ -230,7 +241,8 @@ export default function RequestsFormDialog({ open, handleCloseClick, editMode, D
                                   setMessage('success', '¡Solicitante actualizado con éxito!');
 
                                   setTimeout(() => {
-                                    handleCloseClick();
+                                    setRefreshProcessingStatus(refreshProcessingStatus + 1);
+                                    handleCLoseAfterAction();
                                   }, 500);
                                 }
                               })
@@ -268,7 +280,8 @@ export default function RequestsFormDialog({ open, handleCloseClick, editMode, D
                             console.log('Insertadas: ', response);
                             setMessage('success', '¡Solicitante confirmado con éxito!');
 
-                            handleCloseClick();
+                            setRefreshProcessingStatus(refreshProcessingStatus + 1);
+                            handleCLoseAfterAction();
                           }
                         })
                         .catch((error) => {
@@ -288,7 +301,7 @@ export default function RequestsFormDialog({ open, handleCloseClick, editMode, D
         }
       }
     }
-  }, [formData]);
+  }, [formData, userClickedActionButton]);
 
   useEffect(() => {
     if (municipioSeleccionado) {
@@ -377,13 +390,13 @@ export default function RequestsFormDialog({ open, handleCloseClick, editMode, D
 
   const handleLastNamesInput = (event) => {
     // allow only letters
-    const inputValue = event.target.value.replace(/[^a-z]/g, '');
+    const inputValue = event.target.value.replace(/[^a-zA-Z]/g, '');
     event.target.value = inputValue;
   };
 
   const handleNameInput = (event) => {
     // allow only one blank space and letters
-    const inputValue = event.target.value.replace(/[^a-z][\s]/g, '');
+    const inputValue = event.target.value.replace(/[^a-zA-Z\s]/g, '');
     event.target.value = inputValue;
   };
 
@@ -402,7 +415,6 @@ export default function RequestsFormDialog({ open, handleCloseClick, editMode, D
   // FINAL DE LA LOGICA PARA LOS DATOS DE LOS SOLICITANTES
 
   // INICIO DE LA LOGICA PARA LAS ******CARRERAS******
-  const { activeCourse } = UseActiveCourse();
 
   const [ofertas, setOfertas] = useState([]);
   const [ofertasFiltradas, setOfertasFiltradas] = useState([]);
@@ -533,7 +545,7 @@ export default function RequestsFormDialog({ open, handleCloseClick, editMode, D
             <Grid item xs={12} sm={6} md={3}>
               <TextField
                 name="nomb_solicitante"
-                type="text"
+                type={'text'}
                 value={formData.nomb_solicitante}
                 label="Nombres"
                 onChange={handleNameInputChange}
@@ -745,7 +757,15 @@ export default function RequestsFormDialog({ open, handleCloseClick, editMode, D
             </Stack>
           </Grid>
 
-          <LoadingButton fullWidth size="large" variant="contained" onClick={handleEnviarClick}>
+          <LoadingButton
+            fullWidth
+            size="large"
+            variant="contained"
+            onClick={() => {
+              setUserClickedActionButton(true);
+              handleEnviarClick().then(() => {});
+            }}
+          >
             {editMode ? 'Confirmar' : 'Registrar'}
           </LoadingButton>
         </Grid>

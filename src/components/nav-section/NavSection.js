@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { NavLink as RouterLink } from 'react-router-dom';
 // @mui
-import { Box, List, ListItemIcon, ListItemText } from '@mui/material';
+import { Box, List, ListItemText } from '@mui/material';
 import { mdiChevronDown, mdiChevronUp } from '@mdi/js';
 //
 import { StyledNavItem, StyledNavItemIcon } from './styles';
@@ -35,7 +35,7 @@ NavItem.propTypes = {
 };
 
 function NavItem({ item, onSubmenuItemClicked }) {
-  const { title, path, icon, info, haveAccess, showSubItems, subItems, isDisabled } = item;
+  const { title, path, icon, info, haveAccess, showSubItems, subItems, enabled } = item;
   const [isExpanded, setIsExpanded] = useState(showSubItems);
 
   const ToggleShowSubItems = () => {
@@ -76,7 +76,7 @@ function NavItem({ item, onSubmenuItemClicked }) {
     <>
       {haveAccess && (
         <StyledNavItem
-          component={path ? RouterLink : ''}
+          component={path ? RouterLink : Box}
           to={path}
           sx={{
             '&.active': {
@@ -86,7 +86,7 @@ function NavItem({ item, onSubmenuItemClicked }) {
             },
           }}
           onClick={() => onSubmenuItemClicked(title)}
-          disabled={isDisabled}
+          disabled={!enabled}
         >
           <StyledNavItemIcon>{icon && icon}</StyledNavItemIcon>
 

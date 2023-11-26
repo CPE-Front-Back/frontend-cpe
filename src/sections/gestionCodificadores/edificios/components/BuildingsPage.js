@@ -1,6 +1,7 @@
 import { mdiDelete, mdiDotsVertical, mdiPencilOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import {
+  Alert,
   Button,
   Card,
   Checkbox,
@@ -19,6 +20,7 @@ import {
   Typography,
 } from '@mui/material';
 import { filter } from 'lodash';
+import { useConfirm } from 'material-ui-confirm';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import Iconify from '../../../../components/iconify';
@@ -83,6 +85,8 @@ export default function BuildingsPage() {
 
   const [BUILDINGSLIST, setBUILDINGSLIST] = useState([]);
   const [FACULTIESLIST, setFACULTIESLIST] = useState([]);
+
+  const confirm = useConfirm();
 
   const [filteredBuildings, setFilteredBuildings] = useState([]);
   const [isNotFound, setIsNotFound] = useState(false);
@@ -192,24 +196,59 @@ export default function BuildingsPage() {
     if (selected.length === 1) {
       const selectedItem = filteredBuildings.find((building) => building.cod_edif === selected[0]);
       if (selectedItem) {
-        const confirmed = window.confirm(`Está seguro que desea eliminar el edificio: ${selectedItem.nomb_edif}`);
+        confirm({
+          content: <Alert severity={'warning'}>{`¿Desea eliminar el edificio: ${selectedItem.nomb_edif} ?`}</Alert>,
+        })
+          .then(() => {
+            deleteBuilding(selectedItem)
+              .then((response) => {
+                if (response.status === 200) {
+                  setMessage('success', '¡Edificio eliminado con éxito!');
+                  setOpenInRowMenu(false);
+                  setSelected([]);
+                  setRefresh(refresh + 1);
+                }
+              })
+              .catch((error) => {
+                console.log('Error al eliminar el edificio', error);
+                setMessage('error', '¡Ha ocurrido un error!');
+              });
+          })
+          .catch(() => {});
+      }
+    }
+  };
 
-        if (confirmed) {
-          deleteBuilding(selectedItem)
-            .then((response) => {
-              if (response.status === 200) {
-                setMessage('success', '¡Edificio eliminado con éxito!');
+  const handleMultipleDeleteClick = () => {
+    if (selected.length > 0) {
+      const selectedItems = filteredBuildings.filter((building) => selected.includes(building.cod_edif));
+
+      confirm({
+        content: (
+          <Alert severity={'warning'}>{`¿Desea eliminar los ${selected.length} edificios seleccionados?`}</Alert>
+        ),
+      })
+        .then(() => {
+          // Perform the deletion of multiple records
+          Promise.all(selectedItems.map((selectedItem) => deleteBuilding(selectedItem)))
+            .then((responses) => {
+              const isSuccess = responses.every((response) => response.status === 200);
+
+              if (isSuccess) {
+                setMessage('success', `¡${selected.length} edificios eliminados con éxito!`);
                 setOpenInRowMenu(false);
                 setSelected([]);
                 setRefresh(refresh + 1);
+              } else {
+                setMessage('warning', '¡Algún edificio no pudo ser eliminado!');
               }
             })
             .catch((error) => {
-              console.log('Error al eliminar el edificio', error);
+              console.log('Error al eliminar los edificios', error);
               setMessage('error', '¡Ha ocurrido un error!');
             });
-        }
-      }
+        })
+        .catch(() => {});
     }
   };
 
@@ -266,6 +305,7 @@ export default function BuildingsPage() {
               numSelected={selected.length}
               filterValue={filterValue}
               onFilterValue={handleFilterByValue}
+              handleDelete={handleMultipleDeleteClick}
             />
 
             <Scrollbar>

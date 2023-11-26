@@ -32,8 +32,9 @@ ClassroomsListToolbar.propTypes = {
   numSelected: PropTypes.number,
   filterValue: PropTypes.string,
   onFilterValue: PropTypes.func,
+  handleDelete: PropTypes.func,
 };
-export default function ClassroomsListToolbar({ numSelected, filterValue, onFilterValue }) {
+export default function ClassroomsListToolbar({ numSelected, filterValue, onFilterValue, handleDelete }) {
   return (
     <StyledRoot
       sx={{
@@ -60,16 +61,10 @@ export default function ClassroomsListToolbar({ numSelected, filterValue, onFilt
         />
       )}
 
-      {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton>
+      {numSelected > 0 && (
+        <Tooltip title="Eliminar">
+          <IconButton onClick={handleDelete}>
             <Iconify icon="eva:trash-2-fill" />
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <Tooltip title="Filter list">
-          <IconButton>
-            <Iconify icon="ic:round-filter-list" />
           </IconButton>
         </Tooltip>
       )}

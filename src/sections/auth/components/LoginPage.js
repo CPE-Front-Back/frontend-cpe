@@ -53,10 +53,23 @@ export default function LoginPage() {
         <Logo
           sx={{
             position: 'fixed',
-            top: { xs: 16, sm: 24, md: 40 },
-            left: { xs: 16, sm: 24, md: 40 },
+            top: { xs: 15, sm: 24, md: 43 },
+            left: { xs: 16, sm: 24, md: 80 },
           }}
         />
+
+        <Typography
+          variant="h4"
+          sx={{
+            mb: 5,
+            paddingTop: '12px',
+            position: 'fixed',
+            top: { xs: 15, sm: 24, md: 43 },
+            left: { xs: 16, sm: 24, md: 147 },
+          }}
+        >
+          Bienvenido
+        </Typography>
 
         <Container maxWidth="sm">
           <StyledContent>

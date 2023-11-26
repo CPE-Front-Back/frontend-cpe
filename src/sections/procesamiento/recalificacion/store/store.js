@@ -1,8 +1,8 @@
-import instance from '../../../../components/api/api';
+import { axiosInstance } from '../../../../components/api/api';
 
 export const getRequesterInRoomById = async (requesterId, codCurso) => {
   try {
-    const response = await instance.get(`solicitante/enAula/numeroId/${requesterId}/curso/${codCurso}`);
+    const response = await axiosInstance.get(`solicitante/enAula/numeroId/${requesterId}/curso/${codCurso}`);
     return response;
   } catch (error) {
     console.log('Error en FindRequesterInRoomById', error);
@@ -12,7 +12,7 @@ export const getRequesterInRoomById = async (requesterId, codCurso) => {
 
 export const getActByRequesterId = async (requesterId) => {
   try {
-    const response = await instance.get(`acta/cod_solicitante/${requesterId}`);
+    const response = await axiosInstance.get(`acta/cod_solicitante/${requesterId}`);
     return response;
   } catch (error) {
     console.log('Error en getActByRequesterId', error);
@@ -22,7 +22,7 @@ export const getActByRequesterId = async (requesterId) => {
 
 export const getAssignmentByRequesterId = async (requesterId) => {
   try {
-    const response = await instance.get(`asignacion/solicitante/${requesterId}`);
+    const response = await axiosInstance.get(`asignacion/solicitante/${requesterId}`);
     return response;
   } catch (error) {
     console.log('Error en getAssignmentByRequesterId', error);
@@ -32,7 +32,7 @@ export const getAssignmentByRequesterId = async (requesterId) => {
 
 export const insertRequalification = async (requalification) => {
   try {
-    const response = await instance.post(`recalificacion/`, requalification);
+    const response = await axiosInstance.post(`recalificacion/`, requalification);
     return response;
   } catch (error) {
     console.log('Erroe en insertRequalification', error);

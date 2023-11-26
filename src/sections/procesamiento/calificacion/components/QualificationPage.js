@@ -1,11 +1,13 @@
 import {
+  Alert,
   Autocomplete,
+  Backdrop,
+  Box,
   Button,
   Card,
+  CircularProgress,
   Container,
   Grid,
-  IconButton,
-  Stack,
   Table,
   TableBody,
   TableCell,
@@ -15,10 +17,9 @@ import {
   Typography,
 } from '@mui/material';
 import { isNaN } from 'lodash';
-import { useEffect, useState } from 'react';
+import { useConfirm } from 'material-ui-confirm';
+import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Await } from 'react-router-dom';
-import Iconify from '../../../../components/iconify';
 import setMessage from '../../../../components/messages/messages';
 import Scrollbar from '../../../../components/scrollbar';
 import { UseActiveCourse } from '../../../gestionCurso/curso/context/ActiveCourseContext';
@@ -50,7 +51,13 @@ export default function QualificationPage() {
   const [updatedQualifications, setUpdatedQualifications] = useState(false);
 
   const [emptyRows, setEmptyRows] = useState(0);
-  const { activeCourse } = UseActiveCourse();
+  const [isLoading, setIsLoading] = useState(false);
+  const { activeCourse, refreshProcessingStatus, setRefreshProcessingStatus } = UseActiveCourse();
+  const confirm = useConfirm();
+
+  const [errors, setErrors] = useState({
+    selectedComp: '',
+  });
 
   useEffect(() => {
     getComparecenciasCurso(activeCourse.cod_curso)
@@ -69,6 +76,7 @@ export default function QualificationPage() {
     // console.log('el selected del combo', selectedComp);
     if (selectedComp) {
       console.log('selected', selectedComp.cod_acta_comp);
+      setIsLoading(true);
       getActasNotas(activeCourse.cod_curso, selectedComp.cod_acta_comp)
         .then((response) => {
           if (response.status === 200) {
@@ -92,32 +100,26 @@ export default function QualificationPage() {
 
     // reset the list when no option selected
     if (selectedComp === null && requestersList.length > 0) {
-      if (requestersList === requesterListDump) {
-        setRequestersList([]);
-        setEmptyRows(0);
-      } else {
-        const confrimed = window.confirm('Está a punto de perder los cambios no guardados! ¿Desea continuar?');
-
-        if (confrimed) {
-          setRequestersList([]);
-          setEmptyRows(0);
-        }
-      }
+      setRequestersList([]);
+      setRequesterListDump([]);
+      setEmptyRows(0);
     }
   }, [selectedComp, activeCourse]);
 
   useEffect(() => {
-    if (actasNotasList.length > 0 && asignacionesList.length > 0) {
+    if (actasNotasList.length > 0 && asignacionesList.length > 0 && actasNotasList.length === asignacionesList.length) {
+      console.log('actasNotasList', actasNotasList);
+      console.log('asignacionesList', asignacionesList);
+
       const req = actasNotasList.map((actaNota, index) => ({
         no_anonimato: actaNota.cod_anonimato,
-        calificacion: asignacionesList[index].calificacion,
+        calificacion: asignacionesList[index].calificacion === 0 ? -1 : asignacionesList[index].calificacion,
       }));
 
       setRequestersList(req);
       setRequesterListDump(req);
       setEmptyRows(1);
-      console.log('actasNotasList', actasNotasList);
-      console.log('asignacionesList', asignacionesList);
+      setIsLoading(false);
     }
   }, [actasNotasList, asignacionesList]);
 
@@ -134,89 +136,104 @@ export default function QualificationPage() {
     setRequestersList(updatedRequestersList);
   };
 
+  const validateSelectedComp = () => {
+    const newErrors = {};
+
+    if (!selectedComp) {
+      newErrors.selectedComp = 'Acta de notas requerida';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const validateCalifications = () => {
-    let isValid = true;
+    let areValids = true;
 
     // Loop through the requestersList and validate califications
     requestersList.forEach((requester) => {
       const calificacion = requester.calificacion;
 
       if (isNaN(Number(calificacion)) || calificacion < -1 || calificacion > 100) {
-        // Invalid calification, set isValid to false
-        isValid = false;
+        // Invalid calification, set areValids to false
+        areValids = false;
       }
     });
 
-    return isValid;
+    return areValids;
   };
 
   const handleAccept = () => {
-    const isValid = validateCalifications();
+    const isCompSelected = validateSelectedComp();
+    const calificationsValids = validateCalifications();
 
-    if (isValid) {
-      requestersList.forEach((requester) => {
-        getRequesterAct(requester.no_anonimato)
-          .then((response) => {
-            if (response.status === 200) {
-              const act = response.data;
-              console.log('el acta', act);
+    if (isCompSelected) {
+      if (calificationsValids) {
+        requestersList.forEach((requester) => {
+          getRequesterAct(requester.no_anonimato)
+            .then((response) => {
+              if (response.status === 200) {
+                const act = response.data;
+                console.log('el acta', act);
 
-              getRequesterAssignment(act.cod_acta)
-                .then((response) => {
-                  if (response.status === 200) {
-                    const assignment = response.data;
-                    console.log('la asignacion', assignment);
+                getRequesterAssignment(act.cod_acta)
+                  .then((response) => {
+                    if (response.status === 200) {
+                      const assignment = response.data;
+                      console.log('la asignacion', assignment);
 
-                    // todo
-                    const updatedAssignment = {
-                      cod_acta: assignment.cod_acta,
-                      cod_asignacion: assignment.cod_asignacion,
-                      cod_solicitante: assignment.cod_solicitante,
-                      calificacion: requester.calificacion,
-                    };
+                      // todo
+                      const updatedAssignment = {
+                        cod_acta: assignment.cod_acta,
+                        cod_asignacion: assignment.cod_asignacion,
+                        cod_solicitante: assignment.cod_solicitante,
+                        calificacion: requester.calificacion,
+                      };
 
-                    updateQualification(updatedAssignment)
-                      .then((response) => {
-                        if (response.status === 200) {
-                          setUpdatedQualifications(true);
-                        }
-                      })
-                      .catch((error) => {
-                        console.log('Error al actualizar la nota', error);
-                        setMessage('error', '¡Error al actualizar la nota!');
-                      });
-                  }
-                })
-                .catch((error) => {
-                  console.log('Error al buscar la asignacion', error);
-                  setMessage('error', '¡Error al buscar la asignación!');
-                });
-            }
-          })
-          .catch((error) => {
-            console.log('Error al buscar el acta', error);
-            setMessage('error', '¡Error al buscar el acta!');
-          });
-      });
-    } else {
-      console.log('errores en las notas');
-      setMessage('error', '¡Existen notas con valores incorrectos!');
+                      updateQualification(updatedAssignment)
+                        .then((response) => {
+                          if (response.status === 200) {
+                            setUpdatedQualifications(true);
+                          }
+                        })
+                        .catch((error) => {
+                          console.log('Error al actualizar la nota', error);
+                          setMessage('error', '¡Error al actualizar la nota!');
+                        });
+                    }
+                  })
+                  .catch((error) => {
+                    console.log('Error al buscar la asignacion', error);
+                    setMessage('error', '¡Error al buscar la asignación!');
+                  });
+              }
+            })
+            .catch((error) => {
+              console.log('Error al buscar el acta', error);
+              setMessage('error', '¡Error al buscar el acta!');
+            });
+        });
+      } else {
+        setMessage('error', '¡Existen notas con valores incorrectos!');
+      }
     }
   };
 
   useEffect(() => {
     if (updatedQualifications) {
+      setRefreshProcessingStatus(refreshProcessingStatus + 1);
       setMessage('success', '¡Notas actualizadas con éxito!');
     }
   }, [updatedQualifications]);
 
   const handleCancel = () => {
-    // todo: use confirm dialog instead
-    const confirmed = window.confirm('Está a punto de perder los cambios no guardados! ¿Desea continuar?');
-
-    if (confirmed) {
-      setRequestersList(requesterListDump);
-    }
+    confirm({
+      content: <Alert severity={'warning'}>¡Perderá los cambios no guardados! ¿Desea continuar?</Alert>,
+    })
+      .then(() => {
+        setRequestersList(requesterListDump);
+      })
+      .catch(() => {});
   };
 
   const handleQualificationInput = (event) => {
@@ -227,94 +244,129 @@ export default function QualificationPage() {
 
   return (
     <>
-      <Helmet>
-        <title> Calificaciones | SAPCE </title>
-      </Helmet>
+      <Box
+        flexGrow={{ flexGrow: 1 }}
+        sx={{ backgroundColor: 'white', marginTop: '20px', pr: '100px', pl: '100px', pb: '20px', pt: '20px' }}
+      >
+        <Helmet>
+          <title> Calificaciones | SAPCE </title>
+        </Helmet>
 
-      <Typography variant="h4" gutterBottom>
-        Insertar calificaciones del instrumento
-      </Typography>
+        <Typography variant="h4" gutterBottom>
+          Insertar calificaciones del instrumento
+        </Typography>
 
-      <Container sx={{ bgcolor: 'white', pt: '50px' }}>
-        <Grid container spacing={2} justifyContent="center">
-          <Grid item xs={1} sx={{ minWidth: '170px' }}>
-            <Autocomplete
-              id="comboComparecencias"
-              options={comparecenciasList}
-              value={selectedComp}
-              onChange={(event, newValue) => {
-                setSelectedComp(newValue);
-              }}
-              getOptionLabel={(option) => option.cod_acta_comp + 500}
-              renderInput={(params) => <TextField {...params} label="Actas de notas" />}
-              noOptionsText={'No hay opciones'}
-            />
-          </Grid>
+        <Container sx={{ bgcolor: 'white', pt: '50px' }}>
+          <Grid container spacing={2} justifyContent="center">
+            <Grid item xs={1} sx={{ minWidth: '190px' }}>
+              <Autocomplete
+                id="comboComparecencias"
+                options={comparecenciasList}
+                value={selectedComp}
+                onChange={(event, newValue) => {
+                  if (newValue === null || JSON.stringify(requestersList) !== JSON.stringify(requesterListDump)) {
+                    confirm({
+                      content: <Alert severity={'warning'}>¡Perderá los cambios no guardados! ¿Desea continuar?</Alert>,
+                    })
+                      .then(() => {
+                        setSelectedComp(newValue);
+                        setUpdatedQualifications(false);
+                      })
+                      .catch(() => {});
+                  } else {
+                    setSelectedComp(newValue);
+                    setUpdatedQualifications(false);
+                  }
+                }}
+                getOptionLabel={(option) => option.cod_acta_comp + 500}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Actas de notas"
+                    error={!!errors.selectedComp}
+                    helperText={errors.selectedComp}
+                  />
+                )}
+                noOptionsText={'No hay opciones'}
+              />
+            </Grid>
 
-          <Grid item xs={12} />
+            <Grid item xs={12} />
 
-          <Grid item xs={1} sx={{ minWidth: '500px' }}>
-            <Card>
-              <Scrollbar>
-                <TableContainer>
-                  <Table size="small">
-                    <QualificationListHead headLabel={TABLE_HEAD} />
+            <Grid item xs={1} sx={{ minWidth: '500px' }}>
+              <Card>
+                {isLoading && (
+                  <Backdrop
+                    sx={{ bgcolor: 'rgba(255,255,255,0.41)', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                    open={isLoading}
+                  >
+                    <CircularProgress color="primary" sx={{ ml: '200px', mt: '10px' }} />
+                  </Backdrop>
+                )}
+                <Scrollbar>
+                  <TableContainer>
+                    <Table size="small">
+                      <QualificationListHead headLabel={TABLE_HEAD} />
 
-                    <TableBody sx={{ width: '100%' }}>
-                      {requestersList.map((row) => {
-                        const { no_anonimato, calificacion } = row;
+                      <TableBody sx={{ width: '100%' }}>
+                        {requestersList.map((row) => {
+                          const { no_anonimato, calificacion } = row;
 
-                        return (
-                          <TableRow key={no_anonimato} tabIndex={-1} hover sx={{ height: '30px' }}>
-                            <TableCell align="center">{no_anonimato}</TableCell>
+                          return (
+                            <TableRow key={no_anonimato} tabIndex={-1} hover sx={{ height: '30px' }}>
+                              <TableCell align="center">{no_anonimato}</TableCell>
 
-                            <TableCell align="center" sx={{ padding: '1px' }}>
-                              <TextField
-                                type={'text'}
-                                value={calificacion}
-                                onChange={(event) => handleChange(no_anonimato, event)}
-                                onInput={handleQualificationInput}
-                                variant={'standard'}
-                                size="large"
-                                margin={'none'}
-                                sx={{ padding: '0px', width: '50px', textAlign: 'center' }}
-                              />
+                              <TableCell align="center" sx={{ padding: '1px' }}>
+                                <TextField
+                                  type={'text'}
+                                  value={calificacion}
+                                  onChange={(event) => handleChange(no_anonimato, event)}
+                                  onInput={handleQualificationInput}
+                                  variant={'standard'}
+                                  size="large"
+                                  margin={'none'}
+                                  sx={{ padding: '0px', width: '50px', textAlign: 'center' }}
+                                  inputProps={{ maxLength: 3 }}
+                                />
+                              </TableCell>
+                              <TableCell align="center">{}</TableCell>
+                            </TableRow>
+                          );
+                        })}
+                        {emptyRows === 0 && (
+                          <TableRow style={{ height: 53 * emptyRows }}>
+                            <TableCell colSpan={6} sx={{ textAlign: 'center' }}>
+                              Seleccione un acta de notas
                             </TableCell>
-                            <TableCell align="center">{}</TableCell>
                           </TableRow>
-                        );
-                      })}
-                      {emptyRows === 0 && (
-                        <TableRow style={{ height: 53 * emptyRows }}>
-                          <TableCell colSpan={6} sx={{ textAlign: 'center' }}>
-                            Seleccione un acta de notas
-                          </TableCell>
-                        </TableRow>
-                      )}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </Scrollbar>
-            </Card>
-          </Grid>
-
-          <Grid item xs={12} />
-
-          <Grid item container xs={3}>
-            <Grid item xs>
-              <Button type="submit" variant="contained" color="primary" onClick={handleAccept}>
-                Aceptar
-              </Button>
+                        )}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </Scrollbar>
+              </Card>
             </Grid>
 
-            <Grid item xs>
-              <Button type="submit" variant="contained" color="primary" onClick={handleCancel}>
-                Cancelar
-              </Button>
+            <Grid item container sx={{ mb: '20px' }}>
+              <Grid item xs />
+
+              <Grid item xs={2}>
+                <Button type="submit" variant="contained" color="primary" onClick={handleCancel}>
+                  Cancelar
+                </Button>
+              </Grid>
+
+              <Grid item xs={2}>
+                <Button type="submit" variant="contained" color="primary" onClick={handleAccept}>
+                  Aceptar
+                </Button>
+              </Grid>
+
+              <Grid item xs />
             </Grid>
           </Grid>
-        </Grid>
-      </Container>
+        </Container>
+      </Box>
     </>
   );
 }

@@ -1,6 +1,7 @@
 import { mdiDelete, mdiDotsVertical, mdiPencilOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import {
+  Alert,
   Button,
   Card,
   Checkbox,
@@ -19,13 +20,13 @@ import {
   Typography,
 } from '@mui/material';
 import { filter } from 'lodash';
-import { useCallback, useEffect, useState } from 'react';
+import { useConfirm } from 'material-ui-confirm';
+import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import PropTypes from 'prop-types';
 import Iconify from '../../../../components/iconify';
 import setMessage from '../../../../components/messages/messages';
 import Scrollbar from '../../../../components/scrollbar';
-import { deleteClassroom } from '../../../gestionCodificadores/aulas/store/store';
 import { getCarreras } from '../../../gestionCodificadores/carreras/store/store';
 import { UseActiveCourse } from '../../curso/context/ActiveCourseContext';
 import { getAllOfertasByCurso } from '../../ofertas/store/store';
@@ -37,7 +38,7 @@ import { deleteRequester, getSolicitantesByCurso, getSolicitudesByCurso } from '
 const TABLE_HEAD = [
   { id: 'num_id', label: 'No. Identidad', alignRight: false },
   { id: 'nomb_solicitante', label: 'Nombre', alignRight: false },
-  { id: 'firstLastName', label: '1er Apellido', alignRight: false },
+  { id: 'apell_solicitante', label: '1er Apellido', alignRight: false },
   { id: 'SecondLastName', label: '2do Apellido', alignRight: false },
   { id: 'opcion1', label: 'Opción 1', alignRight: false },
   { id: 'opcion2', label: 'Opción 2', alignRight: false },
@@ -93,13 +94,15 @@ export default function RequestsPage(solicitantesConfirmados) {
   const [refresh, setRefresh] = useState(0);
 
   const { activeCourse } = UseActiveCourse();
+  const confirm = useConfirm();
+
   const [SOLICITANTESSLIST, setSOLICITANTESSLIST] = useState([]);
   const [SOLICITUDESLIST, setSOLICITUDESLIST] = useState([]);
   const [OFERTASLIST, setOFERTASLIST] = useState([]);
   const [CARRERASLIST, setCARRERASLIST] = useState([]);
 
   useEffect(() => {
-    getSolicitudesByCurso(activeCourse.cod_curso)
+    getSolicitudesByCurso(activeCourse.cod_curso, solicitantesConfirmados.solicitantesConfirmados)
       .then((response) => {
         if (response.status === 200) {
           setSOLICITUDESLIST(response.data);
@@ -108,7 +111,7 @@ export default function RequestsPage(solicitantesConfirmados) {
       .catch((error) => {
         console.log('Error al cargar las solicitudes', error);
       });
-  }, []);
+  }, [solicitantesConfirmados]);
 
   useEffect(() => {
     getCarreras()
@@ -237,7 +240,7 @@ export default function RequestsPage(solicitantesConfirmados) {
 
   const handleConfirmClick = () => {
     if (selected.length === 1) {
-      const selectedItem = filteredSolicitudes.find((solicitud) => solicitud.cod_solicitante === selected[0]);
+      const selectedItem = filteredRequests.find((solicitud) => solicitud.cod_solicitante === selected[0]);
       if (selectedItem) {
         setIsFormDialogVisible(true);
         setEditMode(true);
@@ -249,29 +252,86 @@ export default function RequestsPage(solicitantesConfirmados) {
 
   const handleDeleteClick = () => {
     if (selected.length === 1) {
-      const selectedItem = filteredSolicitudes.find((requester) => requester.cod_solicitante === selected[0]);
+      const selectedItem = filteredRequests.find((requester) => requester.cod_solicitante === selected[0]);
       if (selectedItem) {
-        const confirmed = window.confirm(
-          `Está seguro que desea eliminar el solicitante: ${selectedItem.nomb_solicitante}`
-        );
+        confirm({
+          content: (
+            <Alert
+              severity={'warning'}
+            >{`¿Desea eliminar el solicitante: ${selectedItem.nomb_solicitante} ${selectedItem.apell_solicitante} ?`}</Alert>
+          ),
+        })
+          .then(() => {
+            deleteRequester(selectedItem)
+              .then((response) => {
+                if (response.status === 200) {
+                  setMessage('success', '¡Solicitante eliminado con éxito!');
+                  setOpenInRowMenu(false);
+                  setSelected([]);
+                  setRefresh(refresh + 1);
+                }
+              })
+              .catch((error) => {
+                console.log('Error al eliminar el solicitante', error);
+                setMessage('error', '¡Ha ocurrido un error!');
+              });
+          })
+          .catch(() => {});
+      }
+    }
+  };
 
-        if (confirmed) {
-          deleteRequester(selectedItem)
-            .then((response) => {
-              if (response.status === 200) {
-                setMessage('success', '¡Solicitante eliminado con éxito!');
+  const handleMultipleDeleteClick = () => {
+    if (selected.length > 0) {
+      const selectedItems = filteredRequests.filter((request) => selected.includes(request.cod_solicitante));
+
+      confirm({
+        content: (
+          <Alert severity={'warning'}>{`¿Desea eliminar las ${selected.length} solicitudes seleccionadas?`}</Alert>
+        ),
+      })
+        .then(() => {
+          // Perform the deletion of multiple records
+          Promise.all(selectedItems.map((selectedItem) => deleteRequester(selectedItem)))
+            .then((responses) => {
+              const isSuccess = responses.every((response) => response.status === 200);
+
+              if (isSuccess) {
+                setMessage('success', `¡${selected.length} solicitudes eliminadas con éxito!`);
                 setOpenInRowMenu(false);
                 setSelected([]);
                 setRefresh(refresh + 1);
+              } else {
+                setMessage('warning', '¡Alguna solicitud no pudo ser eliminada!');
               }
             })
             .catch((error) => {
-              console.log('Error al eliminar el solicitante', error);
+              console.log('Error al eliminar las solicitudes', error);
               setMessage('error', '¡Ha ocurrido un error!');
             });
-        }
-      }
+        })
+        .catch(() => {});
     }
+  };
+
+  const handleClose = () => {
+    confirm({
+      content: <Alert severity={'warning'}>¡Perderá los cambios no guardados! ¿Desea continuar?</Alert>,
+    })
+      .then(() => {
+        setRefresh(refresh + 1);
+        setIsFormDialogVisible(false);
+        setEditMode(false);
+        setFormData({});
+      })
+      .catch(() => {});
+  };
+
+  const handleCloseAfterAction = () => {
+    setRefresh(refresh + 1);
+    setIsFormDialogVisible(false);
+    setEditMode(false);
+    setFormData({});
   };
 
   const handleRowClick = (codSol) => {
@@ -281,9 +341,9 @@ export default function RequestsPage(solicitantesConfirmados) {
 
   const rowsNumber = SOLICITANTESSLIST.length;
 
-  const filteredSolicitudes = applySortFilter(SOLICITANTESSLIST, getComparator(order, orderBy), filterValue);
+  const filteredRequests = applySortFilter(SOLICITANTESSLIST, getComparator(order, orderBy), filterValue);
 
-  const isNotFound = !filteredSolicitudes.length && !!filterValue;
+  const isNotFound = !filteredRequests.length && !!filterValue;
 
   return (
     <>
@@ -294,12 +354,8 @@ export default function RequestsPage(solicitantesConfirmados) {
       {isFormDialogVisible ? (
         <RequestsFormDialog
           open={isFormDialogVisible}
-          handleCloseClick={() => {
-            setRefresh(refresh + 1);
-            setIsFormDialogVisible(false);
-            setEditMode(false);
-            setFormData({});
-          }}
+          handleCloseClick={handleClose}
+          handleCLoseAfterAction={handleCloseAfterAction}
           Data={formData}
           editMode={editMode}
         />
@@ -325,11 +381,12 @@ export default function RequestsPage(solicitantesConfirmados) {
             </Button>
           </Stack>
 
-          <Card>
+          <Card sx={{ minWidth: '101%' }}>
             <RequestsListToolbar
               numSelected={selected.length}
               filterValue={filterValue}
               onFilterValue={handleFilterByValue}
+              handleDelete={handleMultipleDeleteClick}
             />
 
             <Scrollbar>
@@ -345,7 +402,7 @@ export default function RequestsPage(solicitantesConfirmados) {
                     onSelectAllClick={handleSelectAllClick}
                   />
                   <TableBody>
-                    {filteredSolicitudes.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                    {filteredRequests.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                       const {
                         cod_solicitante,
                         num_id,
@@ -410,7 +467,7 @@ export default function RequestsPage(solicitantesConfirmados) {
                   {isNotFound && (
                     <TableBody>
                       <TableRow>
-                        <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
+                        <TableCell align="center" colSpan={10} sx={{ py: 3 }}>
                           <Paper
                             sx={{
                               textAlign: 'center',

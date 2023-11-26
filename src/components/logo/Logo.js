@@ -1,15 +1,17 @@
-import { Icon } from '@mdi/react';
 import PropTypes from 'prop-types';
 import { forwardRef } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 // @mui
 import { Box, Link } from '@mui/material';
+import { UseAuthContext } from '../../sections/auth/context/AuthProvider';
 
 import logoImage from './logo-cujae.png';
 
 // ----------------------------------------------------------------------
 
 const Logo = forwardRef(({ disabledLink = false, sx }) => {
+  const { auth } = UseAuthContext();
+
   const logo = (
     <Box
       component="img"
@@ -23,7 +25,7 @@ const Logo = forwardRef(({ disabledLink = false, sx }) => {
   }
 
   return (
-    <Link to="/" component={RouterLink} sx={{ display: 'contents' }}>
+    <Link to={auth.username ? '/dashboard' : '/'} component={RouterLink} sx={{ display: 'contents' }}>
       {logo}
     </Link>
   );

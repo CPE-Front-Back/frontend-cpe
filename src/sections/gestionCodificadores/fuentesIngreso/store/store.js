@@ -1,8 +1,8 @@
-import instance from '../../../../components/api/api';
+import { axiosInstance } from '../../../../components/api/api';
 
 export const getIncomeSources = async () => {
   try {
-    const response = await instance.get(`fuenteIngreso/`);
+    const response = await axiosInstance.get(`fuenteIngreso/`);
     return response;
   } catch (error) {
     console.log('Error en getIncomeSources', error);
@@ -12,7 +12,7 @@ export const getIncomeSources = async () => {
 
 export const getIncomeSourcesById = async (IncomeSourceCode) => {
   try {
-    const response = await instance.get(`fuenteIngreso/${IncomeSourceCode}`);
+    const response = await axiosInstance.get(`fuenteIngreso/${IncomeSourceCode}`);
     return response;
   } catch (error) {
     console.log('Error en getIncomeSourcesById', error);
@@ -22,7 +22,7 @@ export const getIncomeSourcesById = async (IncomeSourceCode) => {
 
 export const insertIncomeSource = async (incomeSource) => {
   try {
-    const response = await instance.post(`fuenteIngreso/`, incomeSource);
+    const response = await axiosInstance.post(`fuenteIngreso/`, incomeSource);
     return response;
   } catch (error) {
     console.log('Error en insertIncomeSource', error);
@@ -32,7 +32,7 @@ export const insertIncomeSource = async (incomeSource) => {
 
 export const updateIncomeSource = async (incomeSource) => {
   try {
-    const response = await instance.put(`fuenteIngreso/`, incomeSource);
+    const response = await axiosInstance.put(`fuenteIngreso/`, incomeSource);
     return response;
   } catch (error) {
     console.log('Error en updateIncomeSource', error);
@@ -42,7 +42,7 @@ export const updateIncomeSource = async (incomeSource) => {
 
 export const deleteIncomeSource = async (incomeSource) => {
   try {
-    const response = await instance.delete(`fuenteIngreso/${incomeSource.nomb_fuente}`);
+    const response = await axiosInstance.delete(`fuenteIngreso/${incomeSource.nomb_fuente}`);
     return response;
   } catch (error) {
     console.log('Error en deleteIncomeSource', error);

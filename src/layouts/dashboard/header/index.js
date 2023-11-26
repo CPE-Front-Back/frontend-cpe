@@ -7,8 +7,6 @@ import { bgBlur } from '../../../utils/cssStyles';
 // components
 import Iconify from '../../../components/iconify';
 //
-import Searchbar from './Searchbar';
-import AccountPopover from './AccountPopover';
 
 // ----------------------------------------------------------------------
 
@@ -56,8 +54,8 @@ export default function Header({ onOpenNav }) {
         </IconButton>
 
         <Box sx={{ flexGrow: 1 }}>
-          <Typography variant="h3" textAlign={'center'} color={'black'}>
-            Sistema para la asignacion de plazas de curso por encuentro
+          <Typography variant="h3" textAlign={'center'} sx={{ color: (theme) => theme.palette.primary.main }}>
+            Sistema para la asignación de plazas de curso por encuentro
           </Typography>
         </Box>
       </StyledToolbar>

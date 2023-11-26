@@ -1,8 +1,8 @@
-import instance from '../../../../components/api/api';
+import { axiosForAuth, axiosInstance } from '../../../../components/api/api';
 
 export const getCarreras = async () => {
   try {
-    const response = await instance.get(`carrera/`);
+    const response = await axiosInstance.get(`carrera/`);
     return response;
   } catch (error) {
     console.log('Error en getCarreras', error);
@@ -10,9 +10,19 @@ export const getCarreras = async () => {
   }
 };
 
+export const getCarrerasRequester = async () => {
+  try {
+    const response = await axiosForAuth.get(`carrera/`);
+    return response;
+  } catch (error) {
+    console.log('Error en getCarrerasRequester', error);
+    throw error;
+  }
+};
+
 export const insertCarrera = async (carrera) => {
   try {
-    const response = await instance.post(`carrera/`, carrera);
+    const response = await axiosInstance.post(`carrera/`, carrera);
     return response;
   } catch (error) {
     console.log('Error en insertarCarrera', error);
@@ -22,7 +32,7 @@ export const insertCarrera = async (carrera) => {
 
 export const updateCarrera = async (carrera) => {
   try {
-    const response = await instance.put(`carrera/`, carrera);
+    const response = await axiosInstance.put(`carrera/`, carrera);
     return response;
   } catch (error) {
     console.log('Error en modificarCarrera', error);
@@ -32,7 +42,7 @@ export const updateCarrera = async (carrera) => {
 
 export const deleteCareer = async (career) => {
   try {
-    const response = await instance.delete(`carrera/${career.cod_carrera}`);
+    const response = await axiosInstance.delete(`carrera/${career.cod_carrera}`);
     return response;
   } catch (error) {
     console.log('Error en deleteCareer', error);

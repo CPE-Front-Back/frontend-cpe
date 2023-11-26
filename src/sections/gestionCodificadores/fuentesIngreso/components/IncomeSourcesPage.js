@@ -1,6 +1,7 @@
 import { mdiDelete, mdiDotsVertical, mdiPencilOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import {
+  Alert,
   Button,
   Card,
   Checkbox,
@@ -19,6 +20,7 @@ import {
   Typography,
 } from '@mui/material';
 import { filter } from 'lodash';
+import { useConfirm } from 'material-ui-confirm';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import Iconify from '../../../../components/iconify';
@@ -80,6 +82,8 @@ export default function IncomeSourcesPage() {
   const [filteredIncomeSources, setFilteredIncomeSources] = useState([]);
   const [isNotFound, setIsNotFound] = useState(false);
   const [rowsNumber, setRowsNumber] = useState(0);
+
+  const confirm = useConfirm();
 
   useEffect(() => {
     getIncomeSources()
@@ -165,26 +169,63 @@ export default function IncomeSourcesPage() {
     if (selected.length === 1) {
       const selectedItem = filteredIncomeSources.find((incomeSource) => incomeSource.cod_fuente === selected[0]);
       if (selectedItem) {
-        const confirmed = window.confirm(
-          `Está seguro que desea eliminar la fuente de ingreso: ${selectedItem.nomb_fuente} ?`
-        );
+        confirm({
+          content: (
+            <Alert severity={'warning'}>{`¿Desea eliminar la fuente de ingreso: ${selectedItem.nomb_fuente} ?`}</Alert>
+          ),
+        })
+          .then(() => {
+            deleteIncomeSource(selectedItem)
+              .then((response) => {
+                if (response.status === 200) {
+                  setMessage('success', '¡Fuente de ingreso eliminada con éxito!');
+                  setOpenInRowMenu(false);
+                  setSelected([]);
+                  setRefresh(refresh + 1);
+                }
+              })
+              .catch((error) => {
+                console.log('Error al eliminar la fuente de ingreso', error);
+                setMessage('error', '¡Ha ocurrido un error!');
+              });
+          })
+          .catch(() => {});
+      }
+    }
+  };
 
-        if (confirmed) {
-          deleteIncomeSource(selectedItem)
-            .then((response) => {
-              if (response.status === 200) {
-                setMessage('success', '¡Fuente de ingreso eliminada con éxito!');
+  const handleMultipleDeleteClick = () => {
+    if (selected.length > 0) {
+      const selectedItems = filteredIncomeSources.filter((incomeSource) => selected.includes(incomeSource.cod_fuente));
+
+      confirm({
+        content: (
+          <Alert
+            severity={'warning'}
+          >{`¿Desea eliminar las ${selected.length} fuentes de ingreso seleccionadas?`}</Alert>
+        ),
+      })
+        .then(() => {
+          // Perform the deletion of multiple records
+          Promise.all(selectedItems.map((selectedItem) => deleteIncomeSource(selectedItem)))
+            .then((responses) => {
+              const isSuccess = responses.every((response) => response.status === 200);
+
+              if (isSuccess) {
+                setMessage('success', `¡${selected.length} fuentes de ingreso eliminadas con éxito!`);
                 setOpenInRowMenu(false);
                 setSelected([]);
                 setRefresh(refresh + 1);
+              } else {
+                setMessage('warning', '¡Alguna fuente de ingreso no pudo ser eliminada!');
               }
             })
             .catch((error) => {
-              console.log('Error al eliminar la fuente de ingreso', error);
+              console.log('Error al eliminar las fuentes de ingreso', error);
               setMessage('error', '¡Ha ocurrido un error!');
             });
-        }
-      }
+        })
+        .catch(() => {});
     }
   };
 
@@ -241,6 +282,7 @@ export default function IncomeSourcesPage() {
               numSelected={selected.length}
               filterValue={filterValue}
               onFilterValue={handleFilterByValue}
+              handleDelete={handleMultipleDeleteClick}
             />
 
             <Scrollbar>

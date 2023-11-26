@@ -1,6 +1,7 @@
 import { mdiDelete, mdiDotsVertical, mdiPencilOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import {
+  Alert,
   Button,
   Card,
   Checkbox,
@@ -19,6 +20,7 @@ import {
   Typography,
 } from '@mui/material';
 import { filter } from 'lodash';
+import { useConfirm } from 'material-ui-confirm';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import Iconify from '../../../../components/iconify';
@@ -32,7 +34,7 @@ import { UseActiveCourse } from '../../curso/context/ActiveCourseContext';
 
 const TABLE_HEAD = [
   { id: 'nomb_aula', label: 'Aula', alignRight: false },
-  { id: 'nomb_edif', label: 'Edificio', alignRight: false },
+  { id: 'nomb_edificio', label: 'Edificio', alignRight: false },
   { id: 'nomb_facultad', label: 'Facultad', alignRight: false },
   { id: 'capacidad', label: 'Capacidad', alignRight: false },
   { id: 'prioridad', label: 'Prioridad', alignRight: false },
@@ -89,6 +91,7 @@ export default function CapacitiesPage() {
   const [FACULTIESLIST, setFACULTIESLIST] = useState([]);
 
   const { activeCourse } = UseActiveCourse();
+  const confirm = useConfirm();
 
   const [filteredCapacities, setFilteredCapacities] = useState([]);
   const [isNotFound, setIsNotFound] = useState(false);
@@ -178,26 +181,59 @@ export default function CapacitiesPage() {
     if (selected.length === 1) {
       const selectedItem = filteredCapacities.find((capacity) => capacity.cod_capacidad === selected[0]);
       if (selectedItem) {
-        const confirmed = window.confirm(
-          `Está seguro que desea eliminar la capacidad: ${selectedItem.cod_capacidad} ?`
-        );
+        confirm({
+          content: <Alert severity={'warning'}>{`¿Desea eliminar la capacidad: ${selectedItem.nomb_aula} ?`}</Alert>,
+        })
+          .then(() => {
+            deleteCapacity(selectedItem)
+              .then((response) => {
+                if (response.status === 200) {
+                  setMessage('success', '¡Capacidad eliminada con éxito!');
+                  setOpenInRowMenu(false);
+                  setSelected([]);
+                  setRefresh(refresh + 1);
+                }
+              })
+              .catch((error) => {
+                console.log('Error al eliminar la capacidad', error);
+                setMessage('error', '¡Ha ocurrido un error!');
+              });
+          })
+          .catch(() => {});
+      }
+    }
+  };
 
-        if (confirmed) {
-          deleteCapacity(selectedItem)
-            .then((response) => {
-              if (response.status === 200) {
-                setMessage('success', '¡Capacidad eliminada con éxito!');
+  const handleMultipleDeleteClick = () => {
+    if (selected.length > 0) {
+      const selectedItems = filteredCapacities.filter((capacity) => selected.includes(capacity.cod_capacidad));
+
+      confirm({
+        content: (
+          <Alert severity={'warning'}>{`¿Desea eliminar las ${selected.length} capacidades seleccionadas?`}</Alert>
+        ),
+      })
+        .then(() => {
+          // Perform the deletion of multiple records
+          Promise.all(selectedItems.map((selectedItem) => deleteCapacity(selectedItem)))
+            .then((responses) => {
+              const isSuccess = responses.every((response) => response.status === 200);
+
+              if (isSuccess) {
+                setMessage('success', `¡${selected.length} capacidades eliminadas con éxito!`);
                 setOpenInRowMenu(false);
                 setSelected([]);
                 setRefresh(refresh + 1);
+              } else {
+                setMessage('warning', '¡Alguna capacidad no pudo ser eliminada!');
               }
             })
             .catch((error) => {
-              console.log('Error al eliminar la capacidad', error);
+              console.log('Error al eliminar las capacidades', error);
               setMessage('error', '¡Ha ocurrido un error!');
             });
-        }
-      }
+        })
+        .catch(() => {});
     }
   };
 
@@ -254,6 +290,7 @@ export default function CapacitiesPage() {
               numSelected={selected.length}
               filterValue={filterValue}
               onFilterValue={handleFilterByValue}
+              handleDelete={handleMultipleDeleteClick}
             />
 
             <Scrollbar>
@@ -375,6 +412,7 @@ export default function CapacitiesPage() {
             p: 1,
             width: 140,
             '& .MuiMenuItem-root': {
+              py: 1,
               px: 1,
               typography: 'body2',
               borderRadius: 0.75,
