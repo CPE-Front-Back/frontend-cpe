@@ -4,7 +4,12 @@ import { getActiveCourse } from '../store/store';
 
 const ActiveCourseContext = createContext();
 export function ActiveCourseProvider({ children }) {
-  const [activeCourse, setActiveCourse] = useState({ cod_curso: -1, nomb_curso: 'Ningún curso activo', activo: false });
+  const [activeCourse, setActiveCourse] = useState({
+    cod_curso: -1,
+    nomb_curso: 'Ningún curso activo',
+    activo: false,
+    fecha_inicio: '-- - -- - ----',
+  });
   const [refreshProcessingStatus, setRefreshProcessingStatus] = useState(0);
   const { auth } = UseAuthContext();
 

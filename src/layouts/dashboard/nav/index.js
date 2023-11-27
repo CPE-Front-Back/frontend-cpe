@@ -278,7 +278,10 @@ export default function Nav({ openNav, onCloseNav }) {
               .then(() => {
                 navigate('/login', { state: { from: location }, replace: true });
                 setAuth({});
-                sessionStorage.removeItem('accessToken');
+                localStorage.removeItem('username');
+                localStorage.removeItem('rol');
+                localStorage.removeItem('name');
+                localStorage.removeItem('accessToken');
               })
               .catch(() => {});
           }}

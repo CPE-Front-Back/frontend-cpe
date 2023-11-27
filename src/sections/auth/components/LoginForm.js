@@ -26,12 +26,15 @@ export default function LoginForm() {
   const destino = '/dashboard';
   const [showPassword, setShowPassword] = useState(false);
 
-  const setToken = (token) => {
-    sessionStorage.setItem('accessToken', token);
+  const setUserData = (username, rol, name, token) => {
+    localStorage.setItem('username', username);
+    localStorage.setItem('rol', rol);
+    localStorage.setItem('name', name);
+    localStorage.setItem('accessToken', token);
   };
 
   const handleLogin = () => {
-    sessionStorage.removeItem('accessToken');
+    localStorage.removeItem('accessToken');
     const loginData = { username, password };
 
     login(loginData)
@@ -40,7 +43,7 @@ export default function LoginForm() {
           const userAuth = response.data;
 
           setAuth({ ...userAuth });
-          setToken(response.data.token);
+          setUserData(response.data.username, response.data.rol, response.data.name, response.data.token);
 
           setMessage('success', `¡Bienvenido ${userAuth.name}!`);
 

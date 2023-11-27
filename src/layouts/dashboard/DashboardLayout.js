@@ -36,14 +36,16 @@ const Main = styled('div')(({ theme }) => ({
 export default function DashboardLayout() {
   const [open, setOpen] = useState(false);
   const { auth } = UseAuthContext();
+  const [goDashboard] = useState(auth.username !== null);
 
   useEffect(() => {
-    console.log('el username', auth.username);
+    console.log('EL USERNAME EN EL DASH', auth.username);
+    console.log('goDashboard', goDashboard);
   }, [auth]);
 
   return (
     <>
-      {auth.username ? (
+      {goDashboard ? (
         <StyledRoot>
           <Header onOpenNav={() => setOpen(true)} />
 

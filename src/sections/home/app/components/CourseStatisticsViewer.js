@@ -17,10 +17,7 @@ import {
 
 // ----------------------------------------------------------------------
 
-CourseStatisticsViewer.propTypes = {
-  title: PropTypes.string.isRequired,
-};
-export default function CourseStatisticsViewer({ title, ...other }) {
+export default function CourseStatisticsViewer({ ...other }) {
   const { activeCourse, refreshProcessingStatus } = UseActiveCourse();
   const [cant1, setCant1] = useState(0);
   const [cant2, setCant2] = useState(0);
@@ -76,7 +73,10 @@ export default function CourseStatisticsViewer({ title, ...other }) {
 
   return (
     <Card {...other}>
-      <CardHeader title={title} />
+      <CardHeader
+        title={`Curso: ${activeCourse.nomb_curso}`}
+        subheader={`Fecha de inicio: ${activeCourse.fecha_inicio}`}
+      />
 
       <Scrollbar>
         <Stack spacing={3} sx={{ p: 3, pr: 0 }}>

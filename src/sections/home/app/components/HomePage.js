@@ -26,7 +26,7 @@ export default function HomePage() {
         <Grid container>
           <Grid item xs />
           <Grid item xs={9}>
-            <CourseStatisticsViewer title={`Curso: ${activeCourse.nomb_curso}`} />
+            <CourseStatisticsViewer />
           </Grid>
           <Grid item xs />
         </Grid>

@@ -12,8 +12,8 @@ export const axiosInstance = axios.create({
 });
 axiosInstance.interceptors.request.use(
   (config) => {
-    if (!config.headers.Authorization && sessionStorage.getItem('accessToken') !== null) {
-      const accessToken = sessionStorage.getItem('accessToken');
+    if (!config.headers.Authorization && localStorage.getItem('accessToken') !== null) {
+      const accessToken = localStorage.getItem('accessToken');
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
     return config;
@@ -25,9 +25,9 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
     const prevRequest = error?.config;
-    if (error?.response?.status === 403 && !prevRequest?.sent && sessionStorage.getItem('accessToken') !== null) {
+    if (error?.response?.status === 403 && !prevRequest?.sent && localStorage.getItem('accessToken') !== null) {
       prevRequest.sent = true;
-      const accessToken = sessionStorage.getItem('accessToken');
+      const accessToken = localStorage.getItem('accessToken');
       prevRequest.headers.Authorization = `Bearer ${accessToken}`;
       return axiosInstance(prevRequest);
     }

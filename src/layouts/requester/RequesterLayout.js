@@ -73,7 +73,7 @@ export default function RequesterLayout() {
                   type="submit"
                   variant="contained"
                   onClick={() => {
-                    navigate('/login', { replace: true });
+                    navigate('/dashboard', { replace: true });
                   }}
                   sx={{ textTransform: 'none', mt: '-15px' }}
                 >
