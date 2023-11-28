@@ -59,9 +59,12 @@ export default function Nav({ openNav, onCloseNav }) {
   const [isOpen, setIsOpen] = useState(false);
   const [openSessionMenu, setOpenSessionMenu] = useState(null);
   const [actionName, setActionName] = useState('');
+
   const handleClose = () => {
     setIsOpen(false);
   };
+
+  const handleAccept = () => {};
 
   useEffect(() => {
     if (openNav) {
@@ -82,79 +85,16 @@ export default function Nav({ openNav, onCloseNav }) {
     setActionName(actionName);
     switch (actionName) {
       case 'Asignar carreras 1ra vuelta':
-        asignar1raVuelta(activeCourse.cod_curso)
-          .then((response) => {
-            console.log(response);
-            if (response.data) {
-              setRefreshProcessingStatus(refreshProcessingStatus + 1);
-              setMessage('success', '¡Asignación realizada con éxito!');
-              setIsOpen(true);
-            } else {
-              setMessage('error', '¡No se ha podido realizar la asignación!');
-            }
-          })
-          .catch((error) => {
-            console.log('Error al asignar primera vuelta', error);
-            setMessage('error', '¡Ha ocurrido un error!');
-          });
-
+        setIsOpen(true);
         break;
       case 'Asignar carreras 2da vuelta':
-        console.log(`Submenu item clicked: ${actionName}`);
-        asignar2daVuelta(activeCourse.cod_curso)
-          .then((response) => {
-            console.log(response);
-            if (response.data) {
-              setRefreshProcessingStatus(refreshProcessingStatus + 1);
-              setMessage('success', '¡Asignación realizada con éxito!');
-              setIsOpen(true);
-            } else {
-              setMessage('error', '¡No se ha podido realizar la asignación!');
-            }
-          })
-          .catch((error) => {
-            console.log('Error al asignar segunda vuelta', error);
-            setMessage('error', '¡Ha ocurrido un error!');
-          });
-
+        setIsOpen(true);
         break;
       case 'Asignar aulas':
-        console.log(`Submenu item clicked: ${actionName}`);
-        asignarAulas(activeCourse.cod_curso)
-          .then((response) => {
-            console.log(response);
-            if (response.data) {
-              setRefreshProcessingStatus(refreshProcessingStatus + 1);
-              setMessage('success', '¡Asignación realizada con éxito!');
-              setIsOpen(true);
-            } else {
-              setMessage('error', '¡No se ha podido realizar la asignación!');
-            }
-          })
-          .catch((error) => {
-            console.log('Error al asignar las aulas', error);
-            setMessage('error', '¡Ha ocurrido un error!');
-          });
-
+        setIsOpen(true);
         break;
       case 'Asignar actas':
-        console.log(`Submenu item clicked: ${actionName}`);
-        asignarActas(activeCourse.cod_curso)
-          .then((response) => {
-            console.log(response);
-            if (response.data) {
-              setRefreshProcessingStatus(refreshProcessingStatus + 1);
-              setMessage('success', '¡Asignación realizada con éxito!');
-              setIsOpen(true);
-            } else {
-              setMessage('error', '¡No se ha podido realizar la asignación!');
-            }
-          })
-          .catch((error) => {
-            console.log('Error al asignar las actas', error);
-            setMessage('error', '¡Ha ocurrido un error!');
-          });
-
+        setIsOpen(true);
         break;
       default:
         console.log('Accion no reconocida:', actionName);
@@ -232,7 +172,14 @@ export default function Nav({ openNav, onCloseNav }) {
               },
             }}
           >
-            {isOpen && <ProcessingStatusDialog open={isOpen} handleClose={handleClose} actionName={actionName} />}
+            {isOpen && (
+              <ProcessingStatusDialog
+                open={isOpen}
+                handleClose={handleClose}
+                handleAccept={handleAccept}
+                actionName={actionName}
+              />
+            )}
             {renderContent}
           </Drawer>
         ) : (
@@ -246,7 +193,14 @@ export default function Nav({ openNav, onCloseNav }) {
               sx: { width: NAV_WIDTH },
             }}
           >
-            {isOpen && <ProcessingStatusDialog open={isOpen} handleClose={handleClose} actionName={actionName} />}
+            {isOpen && (
+              <ProcessingStatusDialog
+                open={isOpen}
+                handleClose={handleClose}
+                handleAccept={handleAccept}
+                actionName={actionName}
+              />
+            )}
             {renderContent}
           </Drawer>
         )}

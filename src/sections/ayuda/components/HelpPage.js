@@ -1,14 +1,29 @@
 import { Container, Typography } from '@mui/material';
+import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
+import { UseAuthContext } from '../../auth/context/AuthProvider';
 
 export default function HelpPage() {
-  const helpText = `- Primeramente, debe haber un curso activado.
-- Luego se deben de actualizar las capacidades de las aulas, las ofertas y las solicitudes de los solicitantes, en caso de que exista ese solicitante, si no existe, se registra el mismo primero y luego sus solicitudes.
-- Si ya se hizo todo lo anterior, se puede pasar a la asignación de carreras en primera vuelta, luego que se haya efectuado la misma, se podrán asignar las aulas a los solicitantes que no obtuvieron carrera para aplicar el instrumento.
-- Realizar la asignación de actas para el instrumento.
-- Registrar las calificaciones obtenidas por los solicitantes luego de haber realizado el instrumento.
-- Registrar las notas de recalificación obtenidas por los solicitantes.
-- Realizar la asignación final de carreras.`;
+  const { auth } = UseAuthContext();
+  const [helpText, setHelpText] = useState('');
+
+  switch (auth.rol) {
+    case 'Administrador':
+      setHelpText();
+      break;
+    case 'Secretario General':
+      setHelpText();
+      break;
+    case 'Matriculador':
+      setHelpText();
+      break;
+    case 'Técnico':
+      setHelpText();
+      break;
+    default:
+      setHelpText('Inicia Sesión');
+      break;
+  }
 
   return (
     <>

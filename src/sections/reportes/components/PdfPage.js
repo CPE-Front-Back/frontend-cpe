@@ -254,7 +254,7 @@ export default function PdfPage({ pdfName }) {
               console.log('Error al cargar el reporte', error);
             });
           break;
-        case 'Resumen de asignaciones en 1era opción por carrera':
+        case 'Resumen de asignaciones en 1ra opción por carrera':
           getResumenAsignaciones1raOpcCarreraReport(selectedCourse.nomb_curso)
             .then((response) => {
               if (response.status === 200) {

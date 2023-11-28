@@ -528,7 +528,7 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
           </Toolbar>
         </AppBar>
         <Grid container sx={{ height: '100%', width: '90%', margin: 'auto' }}>
-          <Grid container spacyng={3} sx={{ pb: '50px', pt: '23px' }}>
+          <Grid item container spacyng={3} sx={{ pb: '50px', pt: '23px' }}>
             <Grid item xs={12} sm={6} md={3}>
               <TextField
                 name="num_id"
@@ -586,7 +586,7 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
             </Grid>
           </Grid>
 
-          <Grid container spacyng={1} columns={{ xs: 12, sm: 12, md: 4 }}>
+          <Grid item container spacyng={1} columns={{ xs: 12, sm: 12, md: 4 }}>
             <Grid item xs={12} sm={6} md={1}>
               <TextField
                 name="num_telefono"
@@ -671,7 +671,7 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
             </Grid>
           </Grid>
 
-          <Grid container>
+          <Grid item container>
             <Stack container sx={{ mt: 5, width: '50%', margin: 'auto' }} spacing={2}>
               <Grid item textAlign={'center'}>
                 <Autocomplete
@@ -757,17 +757,28 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
             </Stack>
           </Grid>
 
-          <LoadingButton
-            fullWidth
-            size="large"
-            variant="contained"
-            onClick={() => {
-              setUserClickedActionButton(true);
-              handleEnviarClick().then(() => {});
-            }}
-          >
-            {editMode ? 'Confirmar' : 'Registrar'}
-          </LoadingButton>
+          <Grid item container spacing={2}>
+            <Grid item xs />
+            <Grid item xs>
+              <LoadingButton fullWidth size="large" variant="contained" onClick={handleCloseClick}>
+                Cancelar
+              </LoadingButton>
+            </Grid>
+            <Grid item xs>
+              <LoadingButton
+                fullWidth
+                size="large"
+                variant="contained"
+                onClick={() => {
+                  setUserClickedActionButton(true);
+                  handleEnviarClick().then(() => {});
+                }}
+              >
+                {editMode ? 'Confirmar' : 'Registrar'}
+              </LoadingButton>
+            </Grid>
+            <Grid item xs />
+          </Grid>
         </Grid>
       </Dialog>
     </>
