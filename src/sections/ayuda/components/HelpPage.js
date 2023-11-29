@@ -51,7 +51,7 @@ export default function HelpPage() {
         <Typography variant="h3" gutterBottom>
           Correcto funcionamiento de la aplicación:
         </Typography>
-        <Typography variant="subtitle1">
+        <Typography variant="subtitle1" textAlign={'justify'}>
           {helpText.split('\n').map((line, index) => (
             <span key={index}>
               {line}
