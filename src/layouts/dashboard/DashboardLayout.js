@@ -36,7 +36,7 @@ const Main = styled('div')(({ theme }) => ({
 export default function DashboardLayout() {
   const [open, setOpen] = useState(false);
   const { auth } = UseAuthContext();
-  const [goDashboard] = useState(auth.username !== null);
+  const [goDashboard] = useState(localStorage.getItem('username'));
 
   useEffect(() => {
     console.log('EL USERNAME EN EL DASH', auth.username);

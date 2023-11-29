@@ -20,7 +20,7 @@ export default function HomePage() {
 
       <Container maxWidth="100%">
         <Typography variant="h4" sx={{ mb: 5 }}>
-          Estadísticas del Curso
+          Estadísticas del curso
         </Typography>
 
         <Grid container>

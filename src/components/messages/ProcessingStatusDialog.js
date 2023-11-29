@@ -33,8 +33,8 @@ export default function ProcessingStatusDialog({ open, handleClose, actionName }
       case 'Asignar carreras 2da vuelta':
         setTitle('¿Desea realizar la asignación en 2da vuelta?');
         setContent(
-          'Después de esta acción no se podrá actualizar las ofertas, ni las solicitudes en el curso.\n' +
-            'Tampoco se podrá volver a realiazr la asignación en 1ra vuelta.'
+          'Después de esta acción no se podrá actualizar las calificaciones, ni insertar las recalificaciones de los solicitantes.\n' +
+            'Tampoco se podrá volver a realiazr la asignación en 2da vuelta.'
         );
         break;
       case 'Asignar aulas':

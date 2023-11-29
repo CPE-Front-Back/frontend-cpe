@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 // @mui
 import { styled, alpha } from '@mui/material/styles';
-import { Box, Link, Drawer, Typography, Stack, MenuItem, Popover, Alert } from '@mui/material';
+import { Box, Link, Drawer, Typography, Stack, MenuItem, Popover, Alert, Tooltip } from '@mui/material';
 import setMessage from '../../../components/messages/messages';
 import ProcessingStatusDialog from '../../../components/messages/ProcessingStatusDialog';
 // hooks
@@ -81,6 +81,21 @@ export default function Nav({ openNav, onCloseNav }) {
     setOpenSessionMenu(null);
   };
 
+  const handleCloseSession = () => {
+    confirm({
+      content: <Alert severity={'warning'}>{`¡Perderá los cambios no guardados! ¿Desea continuar?`}</Alert>,
+    })
+      .then(() => {
+        navigate('/login', { state: { from: location }, replace: true });
+        setAuth({});
+        localStorage.removeItem('username');
+        localStorage.removeItem('rol');
+        localStorage.removeItem('name');
+        localStorage.removeItem('accessToken');
+      })
+      .catch(() => {});
+  };
+
   const handleSubmenuItemClicked = (actionName) => {
     setActionName(actionName);
     switch (actionName) {
@@ -109,9 +124,11 @@ export default function Nav({ openNav, onCloseNav }) {
         '& .simplebar-content': { height: 1, display: 'flex', flexDirection: 'column' },
       }}
     >
-      <Box sx={{ px: 2.5, py: 3, pl: '105px', display: 'inline-flex' }}>
-        <Logo />
-      </Box>
+      <Tooltip title={'Ir a Estadísticas del curso'}>
+        <Box sx={{ px: 2.5, py: 3, pl: '105px', display: 'inline-flex' }}>
+          <Logo />
+        </Box>
+      </Tooltip>
 
       <Box sx={{ mb: 5, mx: 2.5 }}>
         <Link underline="none">
@@ -135,19 +152,26 @@ export default function Nav({ openNav, onCloseNav }) {
 
       <Box sx={{ flexGrow: 1 }} />
 
-      <Box
-        sx={{ pb: 2, mt: 5 }}
-        onClick={() => {
-          navigate('/dashboard/help', { replace: true });
-        }}
-      >
-        <Stack alignItems="center" spacing={0.5} sx={{ pt: 1, borderRadius: 2, position: 'relative' }}>
-          <Icon size={2} path={mdiInformationSlabCircleOutline} color="green" />
-          <Typography variant="h6" textAlign={'center'} sx={{ color: (theme) => theme.palette.primary.main }}>
-            Contenido de ayuda
-          </Typography>
-        </Stack>
-      </Box>
+      <Link underline="none">
+        <Box
+          sx={{
+            py: 1.5,
+            m: 2,
+            borderRadius: 2,
+            backgroundColor: (theme) => alpha(theme.palette.grey[500], 0.12),
+          }}
+          onClick={() => {
+            navigate('/dashboard/help', { replace: true });
+          }}
+        >
+          <Stack alignItems="center" spacing={0.5} sx={{ pt: 1, position: 'relative' }}>
+            <Icon size={2} path={mdiInformationSlabCircleOutline} />
+            <Typography variant="h6" textAlign={'center'} sx={{ color: (theme) => theme.palette.primary.main }}>
+              Contenido de ayuda
+            </Typography>
+          </Stack>
+        </Box>
+      </Link>
     </Scrollbar>
   );
 
@@ -224,23 +248,7 @@ export default function Nav({ openNav, onCloseNav }) {
           },
         }}
       >
-        <MenuItem
-          onClick={() => {
-            confirm({
-              content: <Alert severity={'warning'}>{`¡Perderá los cambios no guardados! ¿Desea continuar?`}</Alert>,
-            })
-              .then(() => {
-                navigate('/login', { state: { from: location }, replace: true });
-                setAuth({});
-                localStorage.removeItem('username');
-                localStorage.removeItem('rol');
-                localStorage.removeItem('name');
-                localStorage.removeItem('accessToken');
-              })
-              .catch(() => {});
-          }}
-          sx={{ color: 'error.main' }}
-        >
+        <MenuItem onClick={handleCloseSession} sx={{ color: 'error.main' }}>
           <Icon size={1} path={mdiLogout} />
           <span style={{ marginLeft: 15 }}>Cerrar sesión</span>
         </MenuItem>
