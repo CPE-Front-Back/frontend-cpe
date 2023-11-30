@@ -174,7 +174,7 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
           ...prevErrors,
           nomb_solicitante: 'Formato de nombres inválidos.',
         }));
-      } else if (!/^(\+53\s?)?[5-9]\d{7}$/.test(formData.num_telefono)) {
+      } else if (!/^(\+53\s?)?[4-9]\d{7}$/.test(formData.num_telefono)) {
         setErrors((prevErrors) => ({
           ...prevErrors,
           num_telefono: 'El teléfono debe ser un número válido.',
@@ -292,6 +292,12 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
                   .catch((error) => {
                     console.log('Error al obtener el solicitante insertado', error);
                   });
+              } else if (response.request.status === 500) {
+                console.log('el error', response.request.response);
+                setMessage(
+                  'error',
+                  `EL carnet de identidad: "${formData.num_id}" ya tiene solicitudes registradas en este curso.`
+                );
               }
             })
             .catch((error) => {

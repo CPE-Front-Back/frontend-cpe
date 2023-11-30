@@ -9,6 +9,8 @@ export function ActiveCourseProvider({ children }) {
     nomb_curso: 'Ningún curso activo',
     activo: false,
     fecha_inicio: '-- - -- - ----',
+    fecha_inicio_prem: '-- - -- - ----',
+    fecha_fin_prem: '-- - -- - ----',
   });
   const [refreshProcessingStatus, setRefreshProcessingStatus] = useState(0);
   const { auth } = UseAuthContext();

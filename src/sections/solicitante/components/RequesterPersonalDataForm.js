@@ -166,7 +166,7 @@ export default function RequesterPersonalDataForm() {
           ...prevErrors,
           nomb_solicitante: 'Formato de nombres inválidos.',
         }));
-      } else if (!/^(\+53\s?)?[5-9]\d{7}$/.test(formData.num_telefono)) {
+      } else if (!/^(\+53\s?)?[4-9]\d{7}$/.test(formData.num_telefono)) {
         setErrors((prevErrors) => ({
           ...prevErrors,
           num_telefono: 'El teléfono debe ser un número válido.',

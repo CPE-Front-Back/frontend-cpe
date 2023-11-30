@@ -8,17 +8,21 @@ import enGB from 'date-fns/locale/en-GB';
 import { Helmet } from 'react-helmet-async';
 import setMessage from '../../../../components/messages/messages';
 import { UseActiveCourse } from '../context/ActiveCourseContext';
-import { activarCurso, desactivarCursos, getActiveCourse, getCursos, insertarCurso } from '../store/store';
+import { desactivarCursos, insertarCurso } from '../store/store';
 
 export default function CoursePage() {
   const { activeCourse, setActiveCourse } = UseActiveCourse();
   const [courseNameInput, setCourseNameInput] = useState('');
   const [startDate, setStartDate] = useState(null);
+  const [startPremDate, setStartPremDate] = useState(null);
+  const [endPremDate, setEndPremDate] = useState(null);
   const [canGenerate, setCanGenerate] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [errors, setErrors] = useState({
     nomb_curso: '',
     fecha_inicio: '',
+    fecha_inicio_prem: '',
+    fecha_fin_prem: '',
   });
 
   const validateData = () => {
@@ -29,6 +33,12 @@ export default function CoursePage() {
     }
     if (!startDate) {
       newErrors.fecha_inicio = 'Fecha de inicio requerida';
+    }
+    if (!startPremDate) {
+      newErrors.fecha_inicio_prem = 'Fecha de inicio de prematrícula requerida';
+    }
+    if (!endPremDate) {
+      newErrors.fecha_fin_prem = 'Fecha de cierre de prematrícula requerida';
     }
 
     setErrors(newErrors);
@@ -52,6 +62,7 @@ export default function CoursePage() {
     // Compare the dates
     setCanGenerate(date1.getTime() > date2.getTime());
   };
+
   useEffect(() => {
     validateDates();
   });
@@ -66,6 +77,8 @@ export default function CoursePage() {
         nomb_curso: courseNameInput,
         activo: true,
         fecha_inicio: `${startDate.getDate()}-${startDate.getMonth() + 1}-${startDate.getFullYear()}`,
+        fecha_inicio_prem: `${startPremDate.getDate()}-${startPremDate.getMonth() + 1}-${startPremDate.getFullYear()}`,
+        fecha_fin_prem: `${endPremDate.getDate()}-${endPremDate.getMonth() + 1}-${endPremDate.getFullYear()}`,
       };
 
       console.log('Nuevo Curso: ', generatedCourse);
@@ -96,42 +109,6 @@ export default function CoursePage() {
           console.log('Error al desactivar los cursos', error);
         });
     }
-    /* if (validateData()) {
-      setIsGenerating(true);
-      const currentYear = new Date().getFullYear();
-      const generatedCourse = {
-        cod_curso: 0,
-        nomb_curso: `${currentYear}-${currentYear + 1}`,
-        activo: true,
-      };
-
-      console.log('Nuevo Curso: ', generatedCourse);
-
-      desactivarCursos()
-        .then((response) => {
-          if (response.status === 200) {
-            console.log(response.data);
-            insertarCurso(generatedCourse)
-              .then((response) => {
-                if (response.status === 200) {
-                  console.log('Curso generado correctamente');
-                  setMessage('success', '¡Curso generado con éxito!');
-
-                  setActiveCourse(generatedCourse);
-                }
-              })
-              .catch((error) => {
-                console.log('Error al generar el curso', error);
-                setMessage('error', '¡Ha ocurrido un error!');
-              })
-              .finally(() => {
-                setIsGenerating(false);
-              });
-          }
-        })
-        .catch((error) => {
-          console.log('Error al desactivar los cursos', error);
-        }); */
   };
 
   const handleCourseNameInput = (event) => {
@@ -169,7 +146,7 @@ export default function CoursePage() {
             <Grid item xs />
           </Grid>
 
-          <Grid container sx={{ pt: '30px' }}>
+          <Grid container spacing={1} sx={{ pt: '30px' }}>
             <Grid item xs />
             <Grid item xs={3}>
               <TextField
@@ -187,11 +164,6 @@ export default function CoursePage() {
                 disabled={!canGenerate}
               />
             </Grid>
-            <Grid item xs />
-          </Grid>
-
-          <Grid container sx={{ pt: '30px' }}>
-            <Grid item xs />
             <Grid item xs={3}>
               <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enGB}>
                 <DesktopDatePicker
@@ -205,6 +177,51 @@ export default function CoursePage() {
                   openTo="year"
                   sx={{ width: '100%' }}
                   disabled={!canGenerate}
+                />
+              </LocalizationProvider>
+            </Grid>
+            <Grid item xs />
+          </Grid>
+
+          <Grid container spacing={1} sx={{ pt: '30px' }}>
+            <Grid item xs />
+            <Grid item xs={4} textAlign={'right'}>
+              <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enGB}>
+                <DesktopDatePicker
+                  label="Fecha de inicio de prematrícula"
+                  value={startPremDate}
+                  minDate={addYears(new Date(), 1)}
+                  onChange={(newValue) => setStartPremDate(newValue)}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      error={!!errors.fecha_inicio_prem}
+                      helperText={errors.fecha_inicio_prem}
+                      sx={{ width: '100%' }}
+                    />
+                  )}
+                  openTo="year"
+                  disabled={!canGenerate}
+                />
+              </LocalizationProvider>
+            </Grid>
+            <Grid item xs={4} textAlign={'left'}>
+              <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enGB}>
+                <DesktopDatePicker
+                  label="Fecha de cierre de prematrícula"
+                  value={endPremDate}
+                  minDate={startPremDate}
+                  onChange={(newValue) => setEndPremDate(newValue)}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      error={!!errors.fecha_inicio}
+                      helperText={errors.fecha_inicio}
+                      sx={{ width: '100%' }}
+                    />
+                  )}
+                  openTo="year"
+                  disabled={!canGenerate || !startPremDate}
                 />
               </LocalizationProvider>
             </Grid>

@@ -7,6 +7,10 @@ export const sendSolicitantePersonalData = async (solicitante) => {
     return response;
   } catch (error) {
     console.log('Error en sendSolicitantePersonalData', error);
+    if (error.request.status === 500 && error.request.response === 'Duplicated num_id') {
+      return error;
+    }
+    console.log('Error en sendSolicitantePersonalData', error);
     throw error;
   }
 };
@@ -18,6 +22,10 @@ export const sendSolicitantePersonalDataRequester = async (solicitante) => {
     return response;
   } catch (error) {
     console.log('Error en sendSolicitantePersonalDataRequester', error);
+    if (error.request.status === 500 && error.request.response === 'Duplicated num_id') {
+      return error;
+    }
+    console.log('Error en sendSolicitantePersonalDataRequester', error);
     throw error;
   }
 };
@@ -28,6 +36,10 @@ export const updateSolicitantePersonalData = async (solicitante) => {
     const response = await axiosInstance.put(`solicitante/`, solicitante);
     return response;
   } catch (error) {
+    console.log('Error en updateSolicitantePersonalData', error);
+    if (error.request.status === 500 && error.request.response === 'Duplicated num_id') {
+      return error;
+    }
     console.log('Error en updateSolicitantePersonalData', error);
     throw error;
   }

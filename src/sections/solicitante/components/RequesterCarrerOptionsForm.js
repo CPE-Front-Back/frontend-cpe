@@ -118,6 +118,12 @@ export default function RequesterCarrerOptionsForm({ personalData, options, onVo
               .catch((error) => {
                 console.log('Error al obtener el solicitante insertado', error);
               });
+          } else if (response.request.status === 500) {
+            console.log('el error', response.request.response);
+            setMessage(
+              'error',
+              `EL carnet de identidad: "${personalData.num_id}" ya tiene solicitudes registradas en este curso.`
+            );
           }
         })
         .catch((error) => {

@@ -62,7 +62,7 @@ export default function navConfig() {
       showSubItems: false,
       subItems: [
         {
-          title: 'Cambiar curso activo',
+          title: 'Generar curso activo',
           path: '/dashboard/course',
           icon: <Icon size={1} path={mdiBank} />,
           haveAccess: auth.rol === 'Secretario General',
