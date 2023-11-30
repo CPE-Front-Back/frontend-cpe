@@ -120,7 +120,7 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
       newErrors.fuenteIngresoSeleccionada = 'Fuente de Ingreso es requerida';
     }
 
-    if (!selectedOptions.opcion1) {
+    if (!selectedOptions?.opcion1) {
       newErrors.selectedOption = 'Debe seleccionar al menos una carrera';
     }
 
@@ -259,6 +259,12 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
                   .catch((error) => {
                     console.log('Error al obtener el solicitante actualizado.', error);
                   });
+              } else if (response.request.status === 500) {
+                console.log('el error', response.request.response);
+                setMessage(
+                  'error',
+                  `EL carnet de identidad: "${formData.num_id}" ya tiene solicitudes registradas en este curso.`
+                );
               }
             })
             .catch((error) => {

@@ -37,7 +37,7 @@ export default function RequesterCarrerOptionsForm({ personalData, options, onVo
   const validateForm = () => {
     const newErrors = {};
 
-    if (!selectedOptions) {
+    if (!selectedOptions?.opcion1) {
       newErrors.selectedOption = 'Debe seleccionar al menos una carrera';
     }
 
