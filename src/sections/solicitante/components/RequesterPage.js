@@ -3,7 +3,7 @@ import { Icon } from '@mdi/react';
 import { LoadingButton } from '@mui/lab';
 import { Backdrop, CircularProgress, Container, Grid } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { AppWidgetSummary } from '../../home/app';
@@ -53,6 +53,7 @@ export default function RequesterPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [pdfData, setPdfData] = useState(null);
   const [pdfNameValue, setPdfNameValue] = useState('');
+  const [isDisabledPrem, setIsDisabledPrem] = useState(true);
   const { activeCourse } = UseActiveCourse();
 
   const handleReport1Click = () => {
@@ -182,6 +183,27 @@ export default function RequesterPage() {
       });
   };
 
+  const verifyEnablePrematricula = () => {
+    const currentDate = new Date();
+    const formattedCurrentDate = `${currentDate.getDate()}-${currentDate.getMonth() + 1}-${currentDate.getFullYear()}`;
+    const starDatePrem = activeCourse.fecha_inicio_prem;
+    const endDatePrem = activeCourse.fecha_fin_prem;
+
+    const formattedCurrentDateForJS = formattedCurrentDate.split('-').reverse().join('-');
+    const starDatePremForJS = starDatePrem.split('-').reverse().join('-');
+    const endDatePremForJS = endDatePrem.split('-').reverse().join('-');
+
+    const date1 = new Date(formattedCurrentDateForJS);
+    const date2 = new Date(starDatePremForJS);
+    const date3 = new Date(endDatePremForJS);
+
+    setIsDisabledPrem(date2.getTime() > date1.getTime() || date3.getTime() < date1.getTime());
+  };
+
+  useEffect(() => {
+    verifyEnablePrematricula();
+  }, [activeCourse]);
+
   return (
     <>
       <Helmet>
@@ -215,6 +237,7 @@ export default function RequesterPage() {
                       navigate('/simple', { state: { from: location }, replace: true });
                     }}
                     startIcon={<Icon size={1} path={mdiSchoolOutline} />}
+                    disabled={isDisabledPrem}
                   >
                     Prematrícula
                   </LoadingButton>
