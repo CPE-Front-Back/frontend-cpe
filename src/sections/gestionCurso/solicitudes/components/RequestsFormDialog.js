@@ -168,7 +168,11 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
           ...prevErrors,
           num_id: 'La edad mínima es 18 años.',
         }));
-      } else if (!/^(\w+\s)?(\w+\s)?(\w+\s)?\w+$/.test(formData.nomb_solicitante)) {
+      } else if (
+        !/^([\wáéíóúüÁÉÍÓÚÜñÑ]+\s)?([\wáéíóúüÁÉÍÓÚÜñÑ]+\s)?([\wáéíóúüÁÉÍÓÚÜñÑ]+\s)?[\wáéíóúüÁÉÍÓÚÜñÑ]+$/.test(
+          formData.nomb_solicitante
+        )
+      ) {
         console.log('nombre', formData.nomb_solicitante);
         setErrors((prevErrors) => ({
           ...prevErrors,
@@ -402,13 +406,13 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
 
   const handleLastNamesInput = (event) => {
     // allow only letters
-    const inputValue = event.target.value.replace(/[^a-zA-Z]/g, '');
+    const inputValue = event.target.value.replace(/[^a-zA-ZáéíóúüÁÉÍÓÚÜñÑ]/g, '');
     event.target.value = inputValue;
   };
 
   const handleNameInput = (event) => {
     // allow only one blank space and letters
-    const inputValue = event.target.value.replace(/[^a-zA-Z\s]/g, '');
+    const inputValue = event.target.value.replace(/[^a-zA-ZáéíóúüÁÉÍÓÚÜñÑ]/g, '');
     event.target.value = inputValue;
   };
 
