@@ -2,9 +2,8 @@ import { Alert, Autocomplete, Box, Button, Grid, TextField, Typography } from '@
 import { useConfirm } from 'material-ui-confirm';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
-import { isNaN } from 'lodash';
 import setMessage from '../../../../components/messages/messages';
-import { getBuildingById, getBuildings, getBuildingsByFaclulty } from '../../edificios/store/store';
+import { getBuildingsByFaclulty } from '../../edificios/store/store';
 import { getFaculties } from '../../facultades/store/store';
 import { insertClassroom, updateClassroom } from '../store/store';
 
@@ -49,20 +48,6 @@ export default function ClassroomsForm({ editMode, formData, onSubmit }) {
     }
   }, [faculties]);
 
-  /* useEffect(() => {
-    if (formData.cod_edif) {
-      getBuildingById(formData.cod_edif)
-        .then((response) => {
-          if (response.status === 200) {
-            setSelectedBuilding(response.data);
-          }
-        })
-        .catch((error) => {
-          console.log('Error al cargar los edificios por Id', error);
-        });
-    }
-  }, []); */
-
   useEffect(() => {
     if (selectedFaculty) {
       getBuildingsByFaclulty(selectedFaculty.cod_facultad)
@@ -76,18 +61,6 @@ export default function ClassroomsForm({ editMode, formData, onSubmit }) {
         });
     }
   }, [selectedFaculty]);
-
-  /* useEffect(() => {
-    getBuildings()
-      .then((response) => {
-        if (response.status === 200) {
-          setBuildings(response.data);
-        }
-      })
-      .catch((error) => {
-        console.log('Error al cargar los edificios', error);
-      });
-  }, []); */
 
   const validateData = () => {
     const newErrors = {};

@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import setMessage from '../../../components/messages/messages';
-import useResponsive from '../../../hooks/useResponsive';
 
 import { getCarrerasRequester } from '../../gestionCodificadores/carreras/store/store';
 import { UseActiveCourse } from '../../gestionCurso/curso/context/ActiveCourseContext';
@@ -157,22 +156,6 @@ export default function RequesterCarrerOptionsForm({ personalData, options, onVo
       };
     });
   };
-
-  /* const handleOptionChange = (event, newValue, id) => {
-    setSelectedOptions((prevState) => {
-      if (['opcion1', 'opcion2', 'opcion3', 'opcion4', 'opcion5'].includes(id) && newValue === null) {
-        // If id is one of 'opcion2', 'opcion3', 'opcion4', or 'opcion5' and newValue is null
-        // Remove the corresponding entry from the selectedOptions list
-        const { [id]: removedOption, ...updatedOptions } = prevState;
-        return updatedOptions;
-      }
-      // Update the value as before for other cases
-      return {
-        ...prevState,
-        [id]: newValue,
-      };
-    });
-  }; */
 
   useEffect(() => {
     console.log('selectedOptions', selectedOptions);

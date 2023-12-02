@@ -265,8 +265,7 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
       const isDataValid = validateData();
 
       if (isDataValid) {
-        // todo: implement logic to send requester data
-        const updateData = {
+        const solicitante = {
           cod_solicitante: Data.cod_solicitante,
           num_id: idNumber,
           nomb_solicitante: requesterName,
@@ -279,41 +278,9 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
           eliminado: false,
         };
 
-        console.log('los datos', updateData);
-      }
-    }
-  };
+        console.log('solicitante', solicitante);
 
-  // el que era antes para enviar
-  /* useEffect(() => {
-    if (formData.apell_solicitante && userClickedActionButton) {
-      if (secondLastName !== '' && formData.apell_solicitante.includes(secondLastName) && formData.confirmado) {
-        console.log(formData);
         if (editMode) {
-          const {
-            apell_solicitante,
-            cod_municipio,
-            cod_solicitante,
-            confirmado,
-            eliminado,
-            fuente_ingreso,
-            nomb_solicitante,
-            num_id,
-            num_telefono,
-          } = formData;
-
-          const solicitante = {
-            apell_solicitante,
-            cod_municipio,
-            cod_solicitante,
-            confirmado,
-            eliminado,
-            fuente_ingreso,
-            nomb_solicitante,
-            num_id,
-            num_telefono,
-          };
-
           updateSolicitantePersonalData(solicitante)
             .then((response) => {
               if (response.status === 200) {
@@ -364,12 +331,11 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
               setMessage('error', '¡Ha ocurrido un error!');
             });
         } else {
-          console.log(selectedOptions);
-          sendSolicitantePersonalData(formData)
+          sendSolicitantePersonalData(solicitante)
             .then((response) => {
               if (response.status === 200) {
                 console.log(response.data);
-                getSolicitanteById(formData.num_id)
+                getSolicitanteById(solicitante.num_id)
                   .then((response) => {
                     if (response.status === 200) {
                       insertarSolicitudes(selectedOptions, response.data.cod_solicitante)
@@ -403,9 +369,11 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
               setMessage('error', '¡Ha ocurrido un error!');
             });
         }
+
+        console.log('los datos', updatedData);
       }
     }
-  }, [formData, userClickedActionButton]); */
+  };
 
   const handleLastNamesInput = (event) => {
     // allow only letters
@@ -439,12 +407,6 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
   const [ofertasFiltradas, setOfertasFiltradas] = useState([]);
   const [selectedOptions, setSelectedOptions] = useState(null);
   const [carreras, setCarreras] = useState([]);
-
-  /* const [opcion1, setOpcion1] = useState(null);
-  const [opcion2, setOpcion2] = useState(null);
-  const [opcion3, setOpcion3] = useState(null);
-  const [opcion4, setOpcion4] = useState(null);
-  const [opcion5, setOpcion5] = useState(null); */
 
   useEffect(() => {
     getCarreras()
