@@ -47,6 +47,19 @@ export default function RequesterCarrerOptionsForm({ personalData, options, onVo
   };
 
   useEffect(() => {
+    console.log('Requester Data', personalData);
+    getCarrerasRequester()
+      .then((response) => {
+        if (response.status === 200) {
+          setCarreras(response.data);
+        }
+      })
+      .catch((error) => {
+        console.log('Error al cargar las carreras', error);
+      });
+  }, []);
+
+  useEffect(() => {
     getAllOfertasByCursoRequester(activeCourse.cod_curso)
       .then((response) => {
         console.log(response.data);
@@ -66,18 +79,6 @@ export default function RequesterCarrerOptionsForm({ personalData, options, onVo
         console.log('Error al cargar ofertas: ', error);
       });
   }, [carreras]);
-
-  useEffect(() => {
-    getCarrerasRequester()
-      .then((response) => {
-        if (response.status === 200) {
-          setCarreras(response.data);
-        }
-      })
-      .catch((error) => {
-        console.log('Error al cargar las carreras', error);
-      });
-  }, []);
 
   const onEnviar = () => {
     navigate('/requester', { state: { from: location }, replace: true });
@@ -106,7 +107,6 @@ export default function RequesterCarrerOptionsForm({ personalData, options, onVo
                       if (response) {
                         console.log('Insertadas: ', response);
                         setMessage('success', '¡Su solicitud ha sido creada con éxito!');
-
                         onEnviar();
                       }
                     })
@@ -134,45 +134,62 @@ export default function RequesterCarrerOptionsForm({ personalData, options, onVo
   };
 
   const handleOptionChange = (event, newValue, id) => {
-    setSelectedOptions((prevState) => ({
-      ...prevState,
-      [id]: newValue,
-    }));
+    setSelectedOptions((prevState) => {
+      if (['opcion1', 'opcion2', 'opcion3', 'opcion4', 'opcion5'].includes(id) && newValue === null) {
+        // If id is one of 'opcion2', 'opcion3', 'opcion4', or 'opcion5' and newValue is null
+        // Remove the corresponding entry from the selectedOptions list
+        const updatedOptions = {};
+
+        // Iterate through the options and include only those with IDs less than or equal to the current one
+        ['opcion1', 'opcion2', 'opcion3', 'opcion4', 'opcion5'].forEach((optionId) => {
+          if (optionId.localeCompare(id) < 0) {
+            updatedOptions[optionId] = prevState[optionId];
+          }
+        });
+
+        return updatedOptions;
+      }
+
+      // Update the value as before for other cases
+      return {
+        ...prevState,
+        [id]: newValue,
+      };
+    });
   };
 
-  useEffect(() => {
-    const listaFiltrada = ofertas.filter(
-      (carrera) =>
-        !Object.values(selectedOptions).some(
-          (selectedOption) => selectedOption && selectedOption.cod_carrera === carrera.cod_carrera
-        )
-    );
-    setOfertasFiltradas(listaFiltrada);
-  }, [selectedOptions]);
-
-  const opcion1Props = {
-    options: ofertasFiltradas,
-    getOptionLabel: (option) => option.nomb_carrera,
-  };
-  const opcion2Props = {
-    options: ofertasFiltradas,
-    getOptionLabel: (option) => option.nomb_carrera,
-  };
-  const opcion3Props = {
-    options: ofertasFiltradas,
-    getOptionLabel: (option) => option.nomb_carrera,
-  };
-  const opcion4Props = {
-    options: ofertasFiltradas,
-    getOptionLabel: (option) => option.nomb_carrera,
-  };
-  const opcion5Props = {
-    options: ofertasFiltradas,
-    getOptionLabel: (option) => option.nomb_carrera,
-  };
+  /* const handleOptionChange = (event, newValue, id) => {
+    setSelectedOptions((prevState) => {
+      if (['opcion1', 'opcion2', 'opcion3', 'opcion4', 'opcion5'].includes(id) && newValue === null) {
+        // If id is one of 'opcion2', 'opcion3', 'opcion4', or 'opcion5' and newValue is null
+        // Remove the corresponding entry from the selectedOptions list
+        const { [id]: removedOption, ...updatedOptions } = prevState;
+        return updatedOptions;
+      }
+      // Update the value as before for other cases
+      return {
+        ...prevState,
+        [id]: newValue,
+      };
+    });
+  }; */
 
   useEffect(() => {
     console.log('selectedOptions', selectedOptions);
+  }, [selectedOptions]);
+
+  useEffect(() => {
+    if (selectedOptions) {
+      const listaFiltrada = ofertas.filter(
+        (carrera) =>
+          !Object.values(selectedOptions).some(
+            (selectedOption) => selectedOption && selectedOption.cod_carrera === carrera.cod_carrera
+          )
+      );
+      setOfertasFiltradas(listaFiltrada);
+    } else {
+      setOfertasFiltradas({});
+    }
   }, [selectedOptions]);
 
   return (
@@ -189,7 +206,8 @@ export default function RequesterCarrerOptionsForm({ personalData, options, onVo
         <Grid item textAlign={'center'}>
           <Autocomplete
             id="opcion1"
-            {...opcion1Props}
+            options={ofertasFiltradas}
+            getOptionLabel={(option) => option.nomb_carrera}
             onChange={(event, newValue) => {
               handleOptionChange(event, newValue, 'opcion1');
             }}
@@ -207,7 +225,9 @@ export default function RequesterCarrerOptionsForm({ personalData, options, onVo
         <Grid item xs>
           <Autocomplete
             id="opcion2"
-            {...opcion2Props}
+            options={ofertasFiltradas}
+            value={selectedOptions?.opcion2 && selectedOptions?.opcion1 ? selectedOptions?.opcion2 : null}
+            getOptionLabel={(option) => option.nomb_carrera}
             onChange={(event, newValue) => {
               handleOptionChange(event, newValue, 'opcion2');
             }}
@@ -219,7 +239,13 @@ export default function RequesterCarrerOptionsForm({ personalData, options, onVo
         <Grid item xs>
           <Autocomplete
             id="opcion3"
-            {...opcion3Props}
+            options={ofertasFiltradas}
+            value={
+              selectedOptions?.opcion3 && selectedOptions?.opcion2 && selectedOptions?.opcion1
+                ? selectedOptions?.opcion3
+                : null
+            }
+            getOptionLabel={(option) => option.nomb_carrera}
             onChange={(event, newValue) => {
               handleOptionChange(event, newValue, 'opcion3');
             }}
@@ -231,7 +257,16 @@ export default function RequesterCarrerOptionsForm({ personalData, options, onVo
         <Grid item xs>
           <Autocomplete
             id="opcion4"
-            {...opcion4Props}
+            options={ofertasFiltradas}
+            value={
+              selectedOptions?.opcion4 &&
+              selectedOptions?.opcion3 &&
+              selectedOptions?.opcion2 &&
+              selectedOptions?.opcion1
+                ? selectedOptions?.opcion4
+                : null
+            }
+            getOptionLabel={(option) => option.nomb_carrera}
             onChange={(event, newValue) => {
               handleOptionChange(event, newValue, 'opcion4');
             }}
@@ -243,7 +278,17 @@ export default function RequesterCarrerOptionsForm({ personalData, options, onVo
         <Grid item xs>
           <Autocomplete
             id="opcion5"
-            {...opcion5Props}
+            options={ofertasFiltradas}
+            value={
+              selectedOptions?.opcion5 &&
+              selectedOptions?.opcion4 &&
+              selectedOptions?.opcion3 &&
+              selectedOptions?.opcion2 &&
+              selectedOptions?.opcion1
+                ? selectedOptions?.opcion5
+                : null
+            }
+            getOptionLabel={(option) => option.nomb_carrera}
             onChange={(event, newValue) => {
               handleOptionChange(event, newValue, 'opcion5');
             }}

@@ -38,8 +38,8 @@ import { deleteRequester, getSolicitantesByCurso, getSolicitudesByCurso } from '
 const TABLE_HEAD = [
   { id: 'num_id', label: 'No. Identidad', alignRight: false },
   { id: 'nomb_solicitante', label: 'Nombre', alignRight: false },
-  { id: 'apell_solicitante', label: '1er Apellido', alignRight: false },
-  { id: 'SecondLastName', label: '2do Apellido', alignRight: false },
+  { id: 'prim_apellido', label: '1er Apellido', alignRight: false },
+  { id: 'seg_apellido', label: '2do Apellido', alignRight: false },
   { id: 'opcion1', label: 'Opción 1', alignRight: false },
   { id: 'opcion2', label: 'Opción 2', alignRight: false },
   { id: 'opcion3', label: 'Opción 3', alignRight: false },
@@ -148,7 +148,6 @@ export default function RequestsPage(solicitantesConfirmados) {
     getSolicitantesByCurso(activeCourse.cod_curso, solicitantesConfirmados.solicitantesConfirmados)
       .then((response) => {
         if (response.status === 200 && SOLICITUDESLIST.length > 0 && OFERTASLIST.length > 0) {
-          console.log(response.data);
           const updatedSOLICITANTESLIST = response.data.map((solicitante) => {
             const relatedSolicitudes = SOLICITUDESLIST.filter(
               (solicitud) => solicitud.cod_solicitante === solicitante.cod_solicitante
@@ -256,16 +255,16 @@ export default function RequestsPage(solicitantesConfirmados) {
       if (selectedItem) {
         confirm({
           content: (
-            <Alert
-              severity={'warning'}
-            >{`¿Desea eliminar el solicitante: ${selectedItem.nomb_solicitante} ${selectedItem.apell_solicitante} ?`}</Alert>
+            <Alert severity={'warning'}>
+              {`¿Desea eliminar la solicitud del solicitante: ${selectedItem.nomb_solicitante} ${selectedItem.prim_apellido} ${selectedItem.seg_apellido} ?`}
+            </Alert>
           ),
         })
           .then(() => {
             deleteRequester(selectedItem)
               .then((response) => {
                 if (response.status === 200) {
-                  setMessage('success', '¡Solicitante eliminado con éxito!');
+                  setMessage('success', '¡Solicitud eliminada con éxito!');
                   setOpenInRowMenu(false);
                   setSelected([]);
                   setRefresh(refresh + 1);
@@ -407,7 +406,8 @@ export default function RequestsPage(solicitantesConfirmados) {
                         cod_solicitante,
                         num_id,
                         nomb_solicitante,
-                        apell_solicitante,
+                        prim_apellido,
+                        seg_apellido,
                         cod_municipio,
                         fuente_ingreso,
                         num_telefono,
@@ -419,7 +419,6 @@ export default function RequestsPage(solicitantesConfirmados) {
                         opcion4,
                         opcion5,
                       } = row;
-                      const [firstLastName, SecondLastName] = apell_solicitante.split(' ');
                       const selectedSolicitud = selected.indexOf(cod_solicitante) !== -1;
 
                       return (
@@ -440,8 +439,8 @@ export default function RequestsPage(solicitantesConfirmados) {
 
                           <TableCell align="left">{num_id}</TableCell>
                           <TableCell align="left">{nomb_solicitante}</TableCell>
-                          <TableCell align="left">{firstLastName}</TableCell>
-                          <TableCell align="left">{SecondLastName}</TableCell>
+                          <TableCell align="left">{prim_apellido}</TableCell>
+                          <TableCell align="left">{seg_apellido}</TableCell>
                           <TableCell align="left">{opcion1}</TableCell>
                           <TableCell align="left">{opcion2}</TableCell>
                           <TableCell align="left">{opcion3}</TableCell>

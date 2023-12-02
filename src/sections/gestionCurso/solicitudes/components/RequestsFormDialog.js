@@ -13,12 +13,12 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import PropTypes from 'prop-types';
-import { forwardRef, useEffect, useState } from 'react';
+import React, { forwardRef, useEffect, useState } from 'react';
 import setMessage from '../../../../components/messages/messages';
 import {
   getFuentesIngreso,
   getMunicipiosPorProvincia,
-  getMunicipiosPorID,
+  getMunicipioPorID,
   getProvincias,
 } from '../../../../utils/codificadores/codificadoresStore';
 import { getCarreras } from '../../../gestionCodificadores/carreras/store/store';
@@ -42,11 +42,12 @@ RequestsFormDialog.propTypes = {
   formData: PropTypes.object,
 };
 export default function RequestsFormDialog({ open, handleCloseClick, handleCLoseAfterAction, editMode, Data }) {
-  /* {
+  const {
     cod_solicitante,
     num_id,
     nomb_solicitante,
-    apell_solicitante,
+    prim_apellido,
+    seg_apellido,
     cod_municipio,
     fuente_ingreso,
     num_telefono,
@@ -57,43 +58,113 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
     opcion3,
     opcion4,
     opcion5,
-  } = Data */
+  } = Data;
   // INICIO LOGICA PARA LOS DATOS PERSONALES
-  const [formData, setFormData] = useState(Data);
-  const [provincias, setProvincias] = useState([]);
-  const [provinciaSeleccionada, setProvinciaSeleccionada] = useState(null);
-  const [municipios, setMunicipios] = useState([]);
-  const [municipioSeleccionado, setMunicipioSeleccionado] = useState(null);
-  const [fuentesIngreso, setFuentesIngreso] = useState([]);
-  const [fuenteIngresoSeleccionada, setFuenteIngresoSeleccionada] = useState(null);
-  const [firstLN, secondLN] = Data.apell_solicitante ? Data.apell_solicitante.split(' ') : [null, null];
-  const [firstLastName, setFirstLastName] = useState(firstLN);
-  const [secondLastName, setSecondLastName] = useState(secondLN);
-  const [userClickedActionButton, setUserClickedActionButton] = useState(false);
+  const [idNumber, setIdNumber] = useState(num_id);
+  const [requesterName, setRequesterName] = useState(nomb_solicitante);
+  const [firstLastName, setFirstLastName] = useState(prim_apellido);
+  const [secondLastName, setSecondLastName] = useState(seg_apellido);
+  const [phoneNumber, setPhoneNumber] = useState(num_telefono);
+  const [provinces, setProvinces] = useState([]);
+  const [selectedProvince, setSelectedProvince] = useState(null);
+  const [municipalities, setMunicipalities] = useState([]);
+  const [selectedMunicipality, setSelectedMunicipality] = useState(null);
+  const [incomeSources, setIncomeSources] = useState([]);
+  const [selectedIncomeSource, setSelectedIncomeSource] = useState(null);
 
   const { activeCourse, refreshProcessingStatus, setRefreshProcessingStatus } = UseActiveCourse();
 
   const [errors, setErrors] = useState({
-    num_id: '',
-    nomb_solicitante: '',
-    apell_solicitante: '',
+    idNumber: '',
+    requesterName: '',
+    firstLastName: '',
     secondLastName: '',
-    num_telefono: '',
-    provinciaSeleccionada: '',
-    municipioSeleccionado: '',
-    fuenteIngresoSeleccionada: '',
+    phoneNumber: '',
+    selectedProvince: '',
+    selectedMunicipality: '',
+    selectedIncomeSource: '',
     selectedOption: '',
   });
+
+  useEffect(() => {
+    getProvincias()
+      .then((response) => {
+        if (response.status === 200) {
+          console.log('Provincias: ', response.data);
+          setProvinces(response.data);
+        }
+      })
+      .catch((error) => {
+        console.log('Error al cargar las provinces', error);
+      });
+  }, []);
+
+  useEffect(() => {
+    if (selectedMunicipality) {
+      const prov = provinces.find((p) => p.cod_provincia === selectedMunicipality.cod_provincia);
+      setSelectedProvince(prov);
+    }
+  }, [provinces]);
+
+  useEffect(() => {
+    if (cod_municipio) {
+      getMunicipioPorID(cod_municipio)
+        .then((response) => {
+          if (response.data) {
+            console.log('Municipio: ', response.data);
+            setSelectedMunicipality(response.data);
+          }
+        })
+        .catch((error) => {
+          console.log('Error al cargar el municipio', error);
+        });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (selectedProvince !== null) {
+      getMunicipiosPorProvincia(selectedProvince.cod_provincia)
+        .then((response) => {
+          if (response.status === 200) {
+            console.log('Municipios: ', response.data);
+            setMunicipalities(response.data);
+          }
+        })
+        .catch((error) => {
+          console.log('Error al cargar los municipalities', error);
+        });
+    }
+  }, [selectedProvince]);
+
+  useEffect(() => {
+    getFuentesIngreso()
+      .then((response) => {
+        if (response.data) {
+          console.log('Fuentes de Ingreso: ', response.data);
+          setIncomeSources(response.data);
+        }
+      })
+      .catch((error) => {
+        console.log('Error al cargar las fuentes de ingreso', error);
+      });
+  }, []);
+
+  useEffect(() => {
+    if (fuente_ingreso) {
+      const incomeSource = incomeSources.find((f) => f.cod_fuente === fuente_ingreso);
+      setSelectedIncomeSource(incomeSource);
+    }
+  }, [incomeSources]);
 
   const validateForm = () => {
     const newErrors = {};
 
-    if (!formData.num_id) {
-      newErrors.num_id = 'Carnet de identidad es requerido';
+    if (!idNumber) {
+      newErrors.idNumber = 'Carnet de identidad es requerido';
     }
 
-    if (!formData.nomb_solicitante) {
-      newErrors.nomb_solicitante = 'Nombre(s) son requeridos';
+    if (!requesterName) {
+      newErrors.requesterName = 'Nombre(s) son requeridos';
     }
 
     if (!firstLastName) {
@@ -104,22 +175,23 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
       newErrors.secondLastName = 'Segundo apellido requerido';
     }
 
-    if (!formData.num_telefono) {
-      newErrors.num_telefono = 'Teléfono es requerido';
+    if (!phoneNumber) {
+      newErrors.phoneNumber = 'Teléfono es requerido';
     }
 
-    if (!provinciaSeleccionada) {
-      newErrors.provinciaSeleccionada = 'Provincia es requerida';
+    if (!selectedProvince) {
+      newErrors.selectedProvince = 'Provincia es requerida';
     }
 
-    if (!municipioSeleccionado) {
-      newErrors.municipioSeleccionado = 'Municipio es requerido';
+    if (!selectedMunicipality) {
+      newErrors.selectedMunicipality = 'Municipio es requerido';
     }
 
-    if (!fuenteIngresoSeleccionada) {
-      newErrors.fuenteIngresoSeleccionada = 'Fuente de Ingreso es requerida';
+    if (!selectedIncomeSource) {
+      newErrors.selectedIncomeSource = 'Fuente de Ingreso es requerida';
     }
 
+    console.log('opciones', selectedOptions);
     if (!selectedOptions?.opcion1) {
       newErrors.selectedOption = 'Debe seleccionar al menos una carrera';
     }
@@ -129,75 +201,91 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleNameInputChange = (event) => {
-    const { name } = event.target;
-    const names = event.target.value;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: names,
-    }));
+  const validateData = () => {
+    const newErrors = {};
+
+    const currentYear = new Date().getFullYear();
+    const centuryDigit = Number(idNumber.charAt(6));
+    const birthYear = Number(idNumber.substring(0, 2)) + (centuryDigit === 9 ? 1800 : centuryDigit < 5 ? 1900 : 2000);
+    const age = currentYear - birthYear;
+    console.log('currentYear', currentYear, 'century', centuryDigit, 'birth', birthYear, 'age', age);
+
+    if (!/^\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])\d{5}$/.test(idNumber)) {
+      newErrors.idNumber = 'Carnet de identidad inválido.';
+    }
+
+    if (age < 18) {
+      newErrors.idNumber = 'La edad mínima es 18 años.';
+    } else if (age > 60) {
+      newErrors.idNumber = 'La edad máxima es 60 años.';
+    }
+
+    if (
+      !/^([\wáéíóúüÁÉÍÓÚÜñÑ]+\s)?([\wáéíóúüÁÉÍÓÚÜñÑ]+\s)?([\wáéíóúüÁÉÍÓÚÜñÑ]+\s)?[\wáéíóúüÁÉÍÓÚÜñÑ]+$/.test(
+        requesterName
+      )
+    ) {
+      console.log('nombre', requesterName);
+      newErrors.requesterName = 'Formato de nombres inválidos.';
+    }
+
+    if (
+      !/^([\wáéíóúüÁÉÍÓÚÜñÑ]+\s)?([\wáéíóúüÁÉÍÓÚÜñÑ]+\s)?([\wáéíóúüÁÉÍÓÚÜñÑ]+\s)?[\wáéíóúüÁÉÍÓÚÜñÑ]+$/.test(
+        firstLastName
+      )
+    ) {
+      console.log('firstLastName', firstLastName);
+      newErrors.requesterName = 'Formato de 1er apellido inválido.';
+    }
+
+    if (
+      !/^([\wáéíóúüÁÉÍÓÚÜñÑ]+\s)?([\wáéíóúüÁÉÍÓÚÜñÑ]+\s)?([\wáéíóúüÁÉÍÓÚÜñÑ]+\s)?[\wáéíóúüÁÉÍÓÚÜñÑ]+$/.test(
+        secondLastName
+      )
+    ) {
+      console.log('secondLastName', secondLastName);
+      newErrors.requesterName = 'Formato de 2do apellido inválido.';
+    }
+
+    if (!/^(\+53\s?)?[4-9]\d{7}$/.test(phoneNumber)) {
+      newErrors.phoneNumber = 'El teléfono debe ser un número válido.';
+    }
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
   };
 
-  const handleInputsChange = (event) => {
-    const { name } = event.target;
-    const value = event.target.value.trim();
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
+  const handleEnviarClick = (event) => {
+    event.preventDefault();
 
-  const handleEnviarClick = async () => {
-    const isValid = validateForm();
+    const isFormFilled = validateForm();
 
-    if (isValid) {
-      const currentYear = new Date().getFullYear();
-      const centuryDigit = Number(formData.num_id.charAt(6));
-      const birthYear =
-        Number(formData.num_id.substring(0, 2)) + (centuryDigit === 9 ? 1800 : centuryDigit < 5 ? 1900 : 2000);
-      const age = currentYear - birthYear;
-      console.log('currentYear', currentYear, 'century', centuryDigit, 'birth', birthYear, 'age', age);
+    if (isFormFilled) {
+      const isDataValid = validateData();
 
-      if (!/^\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])\d{5}$/.test(formData.num_id)) {
-        setErrors((prevErrors) => ({
-          ...prevErrors,
-          num_id: 'Carnet de Identidad inválido.',
-        }));
-      } else if (age < 18) {
-        setErrors((prevErrors) => ({
-          ...prevErrors,
-          num_id: 'La edad mínima es 18 años.',
-        }));
-      } else if (
-        !/^([\wáéíóúüÁÉÍÓÚÜñÑ]+\s)?([\wáéíóúüÁÉÍÓÚÜñÑ]+\s)?([\wáéíóúüÁÉÍÓÚÜñÑ]+\s)?[\wáéíóúüÁÉÍÓÚÜñÑ]+$/.test(
-          formData.nomb_solicitante
-        )
-      ) {
-        console.log('nombre', formData.nomb_solicitante);
-        setErrors((prevErrors) => ({
-          ...prevErrors,
-          nomb_solicitante: 'Formato de nombres inválidos.',
-        }));
-      } else if (!/^(\+53\s?)?[4-9]\d{7}$/.test(formData.num_telefono)) {
-        setErrors((prevErrors) => ({
-          ...prevErrors,
-          num_telefono: 'El teléfono debe ser un número válido.',
-        }));
-      } else {
-        await concatLastNames();
+      if (isDataValid) {
+        // todo: implement logic to send requester data
+        const updateData = {
+          cod_solicitante: Data.cod_solicitante,
+          num_id: idNumber,
+          nomb_solicitante: requesterName,
+          prim_apellido: firstLastName,
+          seg_apellido: secondLastName,
+          cod_municipio: Number(selectedMunicipality.cod_municipio),
+          fuente_ingreso: Number(selectedIncomeSource.cod_fuente),
+          num_telefono: phoneNumber,
+          confirmado: false,
+          eliminado: false,
+        };
+
+        console.log('los datos', updateData);
       }
     }
   };
 
-  const concatLastNames = () => {
-    setFormData({
-      ...formData,
-      apell_solicitante: `${firstLastName} ${secondLastName}`,
-      confirmado: true,
-    });
-  };
-
-  useEffect(() => {
+  // el que era antes para enviar
+  /* useEffect(() => {
     if (formData.apell_solicitante && userClickedActionButton) {
       if (secondLastName !== '' && formData.apell_solicitante.includes(secondLastName) && formData.confirmado) {
         console.log(formData);
@@ -317,102 +405,17 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
         }
       }
     }
-  }, [formData, userClickedActionButton]);
-
-  useEffect(() => {
-    if (municipioSeleccionado) {
-      const prov = provincias.find((p) => p.cod_provincia === municipioSeleccionado.cod_provincia);
-      setProvinciaSeleccionada(prov);
-    }
-  }, [provincias]);
-
-  useEffect(() => {
-    if (Data.cod_municipio) {
-      getMunicipiosPorID(Data.cod_municipio)
-        .then((response) => {
-          if (response.data) {
-            console.log('Municipio: ', response.data);
-            setMunicipioSeleccionado(response.data);
-          }
-        })
-        .catch((error) => {
-          console.log('Error al cargar el municipio', error);
-        });
-    }
-  }, []);
-
-  useEffect(() => {
-    if (Data.fuente_ingreso) {
-      const fuenteIngreso = fuentesIngreso.find((f) => f.cod_fuente === Data.fuente_ingreso);
-      setFuenteIngresoSeleccionada(fuenteIngreso);
-    }
-  }, [fuentesIngreso]);
-
-  useEffect(() => {
-    getProvincias()
-      .then((response) => {
-        if (response.status === 200) {
-          console.log('Provincias: ', response.data);
-          setProvincias(response.data);
-        }
-      })
-      .catch((error) => {
-        console.log('Error al cargar las provincias', error);
-      });
-  }, []);
-
-  useEffect(() => {
-    if (provinciaSeleccionada !== null) {
-      getMunicipiosPorProvincia(provinciaSeleccionada.cod_provincia)
-        .then((response) => {
-          if (response.status === 200) {
-            console.log('Municipios: ', response.data);
-            setMunicipios(response.data);
-          }
-        })
-        .catch((error) => {
-          console.log('Error al cargar los municipios', error);
-        });
-    }
-  }, [provinciaSeleccionada]);
-
-  useEffect(() => {
-    getFuentesIngreso()
-      .then((response) => {
-        if (response.data) {
-          console.log('Fuentes de Ingreso: ', response.data);
-          setFuentesIngreso(response.data);
-        }
-      })
-      .catch((error) => {
-        console.log('Error al cargar las fuentes de ingreso', error);
-      });
-  }, []);
-
-  const ProvinceProps = {
-    options: provincias,
-    getOptionLabel: (option) => option.nomb_provincia,
-  };
-
-  const MunicipioProps = {
-    options: municipios,
-    getOptionLabel: (option) => option.nomb_municipio,
-  };
-
-  const FuenteIngresoProps = {
-    options: fuentesIngreso,
-    getOptionLabel: (option) => option.nomb_fuente,
-  };
+  }, [formData, userClickedActionButton]); */
 
   const handleLastNamesInput = (event) => {
     // allow only letters
-    const inputValue = event.target.value.replace(/[^a-zA-ZáéíóúüÁÉÍÓÚÜñÑ]/g, '');
+    const inputValue = event.target.value.replace(/[^a-zA-ZáéíóúüÁÉÍÓÚÜñÑ\s]+/g, ' ').replace(/^\s+/g, '');
     event.target.value = inputValue;
   };
 
   const handleNameInput = (event) => {
     // allow only one blank space and letters
-    const inputValue = event.target.value.replace(/[^a-zA-ZáéíóúüÁÉÍÓÚÜñÑ]/g, '');
+    const inputValue = event.target.value.replace(/[^a-zA-ZáéíóúüÁÉÍÓÚÜñÑ\s]+/g, ' ').replace(/^\s+/g, '');
     event.target.value = inputValue;
   };
 
@@ -437,11 +440,23 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
   const [selectedOptions, setSelectedOptions] = useState(null);
   const [carreras, setCarreras] = useState([]);
 
-  const [opcion1, setOpcion1] = useState(null);
+  /* const [opcion1, setOpcion1] = useState(null);
   const [opcion2, setOpcion2] = useState(null);
   const [opcion3, setOpcion3] = useState(null);
   const [opcion4, setOpcion4] = useState(null);
-  const [opcion5, setOpcion5] = useState(null);
+  const [opcion5, setOpcion5] = useState(null); */
+
+  useEffect(() => {
+    getCarreras()
+      .then((response) => {
+        if (response.status === 200) {
+          setCarreras(response.data);
+        }
+      })
+      .catch((error) => {
+        console.log('Error al cargar las carreras', error);
+      });
+  }, []);
 
   useEffect(() => {
     getAllOfertasByCurso(activeCourse.cod_curso)
@@ -464,23 +479,29 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
       });
   }, [carreras]);
 
-  useEffect(() => {
-    getCarreras()
-      .then((response) => {
-        if (response.status === 200) {
-          setCarreras(response.data);
-        }
-      })
-      .catch((error) => {
-        console.log('Error al cargar las carreras', error);
-      });
-  }, []);
-
   const handleOptionChange = (event, newValue, id) => {
-    setSelectedOptions((prevState) => ({
-      ...prevState,
-      [id]: newValue,
-    }));
+    setSelectedOptions((prevState) => {
+      if (['opcion1', 'opcion2', 'opcion3', 'opcion4', 'opcion5'].includes(id) && newValue === null) {
+        // If id is one of 'opcion2', 'opcion3', 'opcion4', or 'opcion5' and newValue is null
+        // Remove the corresponding entry from the selectedOptions list
+        const updatedOptions = {};
+
+        // Iterate through the options and include only those with IDs less than or equal to the current one
+        ['opcion1', 'opcion2', 'opcion3', 'opcion4', 'opcion5'].forEach((optionId) => {
+          if (optionId.localeCompare(id) < 0) {
+            updatedOptions[optionId] = prevState[optionId];
+          }
+        });
+
+        return updatedOptions;
+      }
+
+      // Update the value as before for other cases
+      return {
+        ...prevState,
+        [id]: newValue,
+      };
+    });
   };
 
   useEffect(() => {
@@ -491,41 +512,25 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
             (selectedOption) => selectedOption && selectedOption.cod_carrera === carrera.cod_carrera
           )
       );
+      console.log('listaFiltrada', listaFiltrada);
       setOfertasFiltradas(listaFiltrada);
     }
   }, [selectedOptions]);
 
   useEffect(() => {
     if (ofertas) {
-      const op1 = ofertas.find((oferta) => oferta.nomb_carrera === Data.opcion1);
-      const op2 = ofertas.find((oferta) => oferta.nomb_carrera === Data.opcion2);
-      const op3 = ofertas.find((oferta) => oferta.nomb_carrera === Data.opcion3);
-      const op4 = ofertas.find((oferta) => oferta.nomb_carrera === Data.opcion4);
-      const op5 = ofertas.find((oferta) => oferta.nomb_carrera === Data.opcion5);
+      const updatedSelectedOptions = {};
 
-      setOpcion1(op1 ?? null);
-      setOpcion2(op2 ?? null);
-      setOpcion3(op3 ?? null);
-      setOpcion4(op4 ?? null);
-      setOpcion5(op5 ?? null);
-    }
-  }, [ofertas]);
-
-  useEffect(() => {
-    if (ofertas) {
-      const findOfertaByName = (name) => ofertas.find((oferta) => oferta.nomb_carrera === name);
-
-      const updatedSelectedOptions = {
-        opcion1: findOfertaByName(Data.opcion1),
-        opcion2: findOfertaByName(Data.opcion2),
-        opcion3: findOfertaByName(Data.opcion3),
-        opcion4: findOfertaByName(Data.opcion4),
-        opcion5: findOfertaByName(Data.opcion5),
-      };
+      ['opcion1', 'opcion2', 'opcion3', 'opcion4', 'opcion5'].forEach((optionId) => {
+        const selectedOption = ofertas.find((oferta) => oferta.nomb_carrera === Data[optionId]);
+        if (selectedOption) {
+          updatedSelectedOptions[optionId] = selectedOption;
+        }
+      });
 
       setSelectedOptions(updatedSelectedOptions);
     }
-  }, [ofertas, Data]);
+  }, [ofertas]);
 
   // FINAL DE LA LOGICA PARA LAS ******CARRERAS******
 
@@ -547,42 +552,43 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
           <Grid item container spacyng={3} sx={{ pb: '50px', pt: '23px' }}>
             <Grid item xs={12} sm={6} md={3}>
               <TextField
-                name="num_id"
-                type="text"
-                value={formData.num_id}
+                name="idNumber"
+                type={'text'}
+                value={idNumber}
                 label="Carnet de identidad"
-                onChange={handleInputsChange}
+                onChange={(event) => setIdNumber(event.target.value)}
                 onInput={handleIdInput}
-                error={!!errors.num_id}
-                helperText={errors.num_id}
+                error={!!errors.idNumber}
+                helperText={errors.idNumber}
                 inputProps={{ maxLength: 11 }}
               />
             </Grid>
             <Grid item xs={12} sm={6} md={3}>
               <TextField
-                name="nomb_solicitante"
+                name="requesterName"
                 type={'text'}
-                value={formData.nomb_solicitante}
-                label="Nombres"
-                onChange={handleNameInputChange}
+                value={requesterName}
+                label="Nombre(s)"
+                onChange={(event) => setRequesterName(event.target.value)}
                 onInput={handleNameInput}
-                error={!!errors.nomb_solicitante}
-                helperText={errors.nomb_solicitante}
+                error={!!errors.requesterName}
+                helperText={errors.requesterName}
                 inputProps={{ maxLength: 40 }}
               />
             </Grid>
             <Grid item xs={12} sm={6} md={3}>
               <TextField
-                name="apell_solicitante"
+                name="prim_apellido"
+                fullWidth
                 type={'text'}
                 value={firstLastName}
                 label="1er apellido"
                 onChange={(event) => {
-                  setFirstLastName(event.target.value.trim());
+                  setFirstLastName(event.target.value);
                 }}
                 onInput={handleLastNamesInput}
-                error={!!errors.apell_solicitante}
-                helperText={errors.apell_solicitante}
+                error={!!errors.firstLastName}
+                helperText={errors.firstLastName}
                 inputProps={{ maxLength: 25 }}
               />
             </Grid>
@@ -592,7 +598,7 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
                 label="2do apellido"
                 value={secondLastName}
                 onChange={(event) => {
-                  setSecondLastName(event.target.value.trim());
+                  setSecondLastName(event.target.value);
                 }}
                 onInput={handleLastNamesInput}
                 error={!!errors.secondLastName}
@@ -605,33 +611,34 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
           <Grid item container spacyng={1} columns={{ xs: 12, sm: 12, md: 4 }}>
             <Grid item xs={12} sm={6} md={1}>
               <TextField
-                name="num_telefono"
+                name="PhoneNumberInput"
                 type="tel"
-                value={formData.num_telefono}
+                value={phoneNumber}
                 label="Teléfono"
-                onChange={handleInputsChange}
+                onChange={(event) => setPhoneNumber(event.target.value)}
                 onInput={handlePhoneInput}
-                error={!!errors.num_telefono}
-                helperText={errors.num_telefono}
+                error={!!errors.phoneNumber}
+                helperText={errors.phoneNumber}
                 inputProps={{ maxLength: 11 }}
               />
             </Grid>
             <Grid item xs={12} sm={6} md={1}>
               <Autocomplete
-                id="ComboProvincia"
-                {...ProvinceProps}
-                value={provinciaSeleccionada}
+                id="ProvincesCombo"
+                options={provinces}
+                getOptionLabel={(option) => option.nomb_provincia}
+                value={selectedProvince}
                 onChange={(event, newValue) => {
-                  setProvinciaSeleccionada(newValue);
-                  setMunicipioSeleccionado(null);
+                  setSelectedProvince(newValue);
+                  setSelectedMunicipality(null);
                 }}
-                sx={{ maxWidth: '240px' }}
                 renderInput={(params) => (
                   <TextField
                     {...params}
-                    label="Provincia"
-                    error={!!errors.provinciaSeleccionada}
-                    helperText={errors.provinciaSeleccionada}
+                    label="Provincias disponibles"
+                    error={!!errors.selectedProvince}
+                    helperText={errors.selectedProvince}
+                    required
                   />
                 )}
                 noOptionsText={'No hay opciones'}
@@ -639,23 +646,20 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
             </Grid>
             <Grid item xs={12} sm={6} md={1}>
               <Autocomplete
-                id="ComboMunicipio"
-                {...MunicipioProps}
-                value={municipioSeleccionado}
+                id="MunicipalitiesCombo"
+                options={municipalities}
+                getOptionLabel={(option) => option.nomb_municipio}
+                value={selectedMunicipality}
                 onChange={(event, newValue) => {
-                  setMunicipioSeleccionado(newValue);
-                  setFormData((prevData) => ({
-                    ...prevData,
-                    cod_municipio: newValue ? newValue.cod_municipio : null,
-                  }));
+                  setSelectedMunicipality(newValue);
                 }}
-                sx={{ maxWidth: '240px' }}
                 renderInput={(params) => (
                   <TextField
                     {...params}
-                    label="Municipio"
-                    error={!!errors.municipioSeleccionado}
-                    helperText={errors.municipioSeleccionado}
+                    label="Municipios disponibles"
+                    error={!!errors.selectedMunicipality}
+                    helperText={errors.selectedMunicipality}
+                    required
                   />
                 )}
                 noOptionsText={'Seleccione una provincia'}
@@ -663,23 +667,20 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
             </Grid>
             <Grid item xs={12} sm={6} md={1}>
               <Autocomplete
-                id="ComboFuentesIngreso"
-                {...FuenteIngresoProps}
-                value={fuenteIngresoSeleccionada}
+                id="IncomeSourcesCombo"
+                options={incomeSources}
+                getOptionLabel={(option) => option.nomb_fuente}
+                value={selectedIncomeSource}
                 onChange={(event, newValue) => {
-                  setFuenteIngresoSeleccionada(newValue);
-                  setFormData((prevData) => ({
-                    ...prevData,
-                    fuente_ingreso: newValue ? newValue.cod_fuente : null,
-                  }));
+                  setSelectedIncomeSource(newValue);
                 }}
-                sx={{ maxWidth: '240px' }}
                 renderInput={(params) => (
                   <TextField
                     {...params}
-                    label="Fuente de Ingreso"
-                    error={!!errors.fuenteIngresoSeleccionada}
-                    helperText={errors.fuenteIngresoSeleccionada}
+                    label="Fuentes de ingreso disponibles"
+                    error={!!errors.selectedIncomeSource}
+                    helperText={errors.selectedIncomeSource}
+                    required
                   />
                 )}
                 noOptionsText={'No hay opciones'}
@@ -693,10 +694,9 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
                 <Autocomplete
                   id="opcion1"
                   options={ofertasFiltradas}
-                  value={opcion1}
+                  value={selectedOptions?.opcion1 ? selectedOptions.opcion1 : null}
                   getOptionLabel={(option) => option.nomb_carrera}
                   onChange={(event, newValue) => {
-                    setOpcion1(newValue);
                     handleOptionChange(event, newValue, 'opcion1');
                   }}
                   renderInput={(params) => (
@@ -714,10 +714,9 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
                 <Autocomplete
                   id="opcion2"
                   options={ofertasFiltradas}
-                  value={opcion2}
+                  value={selectedOptions?.opcion2 ? selectedOptions?.opcion2 : null}
                   getOptionLabel={(option) => option.nomb_carrera}
                   onChange={(event, newValue) => {
-                    setOpcion2(newValue);
                     handleOptionChange(event, newValue, 'opcion2');
                   }}
                   disabled={!selectedOptions?.opcion1}
@@ -729,10 +728,13 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
                 <Autocomplete
                   id="opcion3"
                   options={ofertasFiltradas}
+                  value={
+                    selectedOptions?.opcion3 && selectedOptions?.opcion2 && selectedOptions?.opcion1
+                      ? selectedOptions?.opcion3
+                      : null
+                  }
                   getOptionLabel={(option) => option.nomb_carrera}
-                  value={opcion3}
                   onChange={(event, newValue) => {
-                    setOpcion3(newValue);
                     handleOptionChange(event, newValue, 'opcion3');
                   }}
                   disabled={!selectedOptions?.opcion2}
@@ -744,10 +746,16 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
                 <Autocomplete
                   id="opcion4"
                   options={ofertasFiltradas}
-                  value={opcion4}
+                  value={
+                    selectedOptions?.opcion4 &&
+                    selectedOptions?.opcion3 &&
+                    selectedOptions?.opcion2 &&
+                    selectedOptions?.opcion1
+                      ? selectedOptions?.opcion4
+                      : null
+                  }
                   getOptionLabel={(option) => option.nomb_carrera}
                   onChange={(event, newValue) => {
-                    setOpcion4(newValue);
                     handleOptionChange(event, newValue, 'opcion4');
                   }}
                   disabled={!selectedOptions?.opcion3}
@@ -759,10 +767,17 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
                 <Autocomplete
                   id="opcion5"
                   options={ofertasFiltradas}
-                  value={opcion5}
+                  value={
+                    selectedOptions?.opcion5 &&
+                    selectedOptions?.opcion4 &&
+                    selectedOptions?.opcion3 &&
+                    selectedOptions?.opcion2 &&
+                    selectedOptions?.opcion1
+                      ? selectedOptions?.opcion5
+                      : null
+                  }
                   getOptionLabel={(option) => option.nomb_carrera}
                   onChange={(event, newValue) => {
-                    setOpcion5(newValue);
                     handleOptionChange(event, newValue, 'opcion5');
                   }}
                   disabled={!selectedOptions?.opcion4}
@@ -781,15 +796,7 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
               </LoadingButton>
             </Grid>
             <Grid item xs>
-              <LoadingButton
-                fullWidth
-                size="large"
-                variant="contained"
-                onClick={() => {
-                  setUserClickedActionButton(true);
-                  handleEnviarClick().then(() => {});
-                }}
-              >
+              <LoadingButton fullWidth size="large" variant="contained" onClick={handleEnviarClick}>
                 {editMode ? 'Confirmar' : 'Registrar'}
               </LoadingButton>
             </Grid>

@@ -20,12 +20,12 @@ export const getMunicipiosPorProvinciaRequester = async (codProvincia) => {
   }
 };
 
-export const getMunicipiosPorID = async (idMunicipio) => {
+export const getMunicipioPorID = async (idMunicipio) => {
   try {
     const response = await axiosInstance.get(`municipio/${idMunicipio}`);
     return response;
   } catch (error) {
-    console.log('Error en getMunicipiosPorID', error);
+    console.log('Error en getMunicipioPorID', error);
     throw error;
   }
 };

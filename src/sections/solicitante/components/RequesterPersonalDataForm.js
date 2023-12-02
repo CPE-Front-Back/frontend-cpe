@@ -47,189 +47,78 @@ RequesterPersonalDataForm.propTypes = {
 export default function RequesterPersonalDataForm() {
   const [isCarrersFormVisible, setIsCarrersFormVisible] = useState(false);
   const [formData, setFormData] = useState({
-    cod_solicitante: '',
+    cod_solicitante: 0,
     num_id: '',
     nomb_solicitante: '',
-    apell_solicitante: '',
-    cod_municipio: '',
-    fuente_ingreso: '',
+    prim_apellido: '',
+    seg_apellido: '',
+    cod_municipio: 0,
+    fuente_ingreso: 0,
     num_telefono: '',
-    confirmado: '',
-    eliminado: '',
+    confirmado: false,
+    eliminado: false,
   });
-  const [provincias, setProvincias] = useState([]);
-  const [provinciaSeleccionada, setProvinciaSeleccionada] = useState(null);
-  const [municipios, setMunicipios] = useState([]);
-  const [municipioSeleccionado, setMunicipioSeleccionado] = useState(null);
-  const [fuentesIngreso, setFuentesIngreso] = useState([]);
-  const [fuenteIngresoSeleccionada, setFuenteIngresoSeleccionada] = useState(null);
-  const [firstLastName, setFirstLastName] = useState('');
-  const [secondLastName, setSecondLastName] = useState('');
+  const [provinces, setProvinces] = useState([]);
+  const [selectedProvince, setSelectedProvince] = useState(null);
+  const [municipalities, setMunicipalities] = useState([]);
+  const [selectedMunicipality, setSelectedMunicipality] = useState(null);
+  const [incomeSources, setIncomeSources] = useState([]);
+  const [selectedIncomeSource, setSelectedIncomeSource] = useState(null);
+  const [requesterName, setRequesterName] = useState(null);
+  const [idNumber, setIdNumber] = useState(null);
+  const [firstLastName, setFirstLastName] = useState(null);
+  const [secondLastName, setSecondLastName] = useState(null);
+  const [phoneNumber, setPhoneNumber] = useState('');
 
   const confirm = useConfirm();
   const navigate = useNavigate();
   const location = useLocation();
 
   const [errors, setErrors] = useState({
-    num_id: '',
-    nomb_solicitante: '',
-    apell_solicitante: '',
+    idNumber: '',
+    requesterName: '',
+    firstLastName: '',
     secondLastName: '',
-    num_telefono: '',
-    provinciaSeleccionada: '',
-    municipioSeleccionado: '',
-    fuenteIngresoSeleccionada: '',
+    phoneNumber: '',
+    selectedProvince: '',
+    selectedMunicipality: '',
+    selectedIncomeSource: '',
   });
-
-  const validateForm = () => {
-    const newErrors = {};
-
-    if (!formData.num_id) {
-      newErrors.num_id = 'Carnet de identidad es requerido';
-    }
-
-    if (!formData.nomb_solicitante) {
-      newErrors.nomb_solicitante = 'Nombre(s) son requeridos';
-    }
-
-    if (!firstLastName) {
-      newErrors.apell_solicitante = 'Primer apellido requerido';
-    }
-
-    if (!secondLastName) {
-      newErrors.secondLastName = 'Segundo apellido requerido';
-    }
-
-    if (!formData.num_telefono) {
-      newErrors.num_telefono = 'Teléfono es requerido';
-    }
-
-    if (!provinciaSeleccionada) {
-      newErrors.provinciaSeleccionada = 'Provincia es requerida';
-    }
-
-    if (!municipioSeleccionado) {
-      newErrors.municipioSeleccionado = 'Municipio es requerido';
-    }
-
-    if (!fuenteIngresoSeleccionada) {
-      newErrors.fuenteIngresoSeleccionada = 'Fuente de Ingreso es requerida';
-    }
-
-    setErrors(newErrors);
-
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleNameInputChange = (event) => {
-    const { name } = event.target;
-    const names = event.target.value;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: names,
-    }));
-  };
-
-  const handleInputsChange = (event) => {
-    const { name } = event.target;
-    const value = event.target.value.trim();
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-
-  const handleAvanzarClick = async () => {
-    const isValid = validateForm();
-
-    if (isValid) {
-      const currentYear = new Date().getFullYear();
-      const centuryDigit = Number(formData.num_id.charAt(6));
-      const birthYear =
-        Number(formData.num_id.substring(0, 2)) + (centuryDigit === 9 ? 1800 : centuryDigit < 5 ? 1900 : 2000);
-      const age = currentYear - birthYear;
-      console.log('currentYear', currentYear, 'century', centuryDigit, 'birth', birthYear, 'age', age);
-
-      if (!/^\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])\d{5}$/.test(formData.num_id)) {
-        setErrors((prevErrors) => ({
-          ...prevErrors,
-          num_id: 'Carnet de Identidad inválido.',
-        }));
-      } else if (age < 18) {
-        setErrors((prevErrors) => ({
-          ...prevErrors,
-          num_id: 'La edad mínima es 18 años.',
-        }));
-      } else if (
-        !/^([\wáéíóúüÁÉÍÓÚÜñÑ]+\s)?([\wáéíóúüÁÉÍÓÚÜñÑ]+\s)?([\wáéíóúüÁÉÍÓÚÜñÑ]+\s)?[\wáéíóúüÁÉÍÓÚÜñÑ]+$/.test(
-          formData.nomb_solicitante
-        )
-      ) {
-        console.log('nombre', formData.nomb_solicitante);
-        setErrors((prevErrors) => ({
-          ...prevErrors,
-          nomb_solicitante: 'Formato de nombres inválidos.',
-        }));
-      } else if (!/^(\+53\s?)?[4-9]\d{7}$/.test(formData.num_telefono)) {
-        setErrors((prevErrors) => ({
-          ...prevErrors,
-          num_telefono: 'El teléfono debe ser un número válido.',
-        }));
-      } else {
-        await concatLastNames();
-      }
-    }
-  };
-
-  const concatLastNames = () => {
-    setFormData({
-      ...formData,
-      apell_solicitante: `${firstLastName} ${secondLastName}`,
-    });
-  };
-
-  // esta es la funcion que abre el formulario de las carreras
-  useEffect(() => {
-    if (secondLastName !== '' && formData.apell_solicitante.includes(secondLastName)) {
-      console.log('datos del formulario', formData);
-      setIsCarrersFormVisible(!isCarrersFormVisible);
-    }
-  }, [formData]);
 
   useEffect(() => {
     getProvinciasRequester()
       .then((response) => {
         if (response.status === 200) {
           console.log('Provincias: ', response.data);
-          setProvincias(response.data);
+          setProvinces(response.data);
         }
       })
       .catch((error) => {
-        console.log('Error al cargar las provincias', error);
+        console.log('Error al cargar las provinces', error);
       });
   }, []);
 
   useEffect(() => {
-    if (provinciaSeleccionada !== null) {
-      getMunicipiosPorProvinciaRequester(provinciaSeleccionada.cod_provincia)
+    if (selectedProvince !== null) {
+      getMunicipiosPorProvinciaRequester(selectedProvince.cod_provincia)
         .then((response) => {
           if (response.status === 200) {
             console.log('Municipios: ', response.data);
-            setMunicipios(response.data);
+            setMunicipalities(response.data);
           }
         })
         .catch((error) => {
           console.log('Error al cargar los municipios', error);
         });
     }
-  }, [provinciaSeleccionada]);
+  }, [selectedProvince]);
 
   useEffect(() => {
     getFuentesIngresoRequester()
       .then((response) => {
         if (response.data) {
           console.log('Fuentes de Ingreso: ', response.data);
-          setFuentesIngreso(response.data);
+          setIncomeSources(response.data);
         }
       })
       .catch((error) => {
@@ -237,30 +126,138 @@ export default function RequesterPersonalDataForm() {
       });
   }, []);
 
-  const ProvinceProps = {
-    options: provincias,
-    getOptionLabel: (option) => option.nomb_provincia,
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!idNumber) {
+      newErrors.idNumber = 'Carnet de identidad es requerido';
+    }
+
+    if (!requesterName) {
+      newErrors.requesterName = 'Nombre(s) son requeridos';
+    }
+
+    if (!firstLastName) {
+      newErrors.firstLastName = 'Primer apellido requerido';
+    }
+
+    if (!secondLastName) {
+      newErrors.secondLastName = 'Segundo apellido requerido';
+    }
+
+    if (!phoneNumber) {
+      newErrors.phoneNumber = 'Teléfono es requerido';
+    }
+
+    if (!selectedProvince) {
+      newErrors.selectedProvince = 'Provincia es requerida';
+    }
+
+    if (!selectedMunicipality) {
+      newErrors.selectedMunicipality = 'Municipio es requerido';
+    }
+
+    if (!selectedIncomeSource) {
+      newErrors.selectedIncomeSource = 'Fuente de Ingreso es requerida';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
-  const MunicipioProps = {
-    options: municipios,
-    getOptionLabel: (option) => option.nomb_municipio,
+  const validateData = () => {
+    const newErrors = {};
+
+    const currentYear = new Date().getFullYear();
+    const centuryDigit = Number(idNumber.charAt(6));
+    const birthYear = Number(idNumber.substring(0, 2)) + (centuryDigit === 9 ? 1800 : centuryDigit < 5 ? 1900 : 2000);
+    const age = currentYear - birthYear;
+    console.log('currentYear', currentYear, 'century', centuryDigit, 'birth', birthYear, 'age', age);
+
+    if (!/^\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])\d{5}$/.test(idNumber)) {
+      newErrors.idNumber = 'Carnet de identidad inválido.';
+    }
+
+    if (age < 18) {
+      newErrors.idNumber = 'La edad mínima es 18 años.';
+    } else if (age > 60) {
+      newErrors.idNumber = 'La edad máxima es 60 años.';
+    }
+
+    if (
+      !/^([\wáéíóúüÁÉÍÓÚÜñÑ]+\s)?([\wáéíóúüÁÉÍÓÚÜñÑ]+\s)?([\wáéíóúüÁÉÍÓÚÜñÑ]+\s)?[\wáéíóúüÁÉÍÓÚÜñÑ]+$/.test(
+        requesterName
+      )
+    ) {
+      console.log('nombre', requesterName);
+      newErrors.requesterName = 'Formato de nombres inválidos.';
+    }
+
+    if (
+      !/^([\wáéíóúüÁÉÍÓÚÜñÑ]+\s)?([\wáéíóúüÁÉÍÓÚÜñÑ]+\s)?([\wáéíóúüÁÉÍÓÚÜñÑ]+\s)?[\wáéíóúüÁÉÍÓÚÜñÑ]+$/.test(
+        firstLastName
+      )
+    ) {
+      console.log('firstLastName', firstLastName);
+      newErrors.requesterName = 'Formato de 1er apellido inválido.';
+    }
+
+    if (
+      !/^([\wáéíóúüÁÉÍÓÚÜñÑ]+\s)?([\wáéíóúüÁÉÍÓÚÜñÑ]+\s)?([\wáéíóúüÁÉÍÓÚÜñÑ]+\s)?[\wáéíóúüÁÉÍÓÚÜñÑ]+$/.test(
+        secondLastName
+      )
+    ) {
+      console.log('secondLastName', secondLastName);
+      newErrors.requesterName = 'Formato de 2do apellido inválido.';
+    }
+
+    if (!/^(\+53\s?)?[4-9]\d{7}$/.test(phoneNumber)) {
+      newErrors.phoneNumber = 'El teléfono debe ser un número válido.';
+    }
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
   };
 
-  const FuenteIngresoProps = {
-    options: fuentesIngreso,
-    getOptionLabel: (option) => option.nomb_fuente,
+  const handleAvanzarClick = (event) => {
+    event.preventDefault();
+
+    const isFormFilled = validateForm();
+
+    if (isFormFilled) {
+      const isDataValid = validateData();
+
+      if (isDataValid) {
+        const updateData = {
+          cod_solicitante: 0,
+          num_id: idNumber,
+          nomb_solicitante: requesterName,
+          prim_apellido: firstLastName,
+          seg_apellido: secondLastName,
+          cod_municipio: Number(selectedMunicipality.cod_municipio),
+          fuente_ingreso: Number(selectedIncomeSource.cod_fuente),
+          num_telefono: phoneNumber,
+          confirmado: false,
+          eliminado: false,
+        };
+
+        setFormData(updateData);
+
+        setIsCarrersFormVisible(true);
+      }
+    }
   };
 
   const handleLastNamesInput = (event) => {
     // allow only letters
-    const inputValue = event.target.value.replace(/[^a-zA-ZáéíóúüÁÉÍÓÚÜñÑ]/g, '');
+    const inputValue = event.target.value.replace(/[^a-zA-ZáéíóúüÁÉÍÓÚÜñÑ\s]+/g, ' ').replace(/^\s+/g, '');
     event.target.value = inputValue;
   };
 
   const handleNameInput = (event) => {
     // allow only one blank space and letters
-    const inputValue = event.target.value.replace(/[^a-zA-ZáéíóúüÁÉÍÓÚÜñÑ]/g, '');
+    const inputValue = event.target.value.replace(/[^a-zA-ZáéíóúüÁÉÍÓÚÜñÑ\s]+/g, ' ').replace(/^\s+/g, '');
     event.target.value = inputValue;
   };
 
@@ -294,30 +291,30 @@ export default function RequesterPersonalDataForm() {
                 <Grid item container spacing={2}>
                   <Grid item xs={12} sm={3}>
                     <TextField
-                      name="num_id"
+                      name="idNumber"
                       fullWidth
                       type="text"
-                      value={formData.num_id}
+                      value={idNumber}
                       label="Carnet de identidad"
-                      onChange={handleInputsChange}
+                      onChange={(event) => setIdNumber(event.target.value)}
                       onInput={handleIdInput}
-                      error={!!errors.num_id}
-                      helperText={errors.num_id}
+                      error={!!errors.idNumber}
+                      helperText={errors.idNumber}
                       inputProps={{ maxLength: 11 }}
                     />
                   </Grid>
 
                   <Grid item xs={12} sm={3}>
                     <TextField
-                      name="nomb_solicitante"
+                      name="requesterName"
                       fullWidth
-                      type="text"
-                      value={formData.nomb_solicitante}
-                      label="Nombres"
-                      onChange={handleNameInputChange}
+                      type={'text'}
+                      value={requesterName}
+                      label="Nombre(s)"
+                      onChange={(event) => setRequesterName(event.target.value)}
                       onInput={handleNameInput}
-                      error={!!errors.nomb_solicitante}
-                      helperText={errors.nomb_solicitante}
+                      error={!!errors.requesterName}
+                      helperText={errors.requesterName}
                       inputProps={{ maxLength: 40 }}
                       sx={{ textAlign: 'center' }}
                     />
@@ -325,17 +322,17 @@ export default function RequesterPersonalDataForm() {
 
                   <Grid item xs={12} sm={3}>
                     <TextField
-                      name="apell_solicitante"
+                      name="prim_apellido"
                       fullWidth
                       type={'text'}
                       value={firstLastName}
                       label="1er apellido"
                       onChange={(event) => {
-                        setFirstLastName(event.target.value.trim());
+                        setFirstLastName(event.target.value);
                       }}
                       onInput={handleLastNamesInput}
-                      error={!!errors.apell_solicitante}
-                      helperText={errors.apell_solicitante}
+                      error={!!errors.firstLastName}
+                      helperText={errors.firstLastName}
                       inputProps={{ maxLength: 25 }}
                       sx={{ margin: 'auto' }}
                     />
@@ -348,7 +345,7 @@ export default function RequesterPersonalDataForm() {
                       label="2do apellido"
                       value={secondLastName}
                       onChange={(event) => {
-                        setSecondLastName(event.target.value.trim());
+                        setSecondLastName(event.target.value);
                       }}
                       onInput={handleLastNamesInput}
                       error={!!errors.secondLastName}
@@ -362,15 +359,15 @@ export default function RequesterPersonalDataForm() {
                 <Grid item container spacing={2}>
                   <Grid item xs={12} sm={3}>
                     <TextField
-                      name="num_telefono"
+                      name="PhoneNumberInput"
                       fullWidth
                       type="tel"
-                      value={formData.num_telefono}
+                      value={phoneNumber}
                       label="Teléfono"
-                      onChange={handleInputsChange}
+                      onChange={(event) => setPhoneNumber(event.target.value)}
                       onInput={handlePhoneInput}
-                      error={!!errors.num_telefono}
-                      helperText={errors.num_telefono}
+                      error={!!errors.phoneNumber}
+                      helperText={errors.phoneNumber}
                       inputProps={{ maxLength: 11 }}
                       sx={{ margin: 'auto' }}
                     />
@@ -378,19 +375,21 @@ export default function RequesterPersonalDataForm() {
 
                   <Grid item xs={12} sm={3}>
                     <Autocomplete
-                      id="ComboProvincia"
-                      {...ProvinceProps}
-                      value={provinciaSeleccionada}
+                      id="ProvincesCombo"
+                      options={provinces}
+                      getOptionLabel={(option) => option.nomb_provincia}
+                      value={selectedProvince}
                       onChange={(event, newValue) => {
-                        setProvinciaSeleccionada(newValue);
-                        setMunicipioSeleccionado(null);
+                        setSelectedProvince(newValue);
+                        setSelectedMunicipality(null);
                       }}
                       renderInput={(params) => (
                         <TextField
                           {...params}
-                          label="Provincia"
-                          error={!!errors.provinciaSeleccionada}
-                          helperText={errors.provinciaSeleccionada}
+                          label="Provincias disponibles"
+                          error={!!errors.selectedProvince}
+                          helperText={errors.selectedProvince}
+                          required
                         />
                       )}
                       noOptionsText={'No hay opciones'}
@@ -399,22 +398,20 @@ export default function RequesterPersonalDataForm() {
 
                   <Grid item xs={12} sm={3}>
                     <Autocomplete
-                      id="ComboMunicipio"
-                      {...MunicipioProps}
-                      value={municipioSeleccionado}
+                      id="MunicipalitiesCombo"
+                      options={municipalities}
+                      getOptionLabel={(option) => option.nomb_municipio}
+                      value={selectedMunicipality}
                       onChange={(event, newValue) => {
-                        setMunicipioSeleccionado(newValue);
-                        setFormData((prevData) => ({
-                          ...prevData,
-                          cod_municipio: newValue ? newValue.cod_municipio : null,
-                        }));
+                        setSelectedMunicipality(newValue);
                       }}
                       renderInput={(params) => (
                         <TextField
                           {...params}
-                          label="Municipio"
-                          error={!!errors.municipioSeleccionado}
-                          helperText={errors.municipioSeleccionado}
+                          label="Municipios disponibles"
+                          error={!!errors.selectedMunicipality}
+                          helperText={errors.selectedMunicipality}
+                          required
                         />
                       )}
                       noOptionsText={'Seleccione una provincia'}
@@ -423,22 +420,20 @@ export default function RequesterPersonalDataForm() {
 
                   <Grid item xs={12} sm={3}>
                     <Autocomplete
-                      id="ComboFuentesIngreso"
-                      {...FuenteIngresoProps}
-                      value={fuenteIngresoSeleccionada}
+                      id="IncomeSourcesCombo"
+                      options={incomeSources}
+                      getOptionLabel={(option) => option.nomb_fuente}
+                      value={selectedIncomeSource}
                       onChange={(event, newValue) => {
-                        setFuenteIngresoSeleccionada(newValue);
-                        setFormData((prevData) => ({
-                          ...prevData,
-                          fuente_ingreso: newValue ? newValue.cod_fuente : null,
-                        }));
+                        setSelectedIncomeSource(newValue);
                       }}
                       renderInput={(params) => (
                         <TextField
                           {...params}
-                          label="Fuente de Ingreso"
-                          error={!!errors.fuenteIngresoSeleccionada}
-                          helperText={errors.fuenteIngresoSeleccionada}
+                          label="Fuentes de ingreso disponibles"
+                          error={!!errors.selectedIncomeSource}
+                          helperText={errors.selectedIncomeSource}
+                          required
                         />
                       )}
                       noOptionsText={'No hay opciones'}
@@ -493,10 +488,6 @@ export default function RequesterPersonalDataForm() {
                 })
                   .then(() => {
                     setIsCarrersFormVisible(!isCarrersFormVisible);
-                    setFormData({
-                      ...formData,
-                      apell_solicitante: ``,
-                    });
                   })
                   .catch(() => {});
               }}
