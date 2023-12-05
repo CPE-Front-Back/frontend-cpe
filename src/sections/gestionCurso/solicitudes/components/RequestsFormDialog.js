@@ -322,7 +322,7 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
                 console.log('el error', response.request.response);
                 setMessage(
                   'error',
-                  `EL carnet de identidad: "${formData.num_id}" ya tiene solicitudes registradas en este curso.`
+                  `EL carnet de identidad: "${Data.num_id}" ya tiene solicitudes registradas en este curso.`
                 );
               }
             })
@@ -360,7 +360,7 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
                 console.log('el error', response.request.response);
                 setMessage(
                   'error',
-                  `EL carnet de identidad: "${formData.num_id}" ya tiene solicitudes registradas en este curso.`
+                  `EL carnet de identidad: "${Data.num_id}" ya tiene solicitudes registradas en este curso.`
                 );
               }
             })
@@ -370,7 +370,7 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
             });
         }
 
-        console.log('los datos', updatedData);
+        console.log('los datos', solicitante);
       }
     }
   };
