@@ -122,7 +122,6 @@ export default function AdminForm({ editMode, formData, onSubmit }) {
 
   const handleSubmit = () => {
     if (validateData()) {
-      setMessage('success', 'Datos válidos');
       const user = {
         cod_usuario,
         name: nameInput,
@@ -244,7 +243,7 @@ export default function AdminForm({ editMode, formData, onSubmit }) {
 
   const handleNameInput = (event) => {
     // allow only letters
-    const inputValue = event.target.value.replace(/[^a-zA-Z]/g, '');
+    const inputValue = event.target.value.replace(/[^a-zA-ZáéíóúüÁÉÍÓÚÜñÑ\s]/g, '');
     event.target.value = inputValue;
   };
 

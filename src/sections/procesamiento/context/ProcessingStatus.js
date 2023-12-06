@@ -24,6 +24,22 @@ export function ProcessingStatusProvider({ children }) {
   const [canActRequests, setCanActRequests] = useState(true);
   const { activeCourse, refreshProcessingStatus } = UseActiveCourse();
 
+  const [canReport1, setCanReport1] = useState(false);
+  const [canReport2, setCanReport2] = useState(false);
+  const [canReport3, setCanReport3] = useState(false);
+  const [canReport4, setCanReport4] = useState(false);
+  const [canReport5, setCanReport5] = useState(false);
+  const [canReport6, setCanReport6] = useState(false);
+  const [canReport7, setCanReport7] = useState(false);
+  const [canReport8, setCanReport8] = useState(false);
+  const [canReport9, setCanReport9] = useState(false);
+  const [canReport10, setCanReport10] = useState(false);
+  const [canReport11, setCanReport11] = useState(false);
+  const [canReport12, setCanReport12] = useState(false);
+  const [canReport13, setCanReport13] = useState(false);
+  const [canReport14, setCanReport14] = useState(false);
+  const [canReport15, setCanReport15] = useState(false);
+
   useEffect(() => {
     if (activeCourse.cod_curso !== -1) {
       verifyCanAsigPrimVuelta(activeCourse.cod_curso)
@@ -51,17 +67,17 @@ export function ProcessingStatusProvider({ children }) {
                                       .finally(() => {
                                         setTimeout(() => {
                                           verifyCanAsigSegVuelta(activeCourse.cod_curso).then(() => {});
-                                        }, 1000);
+                                        }, 900);
                                       });
-                                  }, 1000);
+                                  }, 900);
                                 });
-                            }, 1000);
+                            }, 900);
                           });
-                      }, 1000);
+                      }, 900);
                     });
-                }, 1000);
+                }, 900);
               });
-          }, 1000);
+          }, 900);
         });
     }
   }, [activeCourse, refreshProcessingStatus]);
@@ -95,7 +111,10 @@ export function ProcessingStatusProvider({ children }) {
             setCanCalify(false);
             setCanAsigSegVuelta(false);
             setCanRecalify(false);
-            // todo implementation of reports
+            setCanReport11(true);
+            setCanReport12(true);
+            setCanReport13(true);
+            setCanReport14(true);
           }
         }
       })
@@ -115,7 +134,9 @@ export function ProcessingStatusProvider({ children }) {
             setCanActOffers(false);
             setCanAsigPrimVuelta(false);
             setCanAsigClassrooms(true);
-            // todo implementation of reports
+            setCanReport1(true);
+            setCanReport2(true);
+            setCanReport3(true);
           } else {
             setCanActOffers(true);
             setCanActRequests(true);
@@ -138,7 +159,8 @@ export function ProcessingStatusProvider({ children }) {
             setCanAsigClassrooms(false);
             setCanAsigActs(true);
             setCanActCapacities(false);
-            // todo implementation of reports
+            setCanReport4(true);
+            setCanReport5(true);
           } else {
             setCanActCapacities(true);
           }
@@ -159,7 +181,8 @@ export function ProcessingStatusProvider({ children }) {
           if (response.data.length > 0) {
             setCanAsigActs(false);
             setCanCalify(true);
-            // todo implementation of reports
+            setCanReport6(true);
+            setCanReport8(true);
           }
         }
       })
@@ -178,7 +201,7 @@ export function ProcessingStatusProvider({ children }) {
           if (response.data) {
             setCanAsigSegVuelta(true);
             setCanRecalify(true);
-            // todo implementation of reports
+            setCanReport9(true);
           }
         }
       })
@@ -198,7 +221,8 @@ export function ProcessingStatusProvider({ children }) {
             setCanCalify(false);
             setCanRecalify(false);
             setCanAsigSegVuelta(true);
-            // todo implementation of reports
+            setCanReport7(true);
+            setCanReport10(true);
           }
         }
       })
@@ -228,6 +252,36 @@ export function ProcessingStatusProvider({ children }) {
         setCanActCapacities,
         canActRequests,
         setCanActRequests,
+        canReport1,
+        setCanReport1,
+        canReport2,
+        setCanReport2,
+        canReport3,
+        setCanReport3,
+        canReport4,
+        setCanReport4,
+        canReport5,
+        setCanReport5,
+        canReport6,
+        setCanReport6,
+        canReport7,
+        setCanReport7,
+        canReport8,
+        setCanReport8,
+        canReport9,
+        setCanReport9,
+        canReport10,
+        setCanReport10,
+        canReport11,
+        setCanReport11,
+        canReport12,
+        setCanReport12,
+        canReport13,
+        setCanReport13,
+        canReport14,
+        setCanReport14,
+        canReport15,
+        setCanReport15,
       }}
     >
       {children}

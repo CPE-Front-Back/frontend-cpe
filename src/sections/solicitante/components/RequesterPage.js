@@ -6,6 +6,7 @@ import { styled } from '@mui/material/styles';
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useLocation, useNavigate } from 'react-router-dom';
+import setMessage from '../../../components/messages/messages';
 import { AppWidgetSummary } from '../../home/app';
 import { UseActiveCourse } from '../../gestionCurso/curso/context/ActiveCourseContext';
 import {
@@ -59,7 +60,6 @@ export default function RequesterPage() {
   const handleReport1Click = () => {
     setIsLoading(true);
 
-    // todo: implement this function logic in the report store
     getListadoOfertasReportRequester(activeCourse.nomb_curso)
       .then((response) => {
         if (response.status === 200) {
@@ -71,6 +71,9 @@ export default function RequesterPage() {
           setTimeout(() => {
             setIsLoading(false);
           }, 500);
+        } else if (response.request.status === 500) {
+          setIsLoading(false);
+          setMessage('error', `No hay datos para generar el PDF.`);
         }
       })
       .catch((error) => {
@@ -92,6 +95,9 @@ export default function RequesterPage() {
           setTimeout(() => {
             setIsLoading(false);
           }, 500);
+        } else if (response.request.status === 500) {
+          setIsLoading(false);
+          setMessage('error', `No hay datos para generar el PDF.`);
         }
       })
       .catch((error) => {
@@ -113,6 +119,9 @@ export default function RequesterPage() {
           setTimeout(() => {
             setIsLoading(false);
           }, 500);
+        } else if (response.request.status === 500) {
+          setIsLoading(false);
+          setMessage('error', `No hay datos para generar el PDF.`);
         }
       })
       .catch((error) => {
@@ -134,6 +143,9 @@ export default function RequesterPage() {
           setTimeout(() => {
             setIsLoading(false);
           }, 500);
+        } else if (response.request.status === 500) {
+          setIsLoading(false);
+          setMessage('error', `No hay datos para generar el PDF.`);
         }
       })
       .catch((error) => {
@@ -155,6 +167,9 @@ export default function RequesterPage() {
           setTimeout(() => {
             setIsLoading(false);
           }, 500);
+        } else if (response.request.status === 500) {
+          setIsLoading(false);
+          setMessage('error', `No hay datos para generar el PDF.`);
         }
       })
       .catch((error) => {
@@ -176,6 +191,9 @@ export default function RequesterPage() {
           setTimeout(() => {
             setIsLoading(false);
           }, 500);
+        } else if (response.request.status === 500) {
+          setIsLoading(false);
+          setMessage('error', `No hay datos para generar el PDF.`);
         }
       })
       .catch((error) => {

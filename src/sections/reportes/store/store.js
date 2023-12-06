@@ -8,6 +8,10 @@ export const getProvinciasReport = async () => {
     });
     return response;
   } catch (error) {
+    const text = new TextDecoder().decode(new Uint8Array(error.request.response));
+    if (error.request.status === 500 && text === 'No data to print') {
+      return error;
+    }
     console.log('Error en getProvinciasReport', error);
     throw error;
   }
@@ -21,6 +25,10 @@ export const getActasAnonimatoReport = async (nomb_curso) => {
     });
     return response;
   } catch (error) {
+    const text = new TextDecoder().decode(new Uint8Array(error.request.response));
+    if (error.request.status === 500 && text === 'No data to print') {
+      return error;
+    }
     console.log('Error en getActasAnonimato', error);
     throw error;
   }
@@ -34,6 +42,10 @@ export const getActasComparecenciaReport = async (nomb_curso) => {
     });
     return response;
   } catch (error) {
+    const text = new TextDecoder().decode(new Uint8Array(error.request.response));
+    if (error.request.status === 500 && text === 'No data to print') {
+      return error;
+    }
     console.log('Error en getActasComparecencia', error);
     throw error;
   }
@@ -47,6 +59,10 @@ export const getActasNotasReport = async (nomb_curso) => {
     });
     return response;
   } catch (error) {
+    const text = new TextDecoder().decode(new Uint8Array(error.request.response));
+    if (error.request.status === 500 && text === 'No data to print') {
+      return error;
+    }
     console.log('Error en getActasNotas', error);
     throw error;
   }
@@ -60,6 +76,10 @@ export const getActasReclamacionReport = async (nomb_curso) => {
     });
     return response;
   } catch (error) {
+    const text = new TextDecoder().decode(new Uint8Array(error.request.response));
+    if (error.request.status === 500 && text === 'No data to print') {
+      return error;
+    }
     console.log('Error en getActasReclamacionReport', error);
     throw error;
   }
@@ -76,6 +96,10 @@ export const getListadoAsignaciones1raVueltaCarreraReport = async (nomb_curso) =
     );
     return response;
   } catch (error) {
+    const text = new TextDecoder().decode(new Uint8Array(error.request.response));
+    if (error.request.status === 500 && text === 'No data to print') {
+      return error;
+    }
     console.log('Error en getListadoAsignaciones1raVueltaCarreraReport', error);
     throw error;
   }
@@ -92,6 +116,10 @@ export const getListadoAsignaciones1raVueltaCarreraReportRequester = async (nomb
     );
     return response;
   } catch (error) {
+    const text = new TextDecoder().decode(new Uint8Array(error.request.response));
+    if (error.request.status === 500 && text.includes('No data to print')) {
+      return error;
+    }
     console.log('Error en getListadoAsignaciones1raVueltaCarreraReportRequester', error);
     throw error;
   }
@@ -108,6 +136,10 @@ export const getListadoAsignaciones1raVueltaEstudianteReport = async (nomb_curso
     );
     return response;
   } catch (error) {
+    const text = new TextDecoder().decode(new Uint8Array(error.request.response));
+    if (error.request.status === 500 && text === 'No data to print') {
+      return error;
+    }
     console.log('Error en getListadoAsignaciones1raVueltaEstudianteReport', error);
     throw error;
   }
@@ -124,6 +156,10 @@ export const getListadoAsignacionesFinalCarreraReport = async (nomb_curso) => {
     );
     return response;
   } catch (error) {
+    const text = new TextDecoder().decode(new Uint8Array(error.request.response));
+    if (error.request.status === 500 && text === 'No data to print') {
+      return error;
+    }
     console.log('Error en getListadoAsignacionesFinalCarreraReport', error);
     throw error;
   }
@@ -140,6 +176,10 @@ export const getListadoAsignacionesFinalCarreraReportRequester = async (nomb_cur
     );
     return response;
   } catch (error) {
+    const text = new TextDecoder().decode(new Uint8Array(error.request.response));
+    if (error.request.status === 500 && text.includes('No data to print')) {
+      return error;
+    }
     console.log('Error en getListadoAsignacionesFinalCarreraReportRequester', error);
     throw error;
   }
@@ -156,6 +196,10 @@ export const getListadoAsignacionesFinalEstudianteReport = async (nomb_curso) =>
     );
     return response;
   } catch (error) {
+    const text = new TextDecoder().decode(new Uint8Array(error.request.response));
+    if (error.request.status === 500 && text === 'No data to print') {
+      return error;
+    }
     console.log('Error en getListadoAsignacionesFinalEstudianteReport', error);
     throw error;
   }
@@ -169,6 +213,10 @@ export const getListadoNotasReport = async (nomb_curso) => {
     });
     return response;
   } catch (error) {
+    const text = new TextDecoder().decode(new Uint8Array(error.request.response));
+    if (error.request.status === 500 && text === 'No data to print') {
+      return error;
+    }
     console.log('Error en getListadoNotasReport', error);
     throw error;
   }
@@ -182,6 +230,10 @@ export const getListadoNotasReportRequester = async (nomb_curso) => {
     });
     return response;
   } catch (error) {
+    const text = new TextDecoder().decode(new Uint8Array(error.request.response));
+    if (error.request.status === 500 && text.includes('No data to print')) {
+      return error;
+    }
     console.log('Error en getListadoNotasReportRequester', error);
     throw error;
   }
@@ -198,6 +250,10 @@ export const getListadoRecalificacionesReport = async (nomb_curso) => {
     );
     return response;
   } catch (error) {
+    const text = new TextDecoder().decode(new Uint8Array(error.request.response));
+    if (error.request.status === 500 && text === 'No data to print') {
+      return error;
+    }
     console.log('Error en getListadoRecalificacionesReport', error);
     throw error;
   }
@@ -214,6 +270,10 @@ export const getListadoRecalificacionesReportRequester = async (nomb_curso) => {
     );
     return response;
   } catch (error) {
+    const text = new TextDecoder().decode(new Uint8Array(error.request.response));
+    if (error.request.status === 500 && text.includes('No data to print')) {
+      return error;
+    }
     console.log('Error en getListadoRecalificacionesReportRequester', error);
     throw error;
   }
@@ -230,6 +290,10 @@ export const getListadoUbicacionEstudianteReport = async (nomb_curso) => {
     );
     return response;
   } catch (error) {
+    const text = new TextDecoder().decode(new Uint8Array(error.request.response));
+    if (error.request.status === 500 && text === 'No data to print') {
+      return error;
+    }
     console.log('Error en getListadoUbicacionEstudianteReport', error);
     throw error;
   }
@@ -246,6 +310,10 @@ export const getListadoUbicacionEstudianteReportRequester = async (nomb_curso) =
     );
     return response;
   } catch (error) {
+    const text = new TextDecoder().decode(new Uint8Array(error.request.response));
+    if (error.request.status === 500 && text.includes('No data to print')) {
+      return error;
+    }
     console.log('Error en getListadoUbicacionEstudianteReportRequester', error);
     throw error;
   }
@@ -262,6 +330,10 @@ export const getResumenAsignaciones1raOpcCarreraReport = async (nomb_curso) => {
     );
     return response;
   } catch (error) {
+    const text = new TextDecoder().decode(new Uint8Array(error.request.response));
+    if (error.request.status === 500 && text === 'No data to print') {
+      return error;
+    }
     console.log('Error en getResumenAsignaciones1raOpcCarreraReport', error);
     throw error;
   }
@@ -278,6 +350,10 @@ export const getResumenFinalAsignacionesCarreraReport = async (nomb_curso) => {
     );
     return response;
   } catch (error) {
+    const text = new TextDecoder().decode(new Uint8Array(error.request.response));
+    if (error.request.status === 500 && text === 'No data to print') {
+      return error;
+    }
     console.log('Error en getResumenFinalAsignacionesCarreraReport', error);
     throw error;
   }
@@ -294,6 +370,10 @@ export const getResumenSolicitudes1raOpcCarreraReport = async (nomb_curso) => {
     );
     return response;
   } catch (error) {
+    const text = new TextDecoder().decode(new Uint8Array(error.request.response));
+    if (error.request.status === 500 && text === 'No data to print') {
+      return error;
+    }
     console.log('Error en getResumenSolicitudes1raOpcCarreraReport', error);
     throw error;
   }
@@ -307,6 +387,10 @@ export const getListadoSolicitantesReport = async (nomb_curso) => {
     });
     return response;
   } catch (error) {
+    const text = new TextDecoder().decode(new Uint8Array(error.request.response));
+    if (error.request.status === 500 && text === 'No data to print') {
+      return error;
+    }
     console.log('Error en getListadoSolicitantesReport', error);
     throw error;
   }
@@ -320,6 +404,10 @@ export const getListadoOfertasReportRequester = async (nomb_curso) => {
     });
     return response;
   } catch (error) {
+    const text = new TextDecoder().decode(new Uint8Array(error.request.response));
+    if (error.request.status === 500 && text.includes('No data to print')) {
+      return error;
+    }
     console.log('Error en getListadoOfertasReportRequester', error);
     throw error;
   }

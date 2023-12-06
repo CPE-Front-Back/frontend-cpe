@@ -140,7 +140,7 @@ export default function CoursePage() {
               <Typography variant="h5">
                 {canGenerate
                   ? 'Generar nuevo curso'
-                  : `El nuevo curso se podrá generar pasado el ${activeCourse.fecha_inicio}`}
+                  : `El nuevo curso se podrá generar a partir del ${activeCourse.fecha_inicio}`}
               </Typography>
             </Grid>
             <Grid item xs />

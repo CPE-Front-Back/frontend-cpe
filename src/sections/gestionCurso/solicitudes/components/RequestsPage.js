@@ -111,6 +111,7 @@ export default function RequestsPage(solicitantesConfirmados) {
       .catch((error) => {
         console.log('Error al cargar las solicitudes', error);
       });
+    setSelected([]);
   }, [solicitantesConfirmados]);
 
   useEffect(() => {

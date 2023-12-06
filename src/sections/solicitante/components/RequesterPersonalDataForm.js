@@ -199,7 +199,7 @@ export default function RequesterPersonalDataForm() {
       )
     ) {
       console.log('firstLastName', firstLastName);
-      newErrors.requesterName = 'Formato de 1er apellido inválido.';
+      newErrors.firstLastName = 'Formato de 1er apellido inválido.';
     }
 
     if (
@@ -208,7 +208,7 @@ export default function RequesterPersonalDataForm() {
       )
     ) {
       console.log('secondLastName', secondLastName);
-      newErrors.requesterName = 'Formato de 2do apellido inválido.';
+      newErrors.secondLastName = 'Formato de 2do apellido inválido.';
     }
 
     if (!/^(\+53\s?)?[4-9]\d{7}$/.test(phoneNumber)) {

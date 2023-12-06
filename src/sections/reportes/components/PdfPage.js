@@ -12,6 +12,7 @@ import {
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet-async';
+import setMessage from '../../../components/messages/messages';
 import { UseActiveCourse } from '../../gestionCurso/curso/context/ActiveCourseContext';
 import { getCursos } from '../../gestionCurso/curso/store/store';
 import {
@@ -94,6 +95,9 @@ export default function PdfPage({ pdfName }) {
 
                 setPdfData(blob);
                 setLoading(false);
+              } else if (response.request.status === 500) {
+                setLoading(false);
+                setMessage('error', `No hay datos para generar el PDF.`);
               }
             })
             .catch((error) => {
@@ -108,6 +112,9 @@ export default function PdfPage({ pdfName }) {
 
                 setPdfData(blob);
                 setLoading(false);
+              } else if (response.request.status === 500) {
+                setLoading(false);
+                setMessage('error', `No hay datos para generar el PDF.`);
               }
             })
             .catch((error) => {
@@ -122,6 +129,9 @@ export default function PdfPage({ pdfName }) {
 
                 setPdfData(blob);
                 setLoading(false);
+              } else if (response.request.status === 500) {
+                setLoading(false);
+                setMessage('error', `No hay datos para generar el PDF.`);
               }
             })
             .catch((error) => {
@@ -136,6 +146,9 @@ export default function PdfPage({ pdfName }) {
 
                 setPdfData(blob);
                 setLoading(false);
+              } else if (response.request.status === 500) {
+                setLoading(false);
+                setMessage('error', `No hay datos para generar el PDF.`);
               }
             })
             .catch((error) => {
@@ -150,6 +163,9 @@ export default function PdfPage({ pdfName }) {
 
                 setPdfData(blob);
                 setLoading(false);
+              } else if (response.request.status === 500) {
+                setLoading(false);
+                setMessage('error', `No hay datos para generar el PDF.`);
               }
             })
             .catch((error) => {
@@ -164,6 +180,9 @@ export default function PdfPage({ pdfName }) {
 
                 setPdfData(blob);
                 setLoading(false);
+              } else if (response.request.status === 500) {
+                setLoading(false);
+                setMessage('error', `No hay datos para generar el PDF.`);
               }
             })
             .catch((error) => {
@@ -178,6 +197,9 @@ export default function PdfPage({ pdfName }) {
 
                 setPdfData(blob);
                 setLoading(false);
+              } else if (response.request.status === 500) {
+                setLoading(false);
+                setMessage('error', `No hay datos para generar el PDF.`);
               }
             })
             .catch((error) => {
@@ -192,6 +214,9 @@ export default function PdfPage({ pdfName }) {
 
                 setPdfData(blob);
                 setLoading(false);
+              } else if (response.request.status === 500) {
+                setLoading(false);
+                setMessage('error', `No hay datos para generar el PDF.`);
               }
             })
             .catch((error) => {
@@ -206,6 +231,9 @@ export default function PdfPage({ pdfName }) {
 
                 setPdfData(blob);
                 setLoading(false);
+              } else if (response.request.status === 500) {
+                setLoading(false);
+                setMessage('error', `No hay datos para generar el PDF.`);
               }
             })
             .catch((error) => {
@@ -220,6 +248,9 @@ export default function PdfPage({ pdfName }) {
 
                 setPdfData(blob);
                 setLoading(false);
+              } else if (response.request.status === 500) {
+                setLoading(false);
+                setMessage('error', `No hay datos para generar el PDF.`);
               }
             })
             .catch((error) => {
@@ -234,6 +265,9 @@ export default function PdfPage({ pdfName }) {
 
                 setPdfData(blob);
                 setLoading(false);
+              } else if (response.request.status === 500) {
+                setLoading(false);
+                setMessage('error', `No hay datos para generar el PDF.`);
               }
             })
             .catch((error) => {
@@ -248,6 +282,9 @@ export default function PdfPage({ pdfName }) {
 
                 setPdfData(blob);
                 setLoading(false);
+              } else if (response.request.status === 500) {
+                setLoading(false);
+                setMessage('error', `No hay datos para generar el PDF.`);
               }
             })
             .catch((error) => {
@@ -262,6 +299,9 @@ export default function PdfPage({ pdfName }) {
 
                 setPdfData(blob);
                 setLoading(false);
+              } else if (response.request.status === 500) {
+                setLoading(false);
+                setMessage('error', `No hay datos para generar el PDF.`);
               }
             })
             .catch((error) => {
@@ -276,6 +316,9 @@ export default function PdfPage({ pdfName }) {
 
                 setPdfData(blob);
                 setLoading(false);
+              } else if (response.request.status === 500) {
+                setLoading(false);
+                setMessage('error', `No hay datos para generar el PDF.`);
               }
             })
             .catch((error) => {
@@ -290,6 +333,9 @@ export default function PdfPage({ pdfName }) {
 
                 setPdfData(blob);
                 setLoading(false);
+              } else if (response.request.status === 500) {
+                setLoading(false);
+                setMessage('error', `No hay datos para generar el PDF.`);
               }
             })
             .catch((error) => {

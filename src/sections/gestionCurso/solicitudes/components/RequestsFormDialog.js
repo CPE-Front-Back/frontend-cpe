@@ -235,7 +235,7 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
       )
     ) {
       console.log('firstLastName', firstLastName);
-      newErrors.requesterName = 'Formato de 1er apellido inválido.';
+      newErrors.firstLastName = 'Formato de 1er apellido inválido.';
     }
 
     if (
@@ -244,7 +244,7 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
       )
     ) {
       console.log('secondLastName', secondLastName);
-      newErrors.requesterName = 'Formato de 2do apellido inválido.';
+      newErrors.secondLastName = 'Formato de 2do apellido inválido.';
     }
 
     if (!/^(\+53\s?)?[4-9]\d{7}$/.test(phoneNumber)) {
@@ -274,7 +274,7 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
           cod_municipio: Number(selectedMunicipality.cod_municipio),
           fuente_ingreso: Number(selectedIncomeSource.cod_fuente),
           num_telefono: phoneNumber,
-          confirmado: false,
+          confirmado: true,
           eliminado: false,
         };
 
@@ -322,7 +322,7 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
                 console.log('el error', response.request.response);
                 setMessage(
                   'error',
-                  `EL carnet de identidad: "${Data.num_id}" ya tiene solicitudes registradas en este curso.`
+                  `EL carnet de identidad: "${solicitante.num_id}" ya tiene solicitudes registradas en este curso.`
                 );
               }
             })
@@ -360,7 +360,7 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
                 console.log('el error', response.request.response);
                 setMessage(
                   'error',
-                  `EL carnet de identidad: "${Data.num_id}" ya tiene solicitudes registradas en este curso.`
+                  `EL carnet de identidad: "${solicitante.num_id}" ya tiene solicitudes registradas en este curso.`
                 );
               }
             })
@@ -541,7 +541,6 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
             <Grid item xs={12} sm={6} md={3}>
               <TextField
                 name="prim_apellido"
-                fullWidth
                 type={'text'}
                 value={firstLastName}
                 label="1er apellido"
@@ -601,6 +600,7 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
                     error={!!errors.selectedProvince}
                     helperText={errors.selectedProvince}
                     required
+                    sx={{ maxWidth: '80%' }}
                   />
                 )}
                 noOptionsText={'No hay opciones'}
@@ -622,6 +622,7 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
                     error={!!errors.selectedMunicipality}
                     helperText={errors.selectedMunicipality}
                     required
+                    sx={{ maxWidth: '80%' }}
                   />
                 )}
                 noOptionsText={'Seleccione una provincia'}
@@ -643,6 +644,7 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
                     error={!!errors.selectedIncomeSource}
                     helperText={errors.selectedIncomeSource}
                     required
+                    sx={{ maxWidth: '80%' }}
                   />
                 )}
                 noOptionsText={'No hay opciones'}
