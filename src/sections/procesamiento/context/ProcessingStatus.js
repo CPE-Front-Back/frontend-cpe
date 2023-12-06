@@ -90,6 +90,7 @@ export function ProcessingStatusProvider({ children }) {
         if (response.status === 200) {
           if (response.data.length > 0) {
             setCanAsigPrimVuelta(true);
+            setCanReport1(true);
           } else {
             setCanAsigPrimVuelta(false);
           }

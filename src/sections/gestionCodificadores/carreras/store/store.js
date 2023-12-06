@@ -25,6 +25,10 @@ export const insertCarrera = async (carrera) => {
     const response = await axiosInstance.post(`carrera/`, carrera);
     return response;
   } catch (error) {
+    if (error.request.status === 500 && error.request.response === 'Duplicated carrera') {
+      console.log('Error en insertarCarrera', error);
+      return error;
+    }
     console.log('Error en insertarCarrera', error);
     throw error;
   }
@@ -35,6 +39,10 @@ export const updateCarrera = async (carrera) => {
     const response = await axiosInstance.put(`carrera/`, carrera);
     return response;
   } catch (error) {
+    if (error.request.status === 500 && error.request.response === 'Duplicated carrera') {
+      console.log('Error en modificarCarrera', error);
+      return error;
+    }
     console.log('Error en modificarCarrera', error);
     throw error;
   }

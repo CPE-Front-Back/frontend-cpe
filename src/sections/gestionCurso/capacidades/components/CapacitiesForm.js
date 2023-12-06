@@ -140,12 +140,23 @@ export default function CapacitiesForm({ editMode, formData, onSubmit }) {
         nomb_facultad: '',
       };
 
+      console.log('el codigo de la cap');
       if (editMode) {
         updateCapacity(updatedData)
           .then((response) => {
             if (response.status === 200) {
               console.log(response.data);
               setMessage('success', '¡Capacidad actualizada con éxito!');
+
+              setTimeout(() => {
+                onSubmit();
+              }, 500);
+            } else if (response.request.status === 500) {
+              console.log('el error', response.request.response);
+              setMessage(
+                'error',
+                `Ya se encuentra registrada una capacidad para el aula ${selectedClassroom.nomb_aula}.`
+              );
             }
           })
           .catch((error) => {
@@ -158,6 +169,16 @@ export default function CapacitiesForm({ editMode, formData, onSubmit }) {
             if (response.status === 200) {
               console.log(response.data);
               setMessage('success', '¡Capacidad registrada con éxito!');
+
+              setTimeout(() => {
+                onSubmit();
+              }, 500);
+            } else if (response.request.status === 500) {
+              console.log('el error', response.request.response);
+              setMessage(
+                'error',
+                `Ya se encuentra registrada una capacidad para el aula ${selectedClassroom.nomb_aula}.`
+              );
             }
           })
           .catch((error) => {
@@ -165,10 +186,6 @@ export default function CapacitiesForm({ editMode, formData, onSubmit }) {
             setMessage('error', '¡Ha ocurrido un error!');
           });
       }
-
-      setTimeout(() => {
-        onSubmit();
-      }, 500);
     }
   };
 
