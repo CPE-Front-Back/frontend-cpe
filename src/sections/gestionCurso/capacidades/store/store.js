@@ -15,6 +15,10 @@ export const insertCapacity = async (capacity) => {
     const response = await axiosInstance.post(`capacidad/`, capacity);
     return response;
   } catch (error) {
+    if (error.request.status === 500 && error.request.response === 'Duplicated cod_aula') {
+      console.log('Error en insertCapacity', error);
+      return error;
+    }
     console.log('Error en insertCapacity', error);
     throw error;
   }
@@ -25,6 +29,10 @@ export const updateCapacity = async (capacity) => {
     const response = await axiosInstance.put(`capacidad/`, capacity);
     return response;
   } catch (error) {
+    if (error.request.status === 500 && error.request.response === 'Duplicated cod_aula') {
+      console.log('Error en updateCapacity', error);
+      return error;
+    }
     console.log('Error en updateCapacity', error);
     throw error;
   }

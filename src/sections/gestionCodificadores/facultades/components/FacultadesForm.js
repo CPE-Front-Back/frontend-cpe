@@ -48,6 +48,13 @@ export default function FacultadesForm({ editMode, formData, onSubmit }) {
             if (response.status === 200) {
               console.log(response.data);
               setMessage('success', '¡Facultad actualizada con éxito!');
+
+              setTimeout(() => {
+                onSubmit();
+              }, 500);
+            } else if (response.request.status === 500) {
+              console.log('el error', response.request.response);
+              setMessage('error', `Ya se encuentra registrada la facultad ${updatedData.nomb_facultad}.`);
             }
           })
           .catch((error) => {
@@ -60,6 +67,13 @@ export default function FacultadesForm({ editMode, formData, onSubmit }) {
             if (response.status === 200) {
               console.log(response.data);
               setMessage('success', '¡Facultad registrada con éxito!');
+
+              setTimeout(() => {
+                onSubmit();
+              }, 500);
+            } else if (response.request.status === 500) {
+              console.log('el error', response.request.response);
+              setMessage('error', `Ya se encuentra registrada la facultad ${updatedData.nomb_facultad}.`);
             }
           })
           .catch((error) => {
@@ -67,10 +81,6 @@ export default function FacultadesForm({ editMode, formData, onSubmit }) {
             setMessage('error', '¡Ha ocurrido un error!');
           });
       }
-
-      setTimeout(() => {
-        onSubmit();
-      }, 500);
     }
   };
 

@@ -97,6 +97,13 @@ export default function ClassroomsForm({ editMode, formData, onSubmit }) {
             if (response.status === 200) {
               console.log(response.data);
               setMessage('success', '¡Aula actualizada con éxito!');
+
+              setTimeout(() => {
+                onSubmit();
+              }, 500);
+            } else if (response.request.status === 500) {
+              console.log('el error', response.request.response);
+              setMessage('error', `Ya se encuentra registrada el aula ${classroomNameInput}.`);
             }
           })
           .catch((error) => {
@@ -109,6 +116,13 @@ export default function ClassroomsForm({ editMode, formData, onSubmit }) {
             if (response.status === 200) {
               console.log(response.data);
               setMessage('success', '¡Aula registrada con éxito!');
+
+              setTimeout(() => {
+                onSubmit();
+              }, 500);
+            } else if (response.request.status === 500) {
+              console.log('el error', response.request.response);
+              setMessage('error', `Ya se encuentra registrada el aula ${classroomNameInput}.`);
             }
           })
           .catch((error) => {
@@ -116,10 +130,6 @@ export default function ClassroomsForm({ editMode, formData, onSubmit }) {
             setMessage('error', '¡Ha ocurrido un error!');
           });
       }
-
-      setTimeout(() => {
-        onSubmit();
-      }, 500);
     }
   };
 

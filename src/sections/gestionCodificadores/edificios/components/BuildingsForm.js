@@ -57,7 +57,7 @@ export default function BuildingsForm({ editMode, formData, onSubmit }) {
       const updatedData = {
         cod_edif: formData.cod_edif,
         nomb_edif: buildingNameInput,
-        nomb_facultad: selectedFaculty.nomb_facultad,
+        cod_facultad: selectedFaculty.cod_facultad,
       };
 
       if (editMode) {
@@ -66,6 +66,13 @@ export default function BuildingsForm({ editMode, formData, onSubmit }) {
             if (response.status === 200) {
               console.log(response.data);
               setMessage('success', '¡Edificio actualizado con éxito!');
+
+              setTimeout(() => {
+                onSubmit();
+              }, 500);
+            } else if (response.request.status === 500) {
+              console.log('el error', response.request.response);
+              setMessage('error', `Ya se encuentra registrado el edificio ${updatedData.nomb_edif}.`);
             }
           })
           .catch((error) => {
@@ -78,6 +85,13 @@ export default function BuildingsForm({ editMode, formData, onSubmit }) {
             if (response.status === 200) {
               console.log(response.data);
               setMessage('success', '¡Edificio registrado con éxito!');
+
+              setTimeout(() => {
+                onSubmit();
+              }, 500);
+            } else if (response.request.status === 500) {
+              console.log('el error', response.request.response);
+              setMessage('error', `Ya se encuentra registrado el edificio ${updatedData.nomb_edif}.`);
             }
           })
           .catch((error) => {
@@ -85,10 +99,6 @@ export default function BuildingsForm({ editMode, formData, onSubmit }) {
             setMessage('error', '¡Ha ocurrido un error!');
           });
       }
-
-      setTimeout(() => {
-        onSubmit();
-      }, 500);
     }
   };
 
@@ -104,7 +114,7 @@ export default function BuildingsForm({ editMode, formData, onSubmit }) {
 
   const handleNameInput = (event) => {
     // allow only letters
-    const inputValue = event.target.value.replace(/[^a-zA-Z]/g, '');
+    const inputValue = event.target.value.replace(/[^a-zA-Z0-9]/g, '');
     event.target.value = inputValue;
   };
 

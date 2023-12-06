@@ -25,6 +25,10 @@ export const insertClassroom = async (classroom) => {
     const response = await axiosInstance.post(`aula/`, classroom);
     return response;
   } catch (error) {
+    if (error.request.status === 500 && error.request.response === 'Duplicated nomb_aula') {
+      console.log('Error en insertClassroom', error);
+      return error;
+    }
     console.log('Error en insertClassroom', error);
     throw error;
   }
@@ -35,6 +39,10 @@ export const updateClassroom = async (classroom) => {
     const response = await axiosInstance.put(`aula/`, classroom);
     return response;
   } catch (error) {
+    if (error.request.status === 500 && error.request.response === 'Duplicated nomb_aula') {
+      console.log('Error en updateClassroom', error);
+      return error;
+    }
     console.log('Error en updateClassroom', error);
     throw error;
   }

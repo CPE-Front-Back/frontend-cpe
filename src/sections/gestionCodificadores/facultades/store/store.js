@@ -25,6 +25,10 @@ export const insertFaculty = async (faculty) => {
     const response = await axiosInstance.post(`facultad/`, faculty);
     return response;
   } catch (error) {
+    if (error.request.status === 500 && error.request.response === 'Duplicated nomb_facultad') {
+      console.log('Error en insertFaculty', error);
+      return error;
+    }
     console.log('Error en insertFaculty', error);
     throw error;
   }
@@ -35,6 +39,10 @@ export const updateFaculty = async (Faculty) => {
     const response = await axiosInstance.put(`facultad/`, Faculty);
     return response;
   } catch (error) {
+    if (error.request.status === 500 && error.request.response === 'Duplicated nomb_facultad') {
+      console.log('Error en updateFaculty', error);
+      return error;
+    }
     console.log('Error en updateFaculty', error);
     throw error;
   }

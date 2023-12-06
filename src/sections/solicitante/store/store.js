@@ -6,8 +6,8 @@ export const sendSolicitantePersonalData = async (solicitante) => {
     const response = await axiosInstance.post(`solicitante/`, solicitante);
     return response;
   } catch (error) {
-    console.log('Error en sendSolicitantePersonalData', error);
     if (error.request.status === 500 && error.request.response === 'Duplicated num_id') {
+      console.log('Error en sendSolicitantePersonalData', error);
       return error;
     }
     console.log('Error en sendSolicitantePersonalData', error);
@@ -21,8 +21,8 @@ export const sendSolicitantePersonalDataRequester = async (solicitante) => {
     const response = await axiosForAuth.post(`solicitante/`, solicitante);
     return response;
   } catch (error) {
-    console.log('Error en sendSolicitantePersonalDataRequester', error);
     if (error.request.status === 500 && error.request.response === 'Duplicated num_id') {
+      console.log('Error en sendSolicitantePersonalDataRequester', error);
       return error;
     }
     console.log('Error en sendSolicitantePersonalDataRequester', error);
@@ -36,8 +36,8 @@ export const updateSolicitantePersonalData = async (solicitante) => {
     const response = await axiosInstance.put(`solicitante/`, solicitante);
     return response;
   } catch (error) {
-    console.log('Error en updateSolicitantePersonalData', error);
     if (error.request.status === 500 && error.request.response === 'Duplicated num_id') {
+      console.log('Error en updateSolicitantePersonalData', error);
       return error;
     }
     console.log('Error en updateSolicitantePersonalData', error);

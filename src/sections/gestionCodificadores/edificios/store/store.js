@@ -35,6 +35,10 @@ export const insertBuilding = async (building) => {
     const response = await axiosInstance.post(`edificio/`, building);
     return response;
   } catch (error) {
+    if (error.request.status === 500 && error.request.response === 'Duplicated nomb_edificio') {
+      console.log('Error en insertarEdificio', error);
+      return error;
+    }
     console.log('Error en insertarEdificio', error);
     throw error;
   }
@@ -45,6 +49,10 @@ export const updateBuilding = async (building) => {
     const response = await axiosInstance.put(`edificio/`, building);
     return response;
   } catch (error) {
+    if (error.request.status === 500 && error.request.response === 'Duplicated nomb_edificio') {
+      console.log('Error en modificarEdificio', error);
+      return error;
+    }
     console.log('Error en modificarEdificio', error);
     throw error;
   }

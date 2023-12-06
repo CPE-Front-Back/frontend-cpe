@@ -25,6 +25,10 @@ export const insertIncomeSource = async (incomeSource) => {
     const response = await axiosInstance.post(`fuenteIngreso/`, incomeSource);
     return response;
   } catch (error) {
+    if (error.request.status === 500 && error.request.response === 'Duplicated nomb_fuente') {
+      console.log('Error en insertIncomeSource', error);
+      return error;
+    }
     console.log('Error en insertIncomeSource', error);
     throw error;
   }
@@ -35,6 +39,10 @@ export const updateIncomeSource = async (incomeSource) => {
     const response = await axiosInstance.put(`fuenteIngreso/`, incomeSource);
     return response;
   } catch (error) {
+    if (error.request.status === 500 && error.request.response === 'Duplicated nomb_fuente') {
+      console.log('Error en updateIncomeSource', error);
+      return error;
+    }
     console.log('Error en updateIncomeSource', error);
     throw error;
   }
