@@ -407,8 +407,8 @@ export default function PdfPage({ pdfName }) {
           <Grid container sx={{ pt: '20px', pb: '20px' }}>
             <Grid item xs />
             <Grid item xs={3}>
-              <Button variant="contained" sx={{ width: '100%' }} onClick={HandleGeneratePdf}>
-                Generar Reporte
+              <Button variant="contained" sx={{ width: '100%', textTransform: 'none' }} onClick={HandleGeneratePdf}>
+                Generar reporte
               </Button>
             </Grid>
             <Grid item xs />
