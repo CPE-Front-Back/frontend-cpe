@@ -168,7 +168,7 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
     }
 
     if (!firstLastName) {
-      newErrors.apell_solicitante = 'Primer apellido requerido';
+      newErrors.firstLastName = 'Primer apellido requerido';
     }
 
     if (!secondLastName) {
@@ -212,9 +212,7 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
 
     if (!/^\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])\d{5}$/.test(idNumber)) {
       newErrors.idNumber = 'Carnet de identidad inválido.';
-    }
-
-    if (age < 18) {
+    } else if (age < 18) {
       newErrors.idNumber = 'La edad mínima es 18 años.';
     } else if (age > 60) {
       newErrors.idNumber = 'La edad máxima es 60 años.';
@@ -518,7 +516,15 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
                 type={'text'}
                 value={idNumber}
                 label="Carnet de identidad"
-                onChange={(event) => setIdNumber(event.target.value)}
+                onChange={(event) => {
+                  setErrors((prevState) => {
+                    return {
+                      ...prevState,
+                      idNumber: '',
+                    };
+                  });
+                  setIdNumber(event.target.value);
+                }}
                 onInput={handleIdInput}
                 error={!!errors.idNumber}
                 helperText={errors.idNumber}
@@ -531,7 +537,15 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
                 type={'text'}
                 value={requesterName}
                 label="Nombre(s)"
-                onChange={(event) => setRequesterName(event.target.value)}
+                onChange={(event) => {
+                  setErrors((prevState) => {
+                    return {
+                      ...prevState,
+                      requesterName: '',
+                    };
+                  });
+                  setRequesterName(event.target.value);
+                }}
                 onInput={handleNameInput}
                 error={!!errors.requesterName}
                 helperText={errors.requesterName}
@@ -545,6 +559,12 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
                 value={firstLastName}
                 label="1er apellido"
                 onChange={(event) => {
+                  setErrors((prevState) => {
+                    return {
+                      ...prevState,
+                      firstLastName: '',
+                    };
+                  });
                   setFirstLastName(event.target.value);
                 }}
                 onInput={handleLastNamesInput}
@@ -559,6 +579,12 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
                 label="2do apellido"
                 value={secondLastName}
                 onChange={(event) => {
+                  setErrors((prevState) => {
+                    return {
+                      ...prevState,
+                      secondLastName: '',
+                    };
+                  });
                   setSecondLastName(event.target.value);
                 }}
                 onInput={handleLastNamesInput}
@@ -576,7 +602,15 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
                 type="tel"
                 value={phoneNumber}
                 label="Teléfono"
-                onChange={(event) => setPhoneNumber(event.target.value)}
+                onChange={(event) => {
+                  setErrors((prevState) => {
+                    return {
+                      ...prevState,
+                      phoneNumber: '',
+                    };
+                  });
+                  setPhoneNumber(event.target.value);
+                }}
                 onInput={handlePhoneInput}
                 error={!!errors.phoneNumber}
                 helperText={errors.phoneNumber}
@@ -590,6 +624,12 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
                 getOptionLabel={(option) => option.nomb_provincia}
                 value={selectedProvince}
                 onChange={(event, newValue) => {
+                  setErrors((prevState) => {
+                    return {
+                      ...prevState,
+                      selectedProvince: '',
+                    };
+                  });
                   setSelectedProvince(newValue);
                   setSelectedMunicipality(null);
                 }}
@@ -613,6 +653,12 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
                 getOptionLabel={(option) => option.nomb_municipio}
                 value={selectedMunicipality}
                 onChange={(event, newValue) => {
+                  setErrors((prevState) => {
+                    return {
+                      ...prevState,
+                      selectedMunicipality: '',
+                    };
+                  });
                   setSelectedMunicipality(newValue);
                 }}
                 renderInput={(params) => (
@@ -635,6 +681,12 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
                 getOptionLabel={(option) => option.nomb_fuente}
                 value={selectedIncomeSource}
                 onChange={(event, newValue) => {
+                  setErrors((prevState) => {
+                    return {
+                      ...prevState,
+                      selectedIncomeSource: '',
+                    };
+                  });
                   setSelectedIncomeSource(newValue);
                 }}
                 renderInput={(params) => (
@@ -661,6 +713,12 @@ export default function RequestsFormDialog({ open, handleCloseClick, handleCLose
                   value={selectedOptions?.opcion1 ? selectedOptions.opcion1 : null}
                   getOptionLabel={(option) => option.nomb_carrera}
                   onChange={(event, newValue) => {
+                    setErrors((prevState) => {
+                      return {
+                        ...prevState,
+                        selectedOption: '',
+                      };
+                    });
                     handleOptionChange(event, newValue, 'opcion1');
                   }}
                   renderInput={(params) => (

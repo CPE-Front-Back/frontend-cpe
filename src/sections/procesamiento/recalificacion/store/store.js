@@ -1,5 +1,15 @@
 import { axiosInstance } from '../../../../components/api/api';
 
+export const getAllRequestersInRoom = async (codCurso) => {
+  try {
+    const response = await axiosInstance.get(`solicitante/todosEnAula/curso/${codCurso}`);
+    return response;
+  } catch (error) {
+    console.log('Error en getAllRequestersInRoom', error);
+    throw error;
+  }
+};
+
 export const getRequesterInRoomById = async (requesterId, codCurso) => {
   try {
     const response = await axiosInstance.get(`solicitante/enAula/numeroId/${requesterId}/curso/${codCurso}`);

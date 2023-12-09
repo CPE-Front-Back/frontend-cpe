@@ -127,7 +127,10 @@ export default function QualificationPage() {
     const updatedRequestersList = requestersList.map((requester) => {
       if (requester.no_anonimato === no_anonimato) {
         // Update the calificacion for the matching requester
-        return { ...requester, calificacion: event.target.value };
+        return {
+          ...requester,
+          calificacion: ['NP', 'np', 'Np', 'nP'].includes(event.target.value) ? -1 : event.target.value,
+        };
       }
       return requester; // Keep other requesters as they are
     });
@@ -182,12 +185,11 @@ export default function QualificationPage() {
                       const assignment = response.data;
                       console.log('la asignacion', assignment);
 
-                      // todo
                       const updatedAssignment = {
                         cod_acta: assignment.cod_acta,
                         cod_asignacion: assignment.cod_asignacion,
                         cod_solicitante: assignment.cod_solicitante,
-                        calificacion: requester.calificacion,
+                        calificacion: Number(requester.calificacion),
                       };
 
                       updateQualification(updatedAssignment)
@@ -238,7 +240,7 @@ export default function QualificationPage() {
 
   const handleQualificationInput = (event) => {
     // Allow only numbers and minus sign
-    const inputValue = event.target.value.replace(/[^-.0-9]/g, '');
+    const inputValue = event.target.value.replace(/[^-.0-9NnPp]/g, '');
     event.target.value = inputValue;
   };
 
@@ -319,7 +321,7 @@ export default function QualificationPage() {
                               <TableCell align="center" sx={{ padding: '1px' }}>
                                 <TextField
                                   type={'text'}
-                                  value={calificacion}
+                                  value={calificacion === -1 ? 'NP' : calificacion}
                                   onChange={(event) => handleChange(no_anonimato, event)}
                                   onInput={handleQualificationInput}
                                   variant={'standard'}

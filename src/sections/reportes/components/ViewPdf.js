@@ -32,7 +32,7 @@ export default function ViewPdf({ pdfData, pdfName }) {
               }}
               sx={{ minWidth: '150px' }}
             >
-              Download PDF
+              Descargar PDF
             </Button>
           </Grid>
           <Grid item xs />

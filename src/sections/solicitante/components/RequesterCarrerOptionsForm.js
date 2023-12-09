@@ -192,6 +192,12 @@ export default function RequesterCarrerOptionsForm({ personalData, options, onVo
             options={ofertasFiltradas}
             getOptionLabel={(option) => option.nomb_carrera}
             onChange={(event, newValue) => {
+              setErrors((prevState) => {
+                return {
+                  ...prevState,
+                  selectedOption: '',
+                };
+              });
               handleOptionChange(event, newValue, 'opcion1');
             }}
             renderInput={(params) => (
