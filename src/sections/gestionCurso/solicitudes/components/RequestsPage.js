@@ -377,7 +377,7 @@ export default function RequestsPage(solicitantesConfirmados) {
                 setFormData({});
               }}
             >
-              Registrar Solicitud confirmada
+              Registrar solicitud confirmada
             </Button>
           </Stack>
 

@@ -1,26 +1,39 @@
-import { Alert, Box, Button, Container, Grid, TextField, Typography } from '@mui/material';
+import {
+  Alert,
+  Autocomplete,
+  Backdrop,
+  Box,
+  Button,
+  CircularProgress,
+  Container,
+  Grid,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { isNaN } from 'lodash';
 import { useConfirm } from 'material-ui-confirm';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import setMessage from '../../../../components/messages/messages';
 import { UseActiveCourse } from '../../../gestionCurso/curso/context/ActiveCourseContext';
 import {
   getActByRequesterId,
+  getAllRequestersInRoom,
   getAssignmentByRequesterId,
   getRequesterInRoomById,
   insertRequalification,
 } from '../store/store';
 
 export default function RequalificationPage() {
-  const [requesterIdNumber, setRequesterIdNumber] = useState(null);
-  const [requester, setRequester] = useState(null);
+  const [requesters, setRequesters] = useState(null);
+  const [selectedRequester, setSelectedRequester] = useState(null);
   const [anonNumber, setAnonNumber] = useState(null);
   const [calification, setCalification] = useState(null);
   const [calificationDumb, setCalificationDumb] = useState(null);
   const [focused, setFocused] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const { activeCourse } = UseActiveCourse();
+  const { activeCourse, refreshProcessingStatus, setRefreshProcessingStatus } = UseActiveCourse();
   const confirm = useConfirm();
 
   const [errors, setErrors] = useState({
@@ -31,7 +44,7 @@ export default function RequalificationPage() {
   const validateRequalification = () => {
     const newErrors = {};
 
-    if (!requester) {
+    if (!selectedRequester) {
       newErrors.requesterIdNumber = 'No. Identidad requerido';
     }
     if (!calification) {
@@ -44,71 +57,51 @@ export default function RequalificationPage() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const validateRequesterIdNumber = () => {
-    const newErrors = {};
+  useEffect(() => {
+    getAllRequestersInRoom(activeCourse.cod_curso)
+      .then((response) => {
+        if (response.status === 200) {
+          setRequesters(response.data);
+        }
+      })
+      .catch((error) => {
+        console.log('Error al buscar todos los solicitantes', error);
+      });
+  }, []);
 
-    if (!requesterIdNumber) {
-      newErrors.requesterIdNumber = 'No. identidad requerido';
-    } else if (requesterIdNumber?.length !== 11) {
-      newErrors.requesterIdNumber = 'El carnet de identidad debe tener 11 dígitos';
-    } else if (!/^\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])\d{5}$/.test(requesterIdNumber)) {
-      newErrors.requesterIdNumber = 'Carnet de Identidad inválido';
-    }
-
-    setErrors(newErrors);
-
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const findRequester = () => {
-    if (validateRequesterIdNumber()) {
-      getRequesterInRoomById(requesterIdNumber, activeCourse.cod_curso)
+  useEffect(() => {
+    if (selectedRequester) {
+      setIsLoading(true);
+      getActByRequesterId(selectedRequester.cod_solicitante)
         .then((response) => {
           if (response.status === 200) {
-            const requester = response.data;
-            if (requester) {
-              setRequester(requester);
-              console.log('el solicitante', requester);
-              getActByRequesterId(requester.cod_solicitante)
-                .then((response) => {
-                  if (response.status === 200) {
-                    const act = response.data;
-                    console.log('el acta', act);
-                    getAssignmentByRequesterId(requester.cod_solicitante)
-                      .then((response) => {
-                        if (response.status === 200) {
-                          const assignment = response.data;
-                          console.log('la asignacion', assignment);
+            const act = response.data;
+            console.log('el acta', act);
+            getAssignmentByRequesterId(selectedRequester.cod_solicitante)
+              .then((response) => {
+                if (response.status === 200) {
+                  const assignment = response.data;
+                  console.log('la asignacion', assignment);
 
-                          setAnonNumber(act.cod_anonimato);
-                          setCalification(assignment.calificacion);
-                          setCalificationDumb(assignment.calificacion);
-                        }
-                      })
-                      .catch((error) => {
-                        console.log('Error al buscar la solicitud del solicitante', error);
-                      });
-                  }
-                })
-                .catch((error) => {
-                  console.log('Error al buscar el acta del solicitante', error);
-                });
-            } else {
-              setMessage('warning', '¡Solicitante no encontrado!');
-              setAnonNumber(null);
-              setCalification(null);
-            }
+                  setAnonNumber(act.cod_anonimato);
+                  setCalification(assignment.calificacion);
+                  setIsLoading(false);
+                  setCalificationDumb(assignment.calificacion);
+                }
+              })
+              .catch((error) => {
+                console.log('Error al buscar la solicitud del solicitante', error);
+              });
           }
         })
         .catch((error) => {
-          console.log('Error al buscar el solicitante', error);
+          console.log('Error al buscar el acta del solicitante', error);
         });
     }
-  };
+  }, [selectedRequester]);
 
   const clearForm = () => {
-    setRequesterIdNumber('');
-    setRequester(null);
+    setSelectedRequester(null);
     setAnonNumber('');
     setCalification('');
     setCalificationDumb('');
@@ -118,13 +111,14 @@ export default function RequalificationPage() {
     if (validateRequalification()) {
       const requalification = {
         cod_curso: activeCourse.cod_curso,
-        cod_solicitante: requester.cod_solicitante,
+        cod_solicitante: selectedRequester.cod_solicitante,
         recalificacion: Number(calification),
       };
       console.log('la recalificacion', requalification);
       insertRequalification(requalification).then((response) => {
         if (response.status === 200) {
           setMessage('success', '¡Recalificación insertada con éxito!');
+          setRefreshProcessingStatus(refreshProcessingStatus + 1);
 
           setTimeout(() => {
             confirm({
@@ -150,12 +144,6 @@ export default function RequalificationPage() {
       .catch(() => {});
   };
 
-  const handleRequesterIdInput = (event) => {
-    // Allow only numbers
-    const inputValue = event.target.value.replace(/[^0-9]/g, '');
-    event.target.value = inputValue;
-  };
-
   const handleRequalificationInput = (event) => {
     // Allow only floating point numbers
     const inputValue = event.target.value.replace(/[^.0-9]/g, '');
@@ -177,27 +165,48 @@ export default function RequalificationPage() {
           </Typography>
 
           <Container sx={{ bgcolor: 'white', pt: '50px' }}>
+            {isLoading && (
+              <Backdrop sx={{ bgcolor: 'rgba(255,255,255,0.41)', zIndex: 1 }} open={isLoading}>
+                <CircularProgress color="primary" sx={{ ml: '200px', mt: '10px' }} />
+              </Backdrop>
+            )}
             <Grid container spacing={2} sx={{ pt: '10px' }}>
               <Grid item xs />
               <Grid item xs={3}>
-                <TextField
-                  label="Carnet de identidad"
-                  variant="outlined"
-                  value={requesterIdNumber}
-                  onChange={(event) => {
-                    setRequesterIdNumber(event.target.value);
+                <Autocomplete
+                  id="RequestersCombo"
+                  options={requesters}
+                  getOptionLabel={(option) => option.num_id}
+                  value={selectedRequester}
+                  onChange={(event, newValue) => {
+                    if (newValue === null || calification !== calificationDumb) {
+                      confirm({
+                        content: (
+                          <Alert severity={'warning'}>¡Perderá los cambios no guardados! ¿Desea continuar?</Alert>
+                        ),
+                      })
+                        .then(() => {
+                          setSelectedRequester(newValue);
+                          setAnonNumber('');
+                          setCalification('');
+                          setCalificationDumb('');
+                        })
+                        .catch(() => {});
+                    } else {
+                      setSelectedRequester(newValue);
+                    }
                   }}
-                  onInput={handleRequesterIdInput}
-                  inputProps={{ maxLength: 11 }}
-                  error={!!errors.requesterIdNumber}
-                  helperText={errors.requesterIdNumber}
-                  required
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Solicitantes"
+                      error={!!errors.requesterIdNumber}
+                      helperText={errors.requesterIdNumber}
+                      required
+                    />
+                  )}
+                  noOptionsText={'No hay opciones'}
                 />
-              </Grid>
-              <Grid item xs={3}>
-                <Button variant="contained" sx={{ width: '100%', mt: '10px' }} onClick={findRequester}>
-                  Buscar
-                </Button>
               </Grid>
               <Grid item xs />
             </Grid>

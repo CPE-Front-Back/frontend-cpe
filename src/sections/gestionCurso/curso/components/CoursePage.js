@@ -234,7 +234,7 @@ export default function CoursePage() {
               <LoadingButton
                 variant="contained"
                 loading={isGenerating}
-                sx={{ width: '100%' }}
+                sx={{ width: '100%', textTransform: 'none' }}
                 onClick={handleGenerarCursoClick}
                 disabled={!canGenerate}
               >
