@@ -36,6 +36,7 @@ export default function AppWidgetSummary({ pdfName, icon, color = 'primary', sx,
         color: (theme) => theme.palette[color].darker,
         bgcolor: (theme) => theme.palette[color].lighter,
         ...sx,
+        cursor: 'pointer',
       }}
       {...other}
     >

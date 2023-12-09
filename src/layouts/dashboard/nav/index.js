@@ -130,7 +130,7 @@ export default function Nav({ openNav, onCloseNav }) {
         </Box>
       </Tooltip>
 
-      <Box sx={{ mb: 5, mx: 2.5 }}>
+      <Box sx={{ mb: 5, mx: 2.5, cursor: 'pointer' }}>
         <Link underline="none">
           <StyledAccount onClick={(event) => handleOpenSessionMenu(event)}>
             <Icon size={2.5} path={mdiAccountCircleOutline} />
@@ -159,6 +159,7 @@ export default function Nav({ openNav, onCloseNav }) {
             m: 2,
             borderRadius: 2,
             backgroundColor: (theme) => alpha(theme.palette.grey[500], 0.12),
+            cursor: 'pointer',
           }}
           onClick={() => {
             navigate('/dashboard/help', { replace: true });
