@@ -1,12 +1,14 @@
 import axios from 'axios';
 
 export const axiosForAuth = axios.create({
-  baseURL: 'http://localhost:8085/api/v1/', // api Url
+  // baseURL: 'http://localhost:8085/api/v1/', // api Url
+  baseURL: 'http://localhost:8080/cpe-backend-0.0.1-SNAPSHOT/api/v1/', // api Url
   timeout: 10000, // Set a timeout for requests
 });
 
 export const axiosInstance = axios.create({
-  baseURL: 'http://localhost:8085/api/v1/', // api Url
+  // baseURL: 'http://localhost:8085/api/v1/', // api Url
+  baseURL: 'http://localhost:8080/cpe-backend-0.0.1-SNAPSHOT/api/v1/', // api Url
   timeout: 10000, // Set a timeout for requests
   headers: { 'Content-Type': 'application/json' },
 });
